@@ -1,0 +1,884 @@
+﻿langkah,nama_langkah,entitas,kolom,metrik,jumlah,satuan,sebelum,sesudah,alasan
+1,Teks galat → NaN & cast numerik,BGL-01,semua,sel_teks_galat_menjadi_nan,0.0,sel,,,"Token galat (0xDEADBEEF, ERR_*, #VALUE!, INF, …) tidak dapat dibaca sebagai angka"
+1,Teks galat → NaN & cast numerik,BGL-01,semua,sel_kosong_dibaca_nan,0.0,sel,,,String kosong dibaca sebagai NaN (informasi; nilai sudah hilang di sumber)
+1,Teks galat → NaN & cast numerik,BGL-01,semua,kolom_di_cast_numerik,10.0,kolom,,,10 kolom polutan + cuaca dibaca sebagai teks lalu di-cast ke float
+2,Standarisasi satuan ke µg/m³,BGL-01,semua,sel_dikonversi_ppm_ke_ugm3,0.0,sel,,,"PM ×1000 (hipotesis mg/m³ salah label); gas ppm × BM / 24,45 × 1000 (25 °C, 1 atm). Validasi: median vs stasiun sejenis (notebook 03)"
+3,"Parse timestamp, bulatkan ke jam, buang di luar periode",BGL-01,semua,baris_timestamp_tak_terbaca,0.0,baris,,,Format waktu tidak dapat di-parse; baris tidak dapat ditempatkan pada sumbu waktu
+3,"Parse timestamp, bulatkan ke jam, buang di luar periode",BGL-01,semua,baris_di_luar_periode,0.0,baris,,,Di luar 2024-01-01 00:00…2026-10-14 23:00 (mis. epoch 1970)
+3,"Parse timestamp, bulatkan ke jam, buang di luar periode",BGL-01,semua,baris_dibulatkan_ke_jam_terdekat,24432.0,baris,,,"Timestamp bergeser dari awal jam (mis. 23:48, 00:11, milidetik) dibulatkan ke jam terdekat"
+3,"Parse timestamp, bulatkan ke jam, buang di luar periode",BGL-01,semua,baris_subjam_dipotong_ke_jam_penuh,0.0,baris,,,Bacaan beresolusi < 1 jam (:00/:15/:30/:45): floor ke jam penuh lalu dirata-rata pada langkah 5
+3,"Parse timestamp, bulatkan ke jam, buang di luar periode",BGL-01,semua,jumlah_baris,0.0,baris,24432.0,24432.0,Baris yang dibuang pada langkah 3 (tak terbaca + di luar periode)
+4,Buang nilai mustahil & sentinel,BGL-01,semua,sel_sentinel_menjadi_nan,0.0,sel,,,"Nilai pengganti galat/saturasi (±999, ±9999, -9999, 99999); 999 pada CO µg/m³ dikecualikan (konsentrasi wajar)"
+4,Buang nilai mustahil & sentinel,BGL-01,semua,sel_negatif_menjadi_nan,0.0,sel,,,Konsentrasi polutan negatif mustahil secara fisik
+4,Buang nilai mustahil & sentinel,BGL-01,semua,sel_di_luar_batas_fisik_cuaca_menjadi_nan,0.0,sel,,,"Suhu <5/>45 °C, RH di luar 0–100 %, angin >40 m/s, arah di luar 0–360°"
+4,Buang nilai mustahil & sentinel,BGL-01,semua,baris_valid_dengan_nilai_mustahil,0.0,baris,,,Informasi: baris berstatus VALID yang memuat nilai mustahil (penanda QC alat tidak cukup)
+4,Buang nilai mustahil & sentinel,BGL-01,semua,baris_valid_pm_ekstrem_dipertahankan,0.0,baris,,,PM > 500 µg/m³ pada baris VALID DIPERTAHANKAN (kemungkinan puncak kabut asap nyata)
+4,Buang nilai mustahil & sentinel,BGL-01,semua,baris_valid_pm25_lebih_besar_pm10,0.0,baris,,,"Informasi: PM2.5 > PM10 tidak konsisten fisik; hanya ditandai, tidak dibuang"
+5,Filter qc_flag = VALID & agregasi per jam (rata-rata),BGL-01,semua,baris_non_valid_dibuang[SUSPECT],125.0,baris,,,qc_flag selain VALID tidak dipakai untuk analisis konsentrasi
+5,Filter qc_flag = VALID & agregasi per jam (rata-rata),BGL-01,semua,jumlah_baris_non_valid,125.0,baris,24432.0,24307.0,Total baris non-VALID dibuang
+5,Filter qc_flag = VALID & agregasi per jam (rata-rata),BGL-01,semua,jam_diagregasi_rata2,0.0,jam,,,Jam berisi >1 baris VALID dirata-rata (arah angin: rata-rata melingkar)
+5,Filter qc_flag = VALID & agregasi per jam (rata-rata),BGL-01,semua,jumlah_baris_per_jam,0.0,baris,24307.0,24307.0,Baris tambahan yang digabung ke jam yang sama
+5,Filter qc_flag = VALID & agregasi per jam (rata-rata),BGL-01,semua,jam_valid_akhir,24307.0,jam,24432.0,24307.0,Jam dengan ≥1 baris VALID dari 24432 jam yang diharapkan
+1,Teks galat → NaN & cast numerik,BGR-01,semua,sel_teks_galat_menjadi_nan,0.0,sel,,,"Token galat (0xDEADBEEF, ERR_*, #VALUE!, INF, …) tidak dapat dibaca sebagai angka"
+1,Teks galat → NaN & cast numerik,BGR-01,semua,sel_kosong_dibaca_nan,0.0,sel,,,String kosong dibaca sebagai NaN (informasi; nilai sudah hilang di sumber)
+1,Teks galat → NaN & cast numerik,BGR-01,semua,kolom_di_cast_numerik,10.0,kolom,,,10 kolom polutan + cuaca dibaca sebagai teks lalu di-cast ke float
+2,Standarisasi satuan ke µg/m³,BGR-01,semua,sel_dikonversi_ppm_ke_ugm3,0.0,sel,,,"PM ×1000 (hipotesis mg/m³ salah label); gas ppm × BM / 24,45 × 1000 (25 °C, 1 atm). Validasi: median vs stasiun sejenis (notebook 03)"
+3,"Parse timestamp, bulatkan ke jam, buang di luar periode",BGR-01,semua,baris_timestamp_tak_terbaca,0.0,baris,,,Format waktu tidak dapat di-parse; baris tidak dapat ditempatkan pada sumbu waktu
+3,"Parse timestamp, bulatkan ke jam, buang di luar periode",BGR-01,semua,baris_di_luar_periode,0.0,baris,,,Di luar 2024-01-01 00:00…2026-10-14 23:00 (mis. epoch 1970)
+3,"Parse timestamp, bulatkan ke jam, buang di luar periode",BGR-01,semua,baris_dibulatkan_ke_jam_terdekat,0.0,baris,,,"Timestamp bergeser dari awal jam (mis. 23:48, 00:11, milidetik) dibulatkan ke jam terdekat"
+3,"Parse timestamp, bulatkan ke jam, buang di luar periode",BGR-01,semua,baris_subjam_dipotong_ke_jam_penuh,0.0,baris,,,Bacaan beresolusi < 1 jam (:00/:15/:30/:45): floor ke jam penuh lalu dirata-rata pada langkah 5
+3,"Parse timestamp, bulatkan ke jam, buang di luar periode",BGR-01,semua,jumlah_baris,0.0,baris,24432.0,24432.0,Baris yang dibuang pada langkah 3 (tak terbaca + di luar periode)
+4,Buang nilai mustahil & sentinel,BGR-01,semua,sel_sentinel_menjadi_nan,0.0,sel,,,"Nilai pengganti galat/saturasi (±999, ±9999, -9999, 99999); 999 pada CO µg/m³ dikecualikan (konsentrasi wajar)"
+4,Buang nilai mustahil & sentinel,BGR-01,semua,sel_negatif_menjadi_nan,0.0,sel,,,Konsentrasi polutan negatif mustahil secara fisik
+4,Buang nilai mustahil & sentinel,BGR-01,semua,sel_di_luar_batas_fisik_cuaca_menjadi_nan,0.0,sel,,,"Suhu <5/>45 °C, RH di luar 0–100 %, angin >40 m/s, arah di luar 0–360°"
+4,Buang nilai mustahil & sentinel,BGR-01,semua,baris_valid_dengan_nilai_mustahil,0.0,baris,,,Informasi: baris berstatus VALID yang memuat nilai mustahil (penanda QC alat tidak cukup)
+4,Buang nilai mustahil & sentinel,BGR-01,semua,baris_valid_pm_ekstrem_dipertahankan,0.0,baris,,,PM > 500 µg/m³ pada baris VALID DIPERTAHANKAN (kemungkinan puncak kabut asap nyata)
+4,Buang nilai mustahil & sentinel,BGR-01,semua,baris_valid_pm25_lebih_besar_pm10,0.0,baris,,,"Informasi: PM2.5 > PM10 tidak konsisten fisik; hanya ditandai, tidak dibuang"
+5,Filter qc_flag = VALID & agregasi per jam (rata-rata),BGR-01,semua,baris_non_valid_dibuang[SUSPECT],488.0,baris,,,qc_flag selain VALID tidak dipakai untuk analisis konsentrasi
+5,Filter qc_flag = VALID & agregasi per jam (rata-rata),BGR-01,semua,baris_non_valid_dibuang[CALIBRATING],256.0,baris,,,qc_flag selain VALID tidak dipakai untuk analisis konsentrasi
+5,Filter qc_flag = VALID & agregasi per jam (rata-rata),BGR-01,semua,jumlah_baris_non_valid,744.0,baris,24432.0,23688.0,Total baris non-VALID dibuang
+5,Filter qc_flag = VALID & agregasi per jam (rata-rata),BGR-01,semua,jam_diagregasi_rata2,0.0,jam,,,Jam berisi >1 baris VALID dirata-rata (arah angin: rata-rata melingkar)
+5,Filter qc_flag = VALID & agregasi per jam (rata-rata),BGR-01,semua,jumlah_baris_per_jam,0.0,baris,23688.0,23688.0,Baris tambahan yang digabung ke jam yang sama
+5,Filter qc_flag = VALID & agregasi per jam (rata-rata),BGR-01,semua,jam_valid_akhir,23688.0,jam,24432.0,23688.0,Jam dengan ≥1 baris VALID dari 24432 jam yang diharapkan
+1,Teks galat → NaN & cast numerik,BGR-02,semua,sel_teks_galat_menjadi_nan,0.0,sel,,,"Token galat (0xDEADBEEF, ERR_*, #VALUE!, INF, …) tidak dapat dibaca sebagai angka"
+1,Teks galat → NaN & cast numerik,BGR-02,semua,sel_kosong_dibaca_nan,0.0,sel,,,String kosong dibaca sebagai NaN (informasi; nilai sudah hilang di sumber)
+1,Teks galat → NaN & cast numerik,BGR-02,semua,kolom_di_cast_numerik,10.0,kolom,,,10 kolom polutan + cuaca dibaca sebagai teks lalu di-cast ke float
+2,Standarisasi satuan ke µg/m³,BGR-02,semua,sel_dikonversi_ppm_ke_ugm3,0.0,sel,,,"PM ×1000 (hipotesis mg/m³ salah label); gas ppm × BM / 24,45 × 1000 (25 °C, 1 atm). Validasi: median vs stasiun sejenis (notebook 03)"
+3,"Parse timestamp, bulatkan ke jam, buang di luar periode",BGR-02,semua,baris_timestamp_tak_terbaca,0.0,baris,,,Format waktu tidak dapat di-parse; baris tidak dapat ditempatkan pada sumbu waktu
+3,"Parse timestamp, bulatkan ke jam, buang di luar periode",BGR-02,semua,baris_di_luar_periode,0.0,baris,,,Di luar 2024-01-01 00:00…2026-10-14 23:00 (mis. epoch 1970)
+3,"Parse timestamp, bulatkan ke jam, buang di luar periode",BGR-02,semua,baris_dibulatkan_ke_jam_terdekat,0.0,baris,,,"Timestamp bergeser dari awal jam (mis. 23:48, 00:11, milidetik) dibulatkan ke jam terdekat"
+3,"Parse timestamp, bulatkan ke jam, buang di luar periode",BGR-02,semua,baris_subjam_dipotong_ke_jam_penuh,0.0,baris,,,Bacaan beresolusi < 1 jam (:00/:15/:30/:45): floor ke jam penuh lalu dirata-rata pada langkah 5
+3,"Parse timestamp, bulatkan ke jam, buang di luar periode",BGR-02,semua,jumlah_baris,0.0,baris,24432.0,24432.0,Baris yang dibuang pada langkah 3 (tak terbaca + di luar periode)
+4,Buang nilai mustahil & sentinel,BGR-02,semua,sel_sentinel_menjadi_nan,0.0,sel,,,"Nilai pengganti galat/saturasi (±999, ±9999, -9999, 99999); 999 pada CO µg/m³ dikecualikan (konsentrasi wajar)"
+4,Buang nilai mustahil & sentinel,BGR-02,semua,sel_negatif_menjadi_nan,0.0,sel,,,Konsentrasi polutan negatif mustahil secara fisik
+4,Buang nilai mustahil & sentinel,BGR-02,semua,sel_di_luar_batas_fisik_cuaca_menjadi_nan,0.0,sel,,,"Suhu <5/>45 °C, RH di luar 0–100 %, angin >40 m/s, arah di luar 0–360°"
+4,Buang nilai mustahil & sentinel,BGR-02,semua,baris_valid_dengan_nilai_mustahil,0.0,baris,,,Informasi: baris berstatus VALID yang memuat nilai mustahil (penanda QC alat tidak cukup)
+4,Buang nilai mustahil & sentinel,BGR-02,semua,baris_valid_pm_ekstrem_dipertahankan,0.0,baris,,,PM > 500 µg/m³ pada baris VALID DIPERTAHANKAN (kemungkinan puncak kabut asap nyata)
+4,Buang nilai mustahil & sentinel,BGR-02,semua,baris_valid_pm25_lebih_besar_pm10,0.0,baris,,,"Informasi: PM2.5 > PM10 tidak konsisten fisik; hanya ditandai, tidak dibuang"
+5,Filter qc_flag = VALID & agregasi per jam (rata-rata),BGR-02,semua,baris_non_valid_dibuang[SUSPECT],484.0,baris,,,qc_flag selain VALID tidak dipakai untuk analisis konsentrasi
+5,Filter qc_flag = VALID & agregasi per jam (rata-rata),BGR-02,semua,baris_non_valid_dibuang[CALIBRATING],253.0,baris,,,qc_flag selain VALID tidak dipakai untuk analisis konsentrasi
+5,Filter qc_flag = VALID & agregasi per jam (rata-rata),BGR-02,semua,jumlah_baris_non_valid,737.0,baris,24432.0,23695.0,Total baris non-VALID dibuang
+5,Filter qc_flag = VALID & agregasi per jam (rata-rata),BGR-02,semua,jam_diagregasi_rata2,0.0,jam,,,Jam berisi >1 baris VALID dirata-rata (arah angin: rata-rata melingkar)
+5,Filter qc_flag = VALID & agregasi per jam (rata-rata),BGR-02,semua,jumlah_baris_per_jam,0.0,baris,23695.0,23695.0,Baris tambahan yang digabung ke jam yang sama
+5,Filter qc_flag = VALID & agregasi per jam (rata-rata),BGR-02,semua,jam_valid_akhir,23695.0,jam,24432.0,23695.0,Jam dengan ≥1 baris VALID dari 24432 jam yang diharapkan
+1,Teks galat → NaN & cast numerik,BJB-01,semua,sel_teks_galat_menjadi_nan,0.0,sel,,,"Token galat (0xDEADBEEF, ERR_*, #VALUE!, INF, …) tidak dapat dibaca sebagai angka"
+1,Teks galat → NaN & cast numerik,BJB-01,semua,sel_kosong_dibaca_nan,0.0,sel,,,String kosong dibaca sebagai NaN (informasi; nilai sudah hilang di sumber)
+1,Teks galat → NaN & cast numerik,BJB-01,semua,kolom_di_cast_numerik,10.0,kolom,,,10 kolom polutan + cuaca dibaca sebagai teks lalu di-cast ke float
+2,Standarisasi satuan ke µg/m³,BJB-01,semua,sel_dikonversi_ppm_ke_ugm3,146592.0,sel,,,"PM ×1000 (hipotesis mg/m³ salah label); gas ppm × BM / 24,45 × 1000 (25 °C, 1 atm). Validasi: median vs stasiun sejenis (notebook 03)"
+3,"Parse timestamp, bulatkan ke jam, buang di luar periode",BJB-01,semua,baris_timestamp_tak_terbaca,0.0,baris,,,Format waktu tidak dapat di-parse; baris tidak dapat ditempatkan pada sumbu waktu
+3,"Parse timestamp, bulatkan ke jam, buang di luar periode",BJB-01,semua,baris_di_luar_periode,0.0,baris,,,Di luar 2024-01-01 00:00…2026-10-14 23:00 (mis. epoch 1970)
+3,"Parse timestamp, bulatkan ke jam, buang di luar periode",BJB-01,semua,baris_dibulatkan_ke_jam_terdekat,24432.0,baris,,,"Timestamp bergeser dari awal jam (mis. 23:48, 00:11, milidetik) dibulatkan ke jam terdekat"
+3,"Parse timestamp, bulatkan ke jam, buang di luar periode",BJB-01,semua,baris_subjam_dipotong_ke_jam_penuh,0.0,baris,,,Bacaan beresolusi < 1 jam (:00/:15/:30/:45): floor ke jam penuh lalu dirata-rata pada langkah 5
+3,"Parse timestamp, bulatkan ke jam, buang di luar periode",BJB-01,semua,jumlah_baris,0.0,baris,24432.0,24432.0,Baris yang dibuang pada langkah 3 (tak terbaca + di luar periode)
+4,Buang nilai mustahil & sentinel,BJB-01,semua,sel_sentinel_menjadi_nan,0.0,sel,,,"Nilai pengganti galat/saturasi (±999, ±9999, -9999, 99999); 999 pada CO µg/m³ dikecualikan (konsentrasi wajar)"
+4,Buang nilai mustahil & sentinel,BJB-01,semua,sel_negatif_menjadi_nan,0.0,sel,,,Konsentrasi polutan negatif mustahil secara fisik
+4,Buang nilai mustahil & sentinel,BJB-01,semua,sel_di_luar_batas_fisik_cuaca_menjadi_nan,0.0,sel,,,"Suhu <5/>45 °C, RH di luar 0–100 %, angin >40 m/s, arah di luar 0–360°"
+4,Buang nilai mustahil & sentinel,BJB-01,semua,baris_valid_dengan_nilai_mustahil,0.0,baris,,,Informasi: baris berstatus VALID yang memuat nilai mustahil (penanda QC alat tidak cukup)
+4,Buang nilai mustahil & sentinel,BJB-01,semua,baris_valid_pm_ekstrem_dipertahankan,0.0,baris,,,PM > 500 µg/m³ pada baris VALID DIPERTAHANKAN (kemungkinan puncak kabut asap nyata)
+4,Buang nilai mustahil & sentinel,BJB-01,semua,baris_valid_pm25_lebih_besar_pm10,0.0,baris,,,"Informasi: PM2.5 > PM10 tidak konsisten fisik; hanya ditandai, tidak dibuang"
+5,Filter qc_flag = VALID & agregasi per jam (rata-rata),BJB-01,semua,jumlah_baris_non_valid,0.0,baris,24432.0,24432.0,Total baris non-VALID dibuang
+5,Filter qc_flag = VALID & agregasi per jam (rata-rata),BJB-01,semua,jam_diagregasi_rata2,0.0,jam,,,Jam berisi >1 baris VALID dirata-rata (arah angin: rata-rata melingkar)
+5,Filter qc_flag = VALID & agregasi per jam (rata-rata),BJB-01,semua,jumlah_baris_per_jam,0.0,baris,24432.0,24432.0,Baris tambahan yang digabung ke jam yang sama
+5,Filter qc_flag = VALID & agregasi per jam (rata-rata),BJB-01,semua,jam_valid_akhir,24432.0,jam,24432.0,24432.0,Jam dengan ≥1 baris VALID dari 24432 jam yang diharapkan
+1,Teks galat → NaN & cast numerik,BTM-01,semua,sel_teks_galat_menjadi_nan,0.0,sel,,,"Token galat (0xDEADBEEF, ERR_*, #VALUE!, INF, …) tidak dapat dibaca sebagai angka"
+1,Teks galat → NaN & cast numerik,BTM-01,semua,sel_kosong_dibaca_nan,0.0,sel,,,String kosong dibaca sebagai NaN (informasi; nilai sudah hilang di sumber)
+1,Teks galat → NaN & cast numerik,BTM-01,semua,kolom_di_cast_numerik,10.0,kolom,,,10 kolom polutan + cuaca dibaca sebagai teks lalu di-cast ke float
+2,Standarisasi satuan ke µg/m³,BTM-01,semua,sel_dikonversi_ppm_ke_ugm3,0.0,sel,,,"PM ×1000 (hipotesis mg/m³ salah label); gas ppm × BM / 24,45 × 1000 (25 °C, 1 atm). Validasi: median vs stasiun sejenis (notebook 03)"
+3,"Parse timestamp, bulatkan ke jam, buang di luar periode",BTM-01,semua,baris_timestamp_tak_terbaca,0.0,baris,,,Format waktu tidak dapat di-parse; baris tidak dapat ditempatkan pada sumbu waktu
+3,"Parse timestamp, bulatkan ke jam, buang di luar periode",BTM-01,semua,baris_di_luar_periode,0.0,baris,,,Di luar 2024-01-01 00:00…2026-10-14 23:00 (mis. epoch 1970)
+3,"Parse timestamp, bulatkan ke jam, buang di luar periode",BTM-01,semua,baris_dibulatkan_ke_jam_terdekat,24432.0,baris,,,"Timestamp bergeser dari awal jam (mis. 23:48, 00:11, milidetik) dibulatkan ke jam terdekat"
+3,"Parse timestamp, bulatkan ke jam, buang di luar periode",BTM-01,semua,baris_subjam_dipotong_ke_jam_penuh,0.0,baris,,,Bacaan beresolusi < 1 jam (:00/:15/:30/:45): floor ke jam penuh lalu dirata-rata pada langkah 5
+3,"Parse timestamp, bulatkan ke jam, buang di luar periode",BTM-01,semua,jumlah_baris,0.0,baris,24432.0,24432.0,Baris yang dibuang pada langkah 3 (tak terbaca + di luar periode)
+4,Buang nilai mustahil & sentinel,BTM-01,semua,sel_sentinel_menjadi_nan,0.0,sel,,,"Nilai pengganti galat/saturasi (±999, ±9999, -9999, 99999); 999 pada CO µg/m³ dikecualikan (konsentrasi wajar)"
+4,Buang nilai mustahil & sentinel,BTM-01,semua,sel_negatif_menjadi_nan,0.0,sel,,,Konsentrasi polutan negatif mustahil secara fisik
+4,Buang nilai mustahil & sentinel,BTM-01,semua,sel_di_luar_batas_fisik_cuaca_menjadi_nan,0.0,sel,,,"Suhu <5/>45 °C, RH di luar 0–100 %, angin >40 m/s, arah di luar 0–360°"
+4,Buang nilai mustahil & sentinel,BTM-01,semua,baris_valid_dengan_nilai_mustahil,0.0,baris,,,Informasi: baris berstatus VALID yang memuat nilai mustahil (penanda QC alat tidak cukup)
+4,Buang nilai mustahil & sentinel,BTM-01,semua,baris_valid_pm_ekstrem_dipertahankan,0.0,baris,,,PM > 500 µg/m³ pada baris VALID DIPERTAHANKAN (kemungkinan puncak kabut asap nyata)
+4,Buang nilai mustahil & sentinel,BTM-01,semua,baris_valid_pm25_lebih_besar_pm10,0.0,baris,,,"Informasi: PM2.5 > PM10 tidak konsisten fisik; hanya ditandai, tidak dibuang"
+5,Filter qc_flag = VALID & agregasi per jam (rata-rata),BTM-01,semua,baris_non_valid_dibuang[SUSPECT],154.0,baris,,,qc_flag selain VALID tidak dipakai untuk analisis konsentrasi
+5,Filter qc_flag = VALID & agregasi per jam (rata-rata),BTM-01,semua,jumlah_baris_non_valid,154.0,baris,24432.0,24278.0,Total baris non-VALID dibuang
+5,Filter qc_flag = VALID & agregasi per jam (rata-rata),BTM-01,semua,jam_diagregasi_rata2,0.0,jam,,,Jam berisi >1 baris VALID dirata-rata (arah angin: rata-rata melingkar)
+5,Filter qc_flag = VALID & agregasi per jam (rata-rata),BTM-01,semua,jumlah_baris_per_jam,0.0,baris,24278.0,24278.0,Baris tambahan yang digabung ke jam yang sama
+5,Filter qc_flag = VALID & agregasi per jam (rata-rata),BTM-01,semua,jam_valid_akhir,24278.0,jam,24432.0,24278.0,Jam dengan ≥1 baris VALID dari 24432 jam yang diharapkan
+1,Teks galat → NaN & cast numerik,IDP-01,semua,sel_teks_galat_menjadi_nan,0.0,sel,,,"Token galat (0xDEADBEEF, ERR_*, #VALUE!, INF, …) tidak dapat dibaca sebagai angka"
+1,Teks galat → NaN & cast numerik,IDP-01,semua,sel_kosong_dibaca_nan,0.0,sel,,,String kosong dibaca sebagai NaN (informasi; nilai sudah hilang di sumber)
+1,Teks galat → NaN & cast numerik,IDP-01,semua,kolom_di_cast_numerik,10.0,kolom,,,10 kolom polutan + cuaca dibaca sebagai teks lalu di-cast ke float
+2,Standarisasi satuan ke µg/m³,IDP-01,semua,sel_dikonversi_ppm_ke_ugm3,0.0,sel,,,"PM ×1000 (hipotesis mg/m³ salah label); gas ppm × BM / 24,45 × 1000 (25 °C, 1 atm). Validasi: median vs stasiun sejenis (notebook 03)"
+3,"Parse timestamp, bulatkan ke jam, buang di luar periode",IDP-01,semua,baris_timestamp_tak_terbaca,0.0,baris,,,Format waktu tidak dapat di-parse; baris tidak dapat ditempatkan pada sumbu waktu
+3,"Parse timestamp, bulatkan ke jam, buang di luar periode",IDP-01,semua,baris_di_luar_periode,0.0,baris,,,Di luar 2024-01-01 00:00…2026-10-14 23:00 (mis. epoch 1970)
+3,"Parse timestamp, bulatkan ke jam, buang di luar periode",IDP-01,semua,baris_dibulatkan_ke_jam_terdekat,0.0,baris,,,"Timestamp bergeser dari awal jam (mis. 23:48, 00:11, milidetik) dibulatkan ke jam terdekat"
+3,"Parse timestamp, bulatkan ke jam, buang di luar periode",IDP-01,semua,baris_subjam_dipotong_ke_jam_penuh,0.0,baris,,,Bacaan beresolusi < 1 jam (:00/:15/:30/:45): floor ke jam penuh lalu dirata-rata pada langkah 5
+3,"Parse timestamp, bulatkan ke jam, buang di luar periode",IDP-01,semua,jumlah_baris,0.0,baris,24432.0,24432.0,Baris yang dibuang pada langkah 3 (tak terbaca + di luar periode)
+4,Buang nilai mustahil & sentinel,IDP-01,semua,sel_sentinel_menjadi_nan,0.0,sel,,,"Nilai pengganti galat/saturasi (±999, ±9999, -9999, 99999); 999 pada CO µg/m³ dikecualikan (konsentrasi wajar)"
+4,Buang nilai mustahil & sentinel,IDP-01,semua,sel_negatif_menjadi_nan,0.0,sel,,,Konsentrasi polutan negatif mustahil secara fisik
+4,Buang nilai mustahil & sentinel,IDP-01,semua,sel_di_luar_batas_fisik_cuaca_menjadi_nan,0.0,sel,,,"Suhu <5/>45 °C, RH di luar 0–100 %, angin >40 m/s, arah di luar 0–360°"
+4,Buang nilai mustahil & sentinel,IDP-01,semua,baris_valid_dengan_nilai_mustahil,0.0,baris,,,Informasi: baris berstatus VALID yang memuat nilai mustahil (penanda QC alat tidak cukup)
+4,Buang nilai mustahil & sentinel,IDP-01,semua,baris_valid_pm_ekstrem_dipertahankan,0.0,baris,,,PM > 500 µg/m³ pada baris VALID DIPERTAHANKAN (kemungkinan puncak kabut asap nyata)
+4,Buang nilai mustahil & sentinel,IDP-01,semua,baris_valid_pm25_lebih_besar_pm10,0.0,baris,,,"Informasi: PM2.5 > PM10 tidak konsisten fisik; hanya ditandai, tidak dibuang"
+5,Filter qc_flag = VALID & agregasi per jam (rata-rata),IDP-01,semua,baris_non_valid_dibuang[SUSPECT],110.0,baris,,,qc_flag selain VALID tidak dipakai untuk analisis konsentrasi
+5,Filter qc_flag = VALID & agregasi per jam (rata-rata),IDP-01,semua,jumlah_baris_non_valid,110.0,baris,24432.0,24322.0,Total baris non-VALID dibuang
+5,Filter qc_flag = VALID & agregasi per jam (rata-rata),IDP-01,semua,jam_diagregasi_rata2,0.0,jam,,,Jam berisi >1 baris VALID dirata-rata (arah angin: rata-rata melingkar)
+5,Filter qc_flag = VALID & agregasi per jam (rata-rata),IDP-01,semua,jumlah_baris_per_jam,0.0,baris,24322.0,24322.0,Baris tambahan yang digabung ke jam yang sama
+5,Filter qc_flag = VALID & agregasi per jam (rata-rata),IDP-01,semua,jam_valid_akhir,24322.0,jam,24432.0,24322.0,Jam dengan ≥1 baris VALID dari 24432 jam yang diharapkan
+1,Teks galat → NaN & cast numerik,JKT-01,semua,sel_teks_galat_menjadi_nan,0.0,sel,,,"Token galat (0xDEADBEEF, ERR_*, #VALUE!, INF, …) tidak dapat dibaca sebagai angka"
+1,Teks galat → NaN & cast numerik,JKT-01,semua,sel_kosong_dibaca_nan,0.0,sel,,,String kosong dibaca sebagai NaN (informasi; nilai sudah hilang di sumber)
+1,Teks galat → NaN & cast numerik,JKT-01,semua,kolom_di_cast_numerik,10.0,kolom,,,10 kolom polutan + cuaca dibaca sebagai teks lalu di-cast ke float
+2,Standarisasi satuan ke µg/m³,JKT-01,semua,sel_dikonversi_ppm_ke_ugm3,0.0,sel,,,"PM ×1000 (hipotesis mg/m³ salah label); gas ppm × BM / 24,45 × 1000 (25 °C, 1 atm). Validasi: median vs stasiun sejenis (notebook 03)"
+3,"Parse timestamp, bulatkan ke jam, buang di luar periode",JKT-01,semua,baris_timestamp_tak_terbaca,0.0,baris,,,Format waktu tidak dapat di-parse; baris tidak dapat ditempatkan pada sumbu waktu
+3,"Parse timestamp, bulatkan ke jam, buang di luar periode",JKT-01,semua,baris_di_luar_periode,0.0,baris,,,Di luar 2024-01-01 00:00…2026-10-14 23:00 (mis. epoch 1970)
+3,"Parse timestamp, bulatkan ke jam, buang di luar periode",JKT-01,semua,baris_dibulatkan_ke_jam_terdekat,0.0,baris,,,"Timestamp bergeser dari awal jam (mis. 23:48, 00:11, milidetik) dibulatkan ke jam terdekat"
+3,"Parse timestamp, bulatkan ke jam, buang di luar periode",JKT-01,semua,baris_subjam_dipotong_ke_jam_penuh,0.0,baris,,,Bacaan beresolusi < 1 jam (:00/:15/:30/:45): floor ke jam penuh lalu dirata-rata pada langkah 5
+3,"Parse timestamp, bulatkan ke jam, buang di luar periode",JKT-01,semua,jumlah_baris,0.0,baris,24432.0,24432.0,Baris yang dibuang pada langkah 3 (tak terbaca + di luar periode)
+4,Buang nilai mustahil & sentinel,JKT-01,semua,sel_sentinel_menjadi_nan,0.0,sel,,,"Nilai pengganti galat/saturasi (±999, ±9999, -9999, 99999); 999 pada CO µg/m³ dikecualikan (konsentrasi wajar)"
+4,Buang nilai mustahil & sentinel,JKT-01,semua,sel_negatif_menjadi_nan,0.0,sel,,,Konsentrasi polutan negatif mustahil secara fisik
+4,Buang nilai mustahil & sentinel,JKT-01,semua,sel_di_luar_batas_fisik_cuaca_menjadi_nan,0.0,sel,,,"Suhu <5/>45 °C, RH di luar 0–100 %, angin >40 m/s, arah di luar 0–360°"
+4,Buang nilai mustahil & sentinel,JKT-01,semua,baris_valid_dengan_nilai_mustahil,0.0,baris,,,Informasi: baris berstatus VALID yang memuat nilai mustahil (penanda QC alat tidak cukup)
+4,Buang nilai mustahil & sentinel,JKT-01,semua,baris_valid_pm_ekstrem_dipertahankan,0.0,baris,,,PM > 500 µg/m³ pada baris VALID DIPERTAHANKAN (kemungkinan puncak kabut asap nyata)
+4,Buang nilai mustahil & sentinel,JKT-01,semua,baris_valid_pm25_lebih_besar_pm10,0.0,baris,,,"Informasi: PM2.5 > PM10 tidak konsisten fisik; hanya ditandai, tidak dibuang"
+5,Filter qc_flag = VALID & agregasi per jam (rata-rata),JKT-01,semua,baris_non_valid_dibuang[SUSPECT],611.0,baris,,,qc_flag selain VALID tidak dipakai untuk analisis konsentrasi
+5,Filter qc_flag = VALID & agregasi per jam (rata-rata),JKT-01,semua,baris_non_valid_dibuang[CALIBRATING],367.0,baris,,,qc_flag selain VALID tidak dipakai untuk analisis konsentrasi
+5,Filter qc_flag = VALID & agregasi per jam (rata-rata),JKT-01,semua,jumlah_baris_non_valid,978.0,baris,24432.0,23454.0,Total baris non-VALID dibuang
+5,Filter qc_flag = VALID & agregasi per jam (rata-rata),JKT-01,semua,jam_diagregasi_rata2,0.0,jam,,,Jam berisi >1 baris VALID dirata-rata (arah angin: rata-rata melingkar)
+5,Filter qc_flag = VALID & agregasi per jam (rata-rata),JKT-01,semua,jumlah_baris_per_jam,0.0,baris,23454.0,23454.0,Baris tambahan yang digabung ke jam yang sama
+5,Filter qc_flag = VALID & agregasi per jam (rata-rata),JKT-01,semua,jam_valid_akhir,23454.0,jam,24432.0,23454.0,Jam dengan ≥1 baris VALID dari 24432 jam yang diharapkan
+1,Teks galat → NaN & cast numerik,JKT-02,semua,sel_teks_galat_menjadi_nan,0.0,sel,,,"Token galat (0xDEADBEEF, ERR_*, #VALUE!, INF, …) tidak dapat dibaca sebagai angka"
+1,Teks galat → NaN & cast numerik,JKT-02,semua,sel_kosong_dibaca_nan,0.0,sel,,,String kosong dibaca sebagai NaN (informasi; nilai sudah hilang di sumber)
+1,Teks galat → NaN & cast numerik,JKT-02,semua,kolom_di_cast_numerik,10.0,kolom,,,10 kolom polutan + cuaca dibaca sebagai teks lalu di-cast ke float
+2,Standarisasi satuan ke µg/m³,JKT-02,semua,sel_dikonversi_ppm_ke_ugm3,0.0,sel,,,"PM ×1000 (hipotesis mg/m³ salah label); gas ppm × BM / 24,45 × 1000 (25 °C, 1 atm). Validasi: median vs stasiun sejenis (notebook 03)"
+3,"Parse timestamp, bulatkan ke jam, buang di luar periode",JKT-02,semua,baris_timestamp_tak_terbaca,0.0,baris,,,Format waktu tidak dapat di-parse; baris tidak dapat ditempatkan pada sumbu waktu
+3,"Parse timestamp, bulatkan ke jam, buang di luar periode",JKT-02,semua,baris_di_luar_periode,0.0,baris,,,Di luar 2024-01-01 00:00…2026-10-14 23:00 (mis. epoch 1970)
+3,"Parse timestamp, bulatkan ke jam, buang di luar periode",JKT-02,semua,baris_dibulatkan_ke_jam_terdekat,0.0,baris,,,"Timestamp bergeser dari awal jam (mis. 23:48, 00:11, milidetik) dibulatkan ke jam terdekat"
+3,"Parse timestamp, bulatkan ke jam, buang di luar periode",JKT-02,semua,baris_subjam_dipotong_ke_jam_penuh,0.0,baris,,,Bacaan beresolusi < 1 jam (:00/:15/:30/:45): floor ke jam penuh lalu dirata-rata pada langkah 5
+3,"Parse timestamp, bulatkan ke jam, buang di luar periode",JKT-02,semua,jumlah_baris,0.0,baris,24432.0,24432.0,Baris yang dibuang pada langkah 3 (tak terbaca + di luar periode)
+4,Buang nilai mustahil & sentinel,JKT-02,semua,sel_sentinel_menjadi_nan,0.0,sel,,,"Nilai pengganti galat/saturasi (±999, ±9999, -9999, 99999); 999 pada CO µg/m³ dikecualikan (konsentrasi wajar)"
+4,Buang nilai mustahil & sentinel,JKT-02,semua,sel_negatif_menjadi_nan,0.0,sel,,,Konsentrasi polutan negatif mustahil secara fisik
+4,Buang nilai mustahil & sentinel,JKT-02,semua,sel_di_luar_batas_fisik_cuaca_menjadi_nan,0.0,sel,,,"Suhu <5/>45 °C, RH di luar 0–100 %, angin >40 m/s, arah di luar 0–360°"
+4,Buang nilai mustahil & sentinel,JKT-02,semua,baris_valid_dengan_nilai_mustahil,0.0,baris,,,Informasi: baris berstatus VALID yang memuat nilai mustahil (penanda QC alat tidak cukup)
+4,Buang nilai mustahil & sentinel,JKT-02,semua,baris_valid_pm_ekstrem_dipertahankan,0.0,baris,,,PM > 500 µg/m³ pada baris VALID DIPERTAHANKAN (kemungkinan puncak kabut asap nyata)
+4,Buang nilai mustahil & sentinel,JKT-02,semua,baris_valid_pm25_lebih_besar_pm10,0.0,baris,,,"Informasi: PM2.5 > PM10 tidak konsisten fisik; hanya ditandai, tidak dibuang"
+5,Filter qc_flag = VALID & agregasi per jam (rata-rata),JKT-02,semua,baris_non_valid_dibuang[SUSPECT],609.0,baris,,,qc_flag selain VALID tidak dipakai untuk analisis konsentrasi
+5,Filter qc_flag = VALID & agregasi per jam (rata-rata),JKT-02,semua,baris_non_valid_dibuang[CALIBRATING],343.0,baris,,,qc_flag selain VALID tidak dipakai untuk analisis konsentrasi
+5,Filter qc_flag = VALID & agregasi per jam (rata-rata),JKT-02,semua,jumlah_baris_non_valid,952.0,baris,24432.0,23480.0,Total baris non-VALID dibuang
+5,Filter qc_flag = VALID & agregasi per jam (rata-rata),JKT-02,semua,jam_diagregasi_rata2,0.0,jam,,,Jam berisi >1 baris VALID dirata-rata (arah angin: rata-rata melingkar)
+5,Filter qc_flag = VALID & agregasi per jam (rata-rata),JKT-02,semua,jumlah_baris_per_jam,0.0,baris,23480.0,23480.0,Baris tambahan yang digabung ke jam yang sama
+5,Filter qc_flag = VALID & agregasi per jam (rata-rata),JKT-02,semua,jam_valid_akhir,23480.0,jam,24432.0,23480.0,Jam dengan ≥1 baris VALID dari 24432 jam yang diharapkan
+1,Teks galat → NaN & cast numerik,JKT-03,semua,sel_teks_galat_menjadi_nan,0.0,sel,,,"Token galat (0xDEADBEEF, ERR_*, #VALUE!, INF, …) tidak dapat dibaca sebagai angka"
+1,Teks galat → NaN & cast numerik,JKT-03,semua,sel_kosong_dibaca_nan,0.0,sel,,,String kosong dibaca sebagai NaN (informasi; nilai sudah hilang di sumber)
+1,Teks galat → NaN & cast numerik,JKT-03,semua,kolom_di_cast_numerik,10.0,kolom,,,10 kolom polutan + cuaca dibaca sebagai teks lalu di-cast ke float
+2,Standarisasi satuan ke µg/m³,JKT-03,semua,sel_dikonversi_ppm_ke_ugm3,0.0,sel,,,"PM ×1000 (hipotesis mg/m³ salah label); gas ppm × BM / 24,45 × 1000 (25 °C, 1 atm). Validasi: median vs stasiun sejenis (notebook 03)"
+3,"Parse timestamp, bulatkan ke jam, buang di luar periode",JKT-03,semua,baris_timestamp_tak_terbaca,0.0,baris,,,Format waktu tidak dapat di-parse; baris tidak dapat ditempatkan pada sumbu waktu
+3,"Parse timestamp, bulatkan ke jam, buang di luar periode",JKT-03,semua,baris_di_luar_periode,0.0,baris,,,Di luar 2024-01-01 00:00…2026-10-14 23:00 (mis. epoch 1970)
+3,"Parse timestamp, bulatkan ke jam, buang di luar periode",JKT-03,semua,baris_dibulatkan_ke_jam_terdekat,0.0,baris,,,"Timestamp bergeser dari awal jam (mis. 23:48, 00:11, milidetik) dibulatkan ke jam terdekat"
+3,"Parse timestamp, bulatkan ke jam, buang di luar periode",JKT-03,semua,baris_subjam_dipotong_ke_jam_penuh,0.0,baris,,,Bacaan beresolusi < 1 jam (:00/:15/:30/:45): floor ke jam penuh lalu dirata-rata pada langkah 5
+3,"Parse timestamp, bulatkan ke jam, buang di luar periode",JKT-03,semua,jumlah_baris,0.0,baris,24432.0,24432.0,Baris yang dibuang pada langkah 3 (tak terbaca + di luar periode)
+4,Buang nilai mustahil & sentinel,JKT-03,semua,sel_sentinel_menjadi_nan,0.0,sel,,,"Nilai pengganti galat/saturasi (±999, ±9999, -9999, 99999); 999 pada CO µg/m³ dikecualikan (konsentrasi wajar)"
+4,Buang nilai mustahil & sentinel,JKT-03,semua,sel_negatif_menjadi_nan,0.0,sel,,,Konsentrasi polutan negatif mustahil secara fisik
+4,Buang nilai mustahil & sentinel,JKT-03,semua,sel_di_luar_batas_fisik_cuaca_menjadi_nan,0.0,sel,,,"Suhu <5/>45 °C, RH di luar 0–100 %, angin >40 m/s, arah di luar 0–360°"
+4,Buang nilai mustahil & sentinel,JKT-03,semua,baris_valid_dengan_nilai_mustahil,0.0,baris,,,Informasi: baris berstatus VALID yang memuat nilai mustahil (penanda QC alat tidak cukup)
+4,Buang nilai mustahil & sentinel,JKT-03,semua,baris_valid_pm_ekstrem_dipertahankan,0.0,baris,,,PM > 500 µg/m³ pada baris VALID DIPERTAHANKAN (kemungkinan puncak kabut asap nyata)
+4,Buang nilai mustahil & sentinel,JKT-03,semua,baris_valid_pm25_lebih_besar_pm10,0.0,baris,,,"Informasi: PM2.5 > PM10 tidak konsisten fisik; hanya ditandai, tidak dibuang"
+5,Filter qc_flag = VALID & agregasi per jam (rata-rata),JKT-03,semua,baris_non_valid_dibuang[SUSPECT],596.0,baris,,,qc_flag selain VALID tidak dipakai untuk analisis konsentrasi
+5,Filter qc_flag = VALID & agregasi per jam (rata-rata),JKT-03,semua,baris_non_valid_dibuang[CALIBRATING],366.0,baris,,,qc_flag selain VALID tidak dipakai untuk analisis konsentrasi
+5,Filter qc_flag = VALID & agregasi per jam (rata-rata),JKT-03,semua,jumlah_baris_non_valid,962.0,baris,24432.0,23470.0,Total baris non-VALID dibuang
+5,Filter qc_flag = VALID & agregasi per jam (rata-rata),JKT-03,semua,jam_diagregasi_rata2,0.0,jam,,,Jam berisi >1 baris VALID dirata-rata (arah angin: rata-rata melingkar)
+5,Filter qc_flag = VALID & agregasi per jam (rata-rata),JKT-03,semua,jumlah_baris_per_jam,0.0,baris,23470.0,23470.0,Baris tambahan yang digabung ke jam yang sama
+5,Filter qc_flag = VALID & agregasi per jam (rata-rata),JKT-03,semua,jam_valid_akhir,23470.0,jam,24432.0,23470.0,Jam dengan ≥1 baris VALID dari 24432 jam yang diharapkan
+1,Teks galat → NaN & cast numerik,JMB-01,semua,sel_teks_galat_menjadi_nan,0.0,sel,,,"Token galat (0xDEADBEEF, ERR_*, #VALUE!, INF, …) tidak dapat dibaca sebagai angka"
+1,Teks galat → NaN & cast numerik,JMB-01,semua,sel_kosong_dibaca_nan,0.0,sel,,,String kosong dibaca sebagai NaN (informasi; nilai sudah hilang di sumber)
+1,Teks galat → NaN & cast numerik,JMB-01,semua,kolom_di_cast_numerik,10.0,kolom,,,10 kolom polutan + cuaca dibaca sebagai teks lalu di-cast ke float
+2,Standarisasi satuan ke µg/m³,JMB-01,semua,sel_dikonversi_ppm_ke_ugm3,0.0,sel,,,"PM ×1000 (hipotesis mg/m³ salah label); gas ppm × BM / 24,45 × 1000 (25 °C, 1 atm). Validasi: median vs stasiun sejenis (notebook 03)"
+3,"Parse timestamp, bulatkan ke jam, buang di luar periode",JMB-01,semua,baris_timestamp_tak_terbaca,0.0,baris,,,Format waktu tidak dapat di-parse; baris tidak dapat ditempatkan pada sumbu waktu
+3,"Parse timestamp, bulatkan ke jam, buang di luar periode",JMB-01,semua,baris_di_luar_periode,0.0,baris,,,Di luar 2024-01-01 00:00…2026-10-14 23:00 (mis. epoch 1970)
+3,"Parse timestamp, bulatkan ke jam, buang di luar periode",JMB-01,semua,baris_dibulatkan_ke_jam_terdekat,24432.0,baris,,,"Timestamp bergeser dari awal jam (mis. 23:48, 00:11, milidetik) dibulatkan ke jam terdekat"
+3,"Parse timestamp, bulatkan ke jam, buang di luar periode",JMB-01,semua,baris_subjam_dipotong_ke_jam_penuh,0.0,baris,,,Bacaan beresolusi < 1 jam (:00/:15/:30/:45): floor ke jam penuh lalu dirata-rata pada langkah 5
+3,"Parse timestamp, bulatkan ke jam, buang di luar periode",JMB-01,semua,jumlah_baris,0.0,baris,24432.0,24432.0,Baris yang dibuang pada langkah 3 (tak terbaca + di luar periode)
+4,Buang nilai mustahil & sentinel,JMB-01,semua,sel_sentinel_menjadi_nan,0.0,sel,,,"Nilai pengganti galat/saturasi (±999, ±9999, -9999, 99999); 999 pada CO µg/m³ dikecualikan (konsentrasi wajar)"
+4,Buang nilai mustahil & sentinel,JMB-01,semua,sel_negatif_menjadi_nan,0.0,sel,,,Konsentrasi polutan negatif mustahil secara fisik
+4,Buang nilai mustahil & sentinel,JMB-01,semua,sel_di_luar_batas_fisik_cuaca_menjadi_nan,0.0,sel,,,"Suhu <5/>45 °C, RH di luar 0–100 %, angin >40 m/s, arah di luar 0–360°"
+4,Buang nilai mustahil & sentinel,JMB-01,semua,baris_valid_dengan_nilai_mustahil,0.0,baris,,,Informasi: baris berstatus VALID yang memuat nilai mustahil (penanda QC alat tidak cukup)
+4,Buang nilai mustahil & sentinel,JMB-01,semua,baris_valid_pm_ekstrem_dipertahankan,0.0,baris,,,PM > 500 µg/m³ pada baris VALID DIPERTAHANKAN (kemungkinan puncak kabut asap nyata)
+4,Buang nilai mustahil & sentinel,JMB-01,semua,baris_valid_pm25_lebih_besar_pm10,0.0,baris,,,"Informasi: PM2.5 > PM10 tidak konsisten fisik; hanya ditandai, tidak dibuang"
+5,Filter qc_flag = VALID & agregasi per jam (rata-rata),JMB-01,semua,baris_non_valid_dibuang[SUSPECT],168.0,baris,,,qc_flag selain VALID tidak dipakai untuk analisis konsentrasi
+5,Filter qc_flag = VALID & agregasi per jam (rata-rata),JMB-01,semua,jumlah_baris_non_valid,168.0,baris,24432.0,24264.0,Total baris non-VALID dibuang
+5,Filter qc_flag = VALID & agregasi per jam (rata-rata),JMB-01,semua,jam_diagregasi_rata2,0.0,jam,,,Jam berisi >1 baris VALID dirata-rata (arah angin: rata-rata melingkar)
+5,Filter qc_flag = VALID & agregasi per jam (rata-rata),JMB-01,semua,jumlah_baris_per_jam,0.0,baris,24264.0,24264.0,Baris tambahan yang digabung ke jam yang sama
+5,Filter qc_flag = VALID & agregasi per jam (rata-rata),JMB-01,semua,jam_valid_akhir,24264.0,jam,24432.0,24264.0,Jam dengan ≥1 baris VALID dari 24432 jam yang diharapkan
+1,Teks galat → NaN & cast numerik,JMB-02,semua,sel_teks_galat_menjadi_nan,43171.0,sel,,,"Token galat (0xDEADBEEF, ERR_*, #VALUE!, INF, …) tidak dapat dibaca sebagai angka"
+1,Teks galat → NaN & cast numerik,JMB-02,semua,sel_kosong_dibaca_nan,39016.0,sel,,,String kosong dibaca sebagai NaN (informasi; nilai sudah hilang di sumber)
+1,Teks galat → NaN & cast numerik,JMB-02,semua,kolom_di_cast_numerik,10.0,kolom,,,10 kolom polutan + cuaca dibaca sebagai teks lalu di-cast ke float
+2,Standarisasi satuan ke µg/m³,JMB-02,semua,sel_dikonversi_ppm_ke_ugm3,0.0,sel,,,"PM ×1000 (hipotesis mg/m³ salah label); gas ppm × BM / 24,45 × 1000 (25 °C, 1 atm). Validasi: median vs stasiun sejenis (notebook 03)"
+3,"Parse timestamp, bulatkan ke jam, buang di luar periode",JMB-02,semua,baris_timestamp_tak_terbaca,0.0,baris,,,Format waktu tidak dapat di-parse; baris tidak dapat ditempatkan pada sumbu waktu
+3,"Parse timestamp, bulatkan ke jam, buang di luar periode",JMB-02,semua,baris_di_luar_periode,132.0,baris,,,Di luar 2024-01-01 00:00…2026-10-14 23:00 (mis. epoch 1970)
+3,"Parse timestamp, bulatkan ke jam, buang di luar periode",JMB-02,semua,baris_dibulatkan_ke_jam_terdekat,24208.0,baris,,,"Timestamp bergeser dari awal jam (mis. 23:48, 00:11, milidetik) dibulatkan ke jam terdekat"
+3,"Parse timestamp, bulatkan ke jam, buang di luar periode",JMB-02,semua,baris_subjam_dipotong_ke_jam_penuh,92.0,baris,,,Bacaan beresolusi < 1 jam (:00/:15/:30/:45): floor ke jam penuh lalu dirata-rata pada langkah 5
+3,"Parse timestamp, bulatkan ke jam, buang di luar periode",JMB-02,semua,jumlah_baris,132.0,baris,24432.0,24300.0,Baris yang dibuang pada langkah 3 (tak terbaca + di luar periode)
+4,Buang nilai mustahil & sentinel,JMB-02,semua,sel_sentinel_menjadi_nan,41107.0,sel,,,"Nilai pengganti galat/saturasi (±999, ±9999, -9999, 99999); 999 pada CO µg/m³ dikecualikan (konsentrasi wajar)"
+4,Buang nilai mustahil & sentinel,JMB-02,semua,sel_negatif_menjadi_nan,33270.0,sel,,,Konsentrasi polutan negatif mustahil secara fisik
+4,Buang nilai mustahil & sentinel,JMB-02,semua,sel_di_luar_batas_fisik_cuaca_menjadi_nan,58910.0,sel,,,"Suhu <5/>45 °C, RH di luar 0–100 %, angin >40 m/s, arah di luar 0–360°"
+4,Buang nilai mustahil & sentinel,JMB-02,semua,baris_valid_dengan_nilai_mustahil,0.0,baris,,,Informasi: baris berstatus VALID yang memuat nilai mustahil (penanda QC alat tidak cukup)
+4,Buang nilai mustahil & sentinel,JMB-02,semua,baris_valid_pm_ekstrem_dipertahankan,0.0,baris,,,PM > 500 µg/m³ pada baris VALID DIPERTAHANKAN (kemungkinan puncak kabut asap nyata)
+4,Buang nilai mustahil & sentinel,JMB-02,semua,baris_valid_pm25_lebih_besar_pm10,0.0,baris,,,"Informasi: PM2.5 > PM10 tidak konsisten fisik; hanya ditandai, tidak dibuang"
+5,Filter qc_flag = VALID & agregasi per jam (rata-rata),JMB-02,semua,baris_non_valid_dibuang[PARSER_FAIL],3608.0,baris,,,qc_flag selain VALID tidak dipakai untuk analisis konsentrasi
+5,Filter qc_flag = VALID & agregasi per jam (rata-rata),JMB-02,semua,baris_non_valid_dibuang[FATAL_ERR],3530.0,baris,,,qc_flag selain VALID tidak dipakai untuk analisis konsentrasi
+5,Filter qc_flag = VALID & agregasi per jam (rata-rata),JMB-02,semua,baris_non_valid_dibuang[GARBAGE],3521.0,baris,,,qc_flag selain VALID tidak dipakai untuk analisis konsentrasi
+5,Filter qc_flag = VALID & agregasi per jam (rata-rata),JMB-02,semua,baris_non_valid_dibuang[COMM_LOST],3422.0,baris,,,qc_flag selain VALID tidak dipakai untuk analisis konsentrasi
+5,Filter qc_flag = VALID & agregasi per jam (rata-rata),JMB-02,semua,baris_non_valid_dibuang[CORRUPT],3403.0,baris,,,qc_flag selain VALID tidak dipakai untuk analisis konsentrasi
+5,Filter qc_flag = VALID & agregasi per jam (rata-rata),JMB-02,semua,baris_non_valid_dibuang[SENSOR_DEAD],3367.0,baris,,,qc_flag selain VALID tidak dipakai untuk analisis konsentrasi
+5,Filter qc_flag = VALID & agregasi per jam (rata-rata),JMB-02,semua,baris_non_valid_dibuang[SUSPECT],3328.0,baris,,,qc_flag selain VALID tidak dipakai untuk analisis konsentrasi
+5,Filter qc_flag = VALID & agregasi per jam (rata-rata),JMB-02,semua,jumlah_baris_non_valid,24179.0,baris,24300.0,121.0,Total baris non-VALID dibuang
+5,Filter qc_flag = VALID & agregasi per jam (rata-rata),JMB-02,semua,jam_diagregasi_rata2,0.0,jam,,,Jam berisi >1 baris VALID dirata-rata (arah angin: rata-rata melingkar)
+5,Filter qc_flag = VALID & agregasi per jam (rata-rata),JMB-02,semua,jumlah_baris_per_jam,0.0,baris,121.0,121.0,Baris tambahan yang digabung ke jam yang sama
+5,Filter qc_flag = VALID & agregasi per jam (rata-rata),JMB-02,semua,jam_valid_akhir,121.0,jam,24432.0,121.0,Jam dengan ≥1 baris VALID dari 24432 jam yang diharapkan
+1,Teks galat → NaN & cast numerik,KTB-01,semua,sel_teks_galat_menjadi_nan,0.0,sel,,,"Token galat (0xDEADBEEF, ERR_*, #VALUE!, INF, …) tidak dapat dibaca sebagai angka"
+1,Teks galat → NaN & cast numerik,KTB-01,semua,sel_kosong_dibaca_nan,0.0,sel,,,String kosong dibaca sebagai NaN (informasi; nilai sudah hilang di sumber)
+1,Teks galat → NaN & cast numerik,KTB-01,semua,kolom_di_cast_numerik,10.0,kolom,,,10 kolom polutan + cuaca dibaca sebagai teks lalu di-cast ke float
+2,Standarisasi satuan ke µg/m³,KTB-01,semua,sel_dikonversi_ppm_ke_ugm3,0.0,sel,,,"PM ×1000 (hipotesis mg/m³ salah label); gas ppm × BM / 24,45 × 1000 (25 °C, 1 atm). Validasi: median vs stasiun sejenis (notebook 03)"
+3,"Parse timestamp, bulatkan ke jam, buang di luar periode",KTB-01,semua,baris_timestamp_tak_terbaca,0.0,baris,,,Format waktu tidak dapat di-parse; baris tidak dapat ditempatkan pada sumbu waktu
+3,"Parse timestamp, bulatkan ke jam, buang di luar periode",KTB-01,semua,baris_di_luar_periode,0.0,baris,,,Di luar 2024-01-01 00:00…2026-10-14 23:00 (mis. epoch 1970)
+3,"Parse timestamp, bulatkan ke jam, buang di luar periode",KTB-01,semua,baris_dibulatkan_ke_jam_terdekat,24432.0,baris,,,"Timestamp bergeser dari awal jam (mis. 23:48, 00:11, milidetik) dibulatkan ke jam terdekat"
+3,"Parse timestamp, bulatkan ke jam, buang di luar periode",KTB-01,semua,baris_subjam_dipotong_ke_jam_penuh,0.0,baris,,,Bacaan beresolusi < 1 jam (:00/:15/:30/:45): floor ke jam penuh lalu dirata-rata pada langkah 5
+3,"Parse timestamp, bulatkan ke jam, buang di luar periode",KTB-01,semua,jumlah_baris,0.0,baris,24432.0,24432.0,Baris yang dibuang pada langkah 3 (tak terbaca + di luar periode)
+4,Buang nilai mustahil & sentinel,KTB-01,semua,sel_sentinel_menjadi_nan,0.0,sel,,,"Nilai pengganti galat/saturasi (±999, ±9999, -9999, 99999); 999 pada CO µg/m³ dikecualikan (konsentrasi wajar)"
+4,Buang nilai mustahil & sentinel,KTB-01,semua,sel_negatif_menjadi_nan,0.0,sel,,,Konsentrasi polutan negatif mustahil secara fisik
+4,Buang nilai mustahil & sentinel,KTB-01,semua,sel_di_luar_batas_fisik_cuaca_menjadi_nan,0.0,sel,,,"Suhu <5/>45 °C, RH di luar 0–100 %, angin >40 m/s, arah di luar 0–360°"
+4,Buang nilai mustahil & sentinel,KTB-01,semua,baris_valid_dengan_nilai_mustahil,0.0,baris,,,Informasi: baris berstatus VALID yang memuat nilai mustahil (penanda QC alat tidak cukup)
+4,Buang nilai mustahil & sentinel,KTB-01,semua,baris_valid_pm_ekstrem_dipertahankan,0.0,baris,,,PM > 500 µg/m³ pada baris VALID DIPERTAHANKAN (kemungkinan puncak kabut asap nyata)
+4,Buang nilai mustahil & sentinel,KTB-01,semua,baris_valid_pm25_lebih_besar_pm10,0.0,baris,,,"Informasi: PM2.5 > PM10 tidak konsisten fisik; hanya ditandai, tidak dibuang"
+5,Filter qc_flag = VALID & agregasi per jam (rata-rata),KTB-01,semua,baris_non_valid_dibuang[SUSPECT],127.0,baris,,,qc_flag selain VALID tidak dipakai untuk analisis konsentrasi
+5,Filter qc_flag = VALID & agregasi per jam (rata-rata),KTB-01,semua,jumlah_baris_non_valid,127.0,baris,24432.0,24305.0,Total baris non-VALID dibuang
+5,Filter qc_flag = VALID & agregasi per jam (rata-rata),KTB-01,semua,jam_diagregasi_rata2,0.0,jam,,,Jam berisi >1 baris VALID dirata-rata (arah angin: rata-rata melingkar)
+5,Filter qc_flag = VALID & agregasi per jam (rata-rata),KTB-01,semua,jumlah_baris_per_jam,0.0,baris,24305.0,24305.0,Baris tambahan yang digabung ke jam yang sama
+5,Filter qc_flag = VALID & agregasi per jam (rata-rata),KTB-01,semua,jam_valid_akhir,24305.0,jam,24432.0,24305.0,Jam dengan ≥1 baris VALID dari 24432 jam yang diharapkan
+1,Teks galat → NaN & cast numerik,KTG-01,semua,sel_teks_galat_menjadi_nan,0.0,sel,,,"Token galat (0xDEADBEEF, ERR_*, #VALUE!, INF, …) tidak dapat dibaca sebagai angka"
+1,Teks galat → NaN & cast numerik,KTG-01,semua,sel_kosong_dibaca_nan,0.0,sel,,,String kosong dibaca sebagai NaN (informasi; nilai sudah hilang di sumber)
+1,Teks galat → NaN & cast numerik,KTG-01,semua,kolom_di_cast_numerik,10.0,kolom,,,10 kolom polutan + cuaca dibaca sebagai teks lalu di-cast ke float
+2,Standarisasi satuan ke µg/m³,KTG-01,semua,sel_dikonversi_ppm_ke_ugm3,0.0,sel,,,"PM ×1000 (hipotesis mg/m³ salah label); gas ppm × BM / 24,45 × 1000 (25 °C, 1 atm). Validasi: median vs stasiun sejenis (notebook 03)"
+3,"Parse timestamp, bulatkan ke jam, buang di luar periode",KTG-01,semua,baris_timestamp_tak_terbaca,0.0,baris,,,Format waktu tidak dapat di-parse; baris tidak dapat ditempatkan pada sumbu waktu
+3,"Parse timestamp, bulatkan ke jam, buang di luar periode",KTG-01,semua,baris_di_luar_periode,0.0,baris,,,Di luar 2024-01-01 00:00…2026-10-14 23:00 (mis. epoch 1970)
+3,"Parse timestamp, bulatkan ke jam, buang di luar periode",KTG-01,semua,baris_dibulatkan_ke_jam_terdekat,0.0,baris,,,"Timestamp bergeser dari awal jam (mis. 23:48, 00:11, milidetik) dibulatkan ke jam terdekat"
+3,"Parse timestamp, bulatkan ke jam, buang di luar periode",KTG-01,semua,baris_subjam_dipotong_ke_jam_penuh,0.0,baris,,,Bacaan beresolusi < 1 jam (:00/:15/:30/:45): floor ke jam penuh lalu dirata-rata pada langkah 5
+3,"Parse timestamp, bulatkan ke jam, buang di luar periode",KTG-01,semua,jumlah_baris,0.0,baris,24432.0,24432.0,Baris yang dibuang pada langkah 3 (tak terbaca + di luar periode)
+4,Buang nilai mustahil & sentinel,KTG-01,semua,sel_sentinel_menjadi_nan,0.0,sel,,,"Nilai pengganti galat/saturasi (±999, ±9999, -9999, 99999); 999 pada CO µg/m³ dikecualikan (konsentrasi wajar)"
+4,Buang nilai mustahil & sentinel,KTG-01,semua,sel_negatif_menjadi_nan,0.0,sel,,,Konsentrasi polutan negatif mustahil secara fisik
+4,Buang nilai mustahil & sentinel,KTG-01,semua,sel_di_luar_batas_fisik_cuaca_menjadi_nan,0.0,sel,,,"Suhu <5/>45 °C, RH di luar 0–100 %, angin >40 m/s, arah di luar 0–360°"
+4,Buang nilai mustahil & sentinel,KTG-01,semua,baris_valid_dengan_nilai_mustahil,0.0,baris,,,Informasi: baris berstatus VALID yang memuat nilai mustahil (penanda QC alat tidak cukup)
+4,Buang nilai mustahil & sentinel,KTG-01,semua,baris_valid_pm_ekstrem_dipertahankan,934.0,baris,,,PM > 500 µg/m³ pada baris VALID DIPERTAHANKAN (kemungkinan puncak kabut asap nyata)
+4,Buang nilai mustahil & sentinel,KTG-01,semua,baris_valid_pm25_lebih_besar_pm10,0.0,baris,,,"Informasi: PM2.5 > PM10 tidak konsisten fisik; hanya ditandai, tidak dibuang"
+5,Filter qc_flag = VALID & agregasi per jam (rata-rata),KTG-01,semua,baris_non_valid_dibuang[SUSPECT],594.0,baris,,,qc_flag selain VALID tidak dipakai untuk analisis konsentrasi
+5,Filter qc_flag = VALID & agregasi per jam (rata-rata),KTG-01,semua,baris_non_valid_dibuang[CALIBRATING],332.0,baris,,,qc_flag selain VALID tidak dipakai untuk analisis konsentrasi
+5,Filter qc_flag = VALID & agregasi per jam (rata-rata),KTG-01,semua,jumlah_baris_non_valid,926.0,baris,24432.0,23506.0,Total baris non-VALID dibuang
+5,Filter qc_flag = VALID & agregasi per jam (rata-rata),KTG-01,semua,jam_diagregasi_rata2,0.0,jam,,,Jam berisi >1 baris VALID dirata-rata (arah angin: rata-rata melingkar)
+5,Filter qc_flag = VALID & agregasi per jam (rata-rata),KTG-01,semua,jumlah_baris_per_jam,0.0,baris,23506.0,23506.0,Baris tambahan yang digabung ke jam yang sama
+5,Filter qc_flag = VALID & agregasi per jam (rata-rata),KTG-01,semua,jam_valid_akhir,23506.0,jam,24432.0,23506.0,Jam dengan ≥1 baris VALID dari 24432 jam yang diharapkan
+1,Teks galat → NaN & cast numerik,KTG-02,semua,sel_teks_galat_menjadi_nan,0.0,sel,,,"Token galat (0xDEADBEEF, ERR_*, #VALUE!, INF, …) tidak dapat dibaca sebagai angka"
+1,Teks galat → NaN & cast numerik,KTG-02,semua,sel_kosong_dibaca_nan,0.0,sel,,,String kosong dibaca sebagai NaN (informasi; nilai sudah hilang di sumber)
+1,Teks galat → NaN & cast numerik,KTG-02,semua,kolom_di_cast_numerik,10.0,kolom,,,10 kolom polutan + cuaca dibaca sebagai teks lalu di-cast ke float
+2,Standarisasi satuan ke µg/m³,KTG-02,semua,sel_dikonversi_ppm_ke_ugm3,0.0,sel,,,"PM ×1000 (hipotesis mg/m³ salah label); gas ppm × BM / 24,45 × 1000 (25 °C, 1 atm). Validasi: median vs stasiun sejenis (notebook 03)"
+3,"Parse timestamp, bulatkan ke jam, buang di luar periode",KTG-02,semua,baris_timestamp_tak_terbaca,0.0,baris,,,Format waktu tidak dapat di-parse; baris tidak dapat ditempatkan pada sumbu waktu
+3,"Parse timestamp, bulatkan ke jam, buang di luar periode",KTG-02,semua,baris_di_luar_periode,0.0,baris,,,Di luar 2024-01-01 00:00…2026-10-14 23:00 (mis. epoch 1970)
+3,"Parse timestamp, bulatkan ke jam, buang di luar periode",KTG-02,semua,baris_dibulatkan_ke_jam_terdekat,0.0,baris,,,"Timestamp bergeser dari awal jam (mis. 23:48, 00:11, milidetik) dibulatkan ke jam terdekat"
+3,"Parse timestamp, bulatkan ke jam, buang di luar periode",KTG-02,semua,baris_subjam_dipotong_ke_jam_penuh,0.0,baris,,,Bacaan beresolusi < 1 jam (:00/:15/:30/:45): floor ke jam penuh lalu dirata-rata pada langkah 5
+3,"Parse timestamp, bulatkan ke jam, buang di luar periode",KTG-02,semua,jumlah_baris,0.0,baris,24432.0,24432.0,Baris yang dibuang pada langkah 3 (tak terbaca + di luar periode)
+4,Buang nilai mustahil & sentinel,KTG-02,semua,sel_sentinel_menjadi_nan,0.0,sel,,,"Nilai pengganti galat/saturasi (±999, ±9999, -9999, 99999); 999 pada CO µg/m³ dikecualikan (konsentrasi wajar)"
+4,Buang nilai mustahil & sentinel,KTG-02,semua,sel_negatif_menjadi_nan,0.0,sel,,,Konsentrasi polutan negatif mustahil secara fisik
+4,Buang nilai mustahil & sentinel,KTG-02,semua,sel_di_luar_batas_fisik_cuaca_menjadi_nan,0.0,sel,,,"Suhu <5/>45 °C, RH di luar 0–100 %, angin >40 m/s, arah di luar 0–360°"
+4,Buang nilai mustahil & sentinel,KTG-02,semua,baris_valid_dengan_nilai_mustahil,0.0,baris,,,Informasi: baris berstatus VALID yang memuat nilai mustahil (penanda QC alat tidak cukup)
+4,Buang nilai mustahil & sentinel,KTG-02,semua,baris_valid_pm_ekstrem_dipertahankan,934.0,baris,,,PM > 500 µg/m³ pada baris VALID DIPERTAHANKAN (kemungkinan puncak kabut asap nyata)
+4,Buang nilai mustahil & sentinel,KTG-02,semua,baris_valid_pm25_lebih_besar_pm10,0.0,baris,,,"Informasi: PM2.5 > PM10 tidak konsisten fisik; hanya ditandai, tidak dibuang"
+5,Filter qc_flag = VALID & agregasi per jam (rata-rata),KTG-02,semua,baris_non_valid_dibuang[SUSPECT],570.0,baris,,,qc_flag selain VALID tidak dipakai untuk analisis konsentrasi
+5,Filter qc_flag = VALID & agregasi per jam (rata-rata),KTG-02,semua,baris_non_valid_dibuang[CALIBRATING],338.0,baris,,,qc_flag selain VALID tidak dipakai untuk analisis konsentrasi
+5,Filter qc_flag = VALID & agregasi per jam (rata-rata),KTG-02,semua,jumlah_baris_non_valid,908.0,baris,24432.0,23524.0,Total baris non-VALID dibuang
+5,Filter qc_flag = VALID & agregasi per jam (rata-rata),KTG-02,semua,jam_diagregasi_rata2,0.0,jam,,,Jam berisi >1 baris VALID dirata-rata (arah angin: rata-rata melingkar)
+5,Filter qc_flag = VALID & agregasi per jam (rata-rata),KTG-02,semua,jumlah_baris_per_jam,0.0,baris,23524.0,23524.0,Baris tambahan yang digabung ke jam yang sama
+5,Filter qc_flag = VALID & agregasi per jam (rata-rata),KTG-02,semua,jam_valid_akhir,23524.0,jam,24432.0,23524.0,Jam dengan ≥1 baris VALID dari 24432 jam yang diharapkan
+1,Teks galat → NaN & cast numerik,MDN-01,semua,sel_teks_galat_menjadi_nan,0.0,sel,,,"Token galat (0xDEADBEEF, ERR_*, #VALUE!, INF, …) tidak dapat dibaca sebagai angka"
+1,Teks galat → NaN & cast numerik,MDN-01,semua,sel_kosong_dibaca_nan,3744.0,sel,,,String kosong dibaca sebagai NaN (informasi; nilai sudah hilang di sumber)
+1,Teks galat → NaN & cast numerik,MDN-01,semua,kolom_di_cast_numerik,10.0,kolom,,,10 kolom polutan + cuaca dibaca sebagai teks lalu di-cast ke float
+2,Standarisasi satuan ke µg/m³,MDN-01,semua,sel_dikonversi_ppm_ke_ugm3,121056.0,sel,,,"PM ×1000 (hipotesis mg/m³ salah label); gas ppm × BM / 24,45 × 1000 (25 °C, 1 atm). Validasi: median vs stasiun sejenis (notebook 03)"
+3,"Parse timestamp, bulatkan ke jam, buang di luar periode",MDN-01,semua,baris_timestamp_tak_terbaca,0.0,baris,,,Format waktu tidak dapat di-parse; baris tidak dapat ditempatkan pada sumbu waktu
+3,"Parse timestamp, bulatkan ke jam, buang di luar periode",MDN-01,semua,baris_di_luar_periode,0.0,baris,,,Di luar 2024-01-01 00:00…2026-10-14 23:00 (mis. epoch 1970)
+3,"Parse timestamp, bulatkan ke jam, buang di luar periode",MDN-01,semua,baris_dibulatkan_ke_jam_terdekat,20800.0,baris,,,"Timestamp bergeser dari awal jam (mis. 23:48, 00:11, milidetik) dibulatkan ke jam terdekat"
+3,"Parse timestamp, bulatkan ke jam, buang di luar periode",MDN-01,semua,baris_subjam_dipotong_ke_jam_penuh,0.0,baris,,,Bacaan beresolusi < 1 jam (:00/:15/:30/:45): floor ke jam penuh lalu dirata-rata pada langkah 5
+3,"Parse timestamp, bulatkan ke jam, buang di luar periode",MDN-01,semua,jumlah_baris,0.0,baris,20800.0,20800.0,Baris yang dibuang pada langkah 3 (tak terbaca + di luar periode)
+4,Buang nilai mustahil & sentinel,MDN-01,semua,sel_sentinel_menjadi_nan,0.0,sel,,,"Nilai pengganti galat/saturasi (±999, ±9999, -9999, 99999); 999 pada CO µg/m³ dikecualikan (konsentrasi wajar)"
+4,Buang nilai mustahil & sentinel,MDN-01,semua,sel_negatif_menjadi_nan,0.0,sel,,,Konsentrasi polutan negatif mustahil secara fisik
+4,Buang nilai mustahil & sentinel,MDN-01,semua,sel_di_luar_batas_fisik_cuaca_menjadi_nan,0.0,sel,,,"Suhu <5/>45 °C, RH di luar 0–100 %, angin >40 m/s, arah di luar 0–360°"
+4,Buang nilai mustahil & sentinel,MDN-01,semua,baris_valid_dengan_nilai_mustahil,0.0,baris,,,Informasi: baris berstatus VALID yang memuat nilai mustahil (penanda QC alat tidak cukup)
+4,Buang nilai mustahil & sentinel,MDN-01,semua,baris_valid_pm_ekstrem_dipertahankan,0.0,baris,,,PM > 500 µg/m³ pada baris VALID DIPERTAHANKAN (kemungkinan puncak kabut asap nyata)
+4,Buang nilai mustahil & sentinel,MDN-01,semua,baris_valid_pm25_lebih_besar_pm10,0.0,baris,,,"Informasi: PM2.5 > PM10 tidak konsisten fisik; hanya ditandai, tidak dibuang"
+5,Filter qc_flag = VALID & agregasi per jam (rata-rata),MDN-01,semua,baris_non_valid_dibuang[SUSPECT],1664.0,baris,,,qc_flag selain VALID tidak dipakai untuk analisis konsentrasi
+5,Filter qc_flag = VALID & agregasi per jam (rata-rata),MDN-01,semua,baris_non_valid_dibuang[CALIBRATING],1040.0,baris,,,qc_flag selain VALID tidak dipakai untuk analisis konsentrasi
+5,Filter qc_flag = VALID & agregasi per jam (rata-rata),MDN-01,semua,baris_non_valid_dibuang[WARMUP],832.0,baris,,,qc_flag selain VALID tidak dipakai untuk analisis konsentrasi
+5,Filter qc_flag = VALID & agregasi per jam (rata-rata),MDN-01,semua,baris_non_valid_dibuang[MAINTENANCE],624.0,baris,,,qc_flag selain VALID tidak dipakai untuk analisis konsentrasi
+5,Filter qc_flag = VALID & agregasi per jam (rata-rata),MDN-01,semua,jumlah_baris_non_valid,4160.0,baris,20800.0,16640.0,Total baris non-VALID dibuang
+5,Filter qc_flag = VALID & agregasi per jam (rata-rata),MDN-01,semua,jam_diagregasi_rata2,0.0,jam,,,Jam berisi >1 baris VALID dirata-rata (arah angin: rata-rata melingkar)
+5,Filter qc_flag = VALID & agregasi per jam (rata-rata),MDN-01,semua,jumlah_baris_per_jam,0.0,baris,16640.0,16640.0,Baris tambahan yang digabung ke jam yang sama
+5,Filter qc_flag = VALID & agregasi per jam (rata-rata),MDN-01,semua,jam_valid_akhir,16640.0,jam,24432.0,16640.0,Jam dengan ≥1 baris VALID dari 24432 jam yang diharapkan
+1,Teks galat → NaN & cast numerik,MER-01,semua,sel_teks_galat_menjadi_nan,0.0,sel,,,"Token galat (0xDEADBEEF, ERR_*, #VALUE!, INF, …) tidak dapat dibaca sebagai angka"
+1,Teks galat → NaN & cast numerik,MER-01,semua,sel_kosong_dibaca_nan,97780.0,sel,,,String kosong dibaca sebagai NaN (informasi; nilai sudah hilang di sumber)
+1,Teks galat → NaN & cast numerik,MER-01,semua,kolom_di_cast_numerik,10.0,kolom,,,10 kolom polutan + cuaca dibaca sebagai teks lalu di-cast ke float
+2,Standarisasi satuan ke µg/m³,MER-01,semua,sel_dikonversi_ppm_ke_ugm3,0.0,sel,,,"PM ×1000 (hipotesis mg/m³ salah label); gas ppm × BM / 24,45 × 1000 (25 °C, 1 atm). Validasi: median vs stasiun sejenis (notebook 03)"
+3,"Parse timestamp, bulatkan ke jam, buang di luar periode",MER-01,semua,baris_timestamp_tak_terbaca,0.0,baris,,,Format waktu tidak dapat di-parse; baris tidak dapat ditempatkan pada sumbu waktu
+3,"Parse timestamp, bulatkan ke jam, buang di luar periode",MER-01,semua,baris_di_luar_periode,0.0,baris,,,Di luar 2024-01-01 00:00…2026-10-14 23:00 (mis. epoch 1970)
+3,"Parse timestamp, bulatkan ke jam, buang di luar periode",MER-01,semua,baris_dibulatkan_ke_jam_terdekat,24432.0,baris,,,"Timestamp bergeser dari awal jam (mis. 23:48, 00:11, milidetik) dibulatkan ke jam terdekat"
+3,"Parse timestamp, bulatkan ke jam, buang di luar periode",MER-01,semua,baris_subjam_dipotong_ke_jam_penuh,0.0,baris,,,Bacaan beresolusi < 1 jam (:00/:15/:30/:45): floor ke jam penuh lalu dirata-rata pada langkah 5
+3,"Parse timestamp, bulatkan ke jam, buang di luar periode",MER-01,semua,jumlah_baris,0.0,baris,24432.0,24432.0,Baris yang dibuang pada langkah 3 (tak terbaca + di luar periode)
+4,Buang nilai mustahil & sentinel,MER-01,semua,sel_sentinel_menjadi_nan,0.0,sel,,,"Nilai pengganti galat/saturasi (±999, ±9999, -9999, 99999); 999 pada CO µg/m³ dikecualikan (konsentrasi wajar)"
+4,Buang nilai mustahil & sentinel,MER-01,semua,sel_negatif_menjadi_nan,3560.0,sel,,,Konsentrasi polutan negatif mustahil secara fisik
+4,Buang nilai mustahil & sentinel,MER-01,semua,sel_di_luar_batas_fisik_cuaca_menjadi_nan,749.0,sel,,,"Suhu <5/>45 °C, RH di luar 0–100 %, angin >40 m/s, arah di luar 0–360°"
+4,Buang nilai mustahil & sentinel,MER-01,semua,baris_valid_dengan_nilai_mustahil,0.0,baris,,,Informasi: baris berstatus VALID yang memuat nilai mustahil (penanda QC alat tidak cukup)
+4,Buang nilai mustahil & sentinel,MER-01,semua,baris_valid_pm_ekstrem_dipertahankan,0.0,baris,,,PM > 500 µg/m³ pada baris VALID DIPERTAHANKAN (kemungkinan puncak kabut asap nyata)
+4,Buang nilai mustahil & sentinel,MER-01,semua,baris_valid_pm25_lebih_besar_pm10,0.0,baris,,,"Informasi: PM2.5 > PM10 tidak konsisten fisik; hanya ditandai, tidak dibuang"
+5,Filter qc_flag = VALID & agregasi per jam (rata-rata),MER-01,semua,baris_non_valid_dibuang[MISSING],8539.0,baris,,,qc_flag selain VALID tidak dipakai untuk analisis konsentrasi
+5,Filter qc_flag = VALID & agregasi per jam (rata-rata),MER-01,semua,baris_non_valid_dibuang[SUSPECT],4887.0,baris,,,qc_flag selain VALID tidak dipakai untuk analisis konsentrasi
+5,Filter qc_flag = VALID & agregasi per jam (rata-rata),MER-01,semua,baris_non_valid_dibuang[CALIBRATING],2448.0,baris,,,qc_flag selain VALID tidak dipakai untuk analisis konsentrasi
+5,Filter qc_flag = VALID & agregasi per jam (rata-rata),MER-01,semua,baris_non_valid_dibuang[WARMUP],2443.0,baris,,,qc_flag selain VALID tidak dipakai untuk analisis konsentrasi
+5,Filter qc_flag = VALID & agregasi per jam (rata-rata),MER-01,semua,baris_non_valid_dibuang[MAINTENANCE],1224.0,baris,,,qc_flag selain VALID tidak dipakai untuk analisis konsentrasi
+5,Filter qc_flag = VALID & agregasi per jam (rata-rata),MER-01,semua,jumlah_baris_non_valid,19541.0,baris,24432.0,4891.0,Total baris non-VALID dibuang
+5,Filter qc_flag = VALID & agregasi per jam (rata-rata),MER-01,semua,jam_diagregasi_rata2,0.0,jam,,,Jam berisi >1 baris VALID dirata-rata (arah angin: rata-rata melingkar)
+5,Filter qc_flag = VALID & agregasi per jam (rata-rata),MER-01,semua,jumlah_baris_per_jam,0.0,baris,4891.0,4891.0,Baris tambahan yang digabung ke jam yang sama
+5,Filter qc_flag = VALID & agregasi per jam (rata-rata),MER-01,semua,jam_valid_akhir,4891.0,jam,24432.0,4891.0,Jam dengan ≥1 baris VALID dari 24432 jam yang diharapkan
+1,Teks galat → NaN & cast numerik,MLG-01,semua,sel_teks_galat_menjadi_nan,0.0,sel,,,"Token galat (0xDEADBEEF, ERR_*, #VALUE!, INF, …) tidak dapat dibaca sebagai angka"
+1,Teks galat → NaN & cast numerik,MLG-01,semua,sel_kosong_dibaca_nan,0.0,sel,,,String kosong dibaca sebagai NaN (informasi; nilai sudah hilang di sumber)
+1,Teks galat → NaN & cast numerik,MLG-01,semua,kolom_di_cast_numerik,10.0,kolom,,,10 kolom polutan + cuaca dibaca sebagai teks lalu di-cast ke float
+2,Standarisasi satuan ke µg/m³,MLG-01,semua,sel_dikonversi_ppm_ke_ugm3,0.0,sel,,,"PM ×1000 (hipotesis mg/m³ salah label); gas ppm × BM / 24,45 × 1000 (25 °C, 1 atm). Validasi: median vs stasiun sejenis (notebook 03)"
+3,"Parse timestamp, bulatkan ke jam, buang di luar periode",MLG-01,semua,baris_timestamp_tak_terbaca,0.0,baris,,,Format waktu tidak dapat di-parse; baris tidak dapat ditempatkan pada sumbu waktu
+3,"Parse timestamp, bulatkan ke jam, buang di luar periode",MLG-01,semua,baris_di_luar_periode,0.0,baris,,,Di luar 2024-01-01 00:00…2026-10-14 23:00 (mis. epoch 1970)
+3,"Parse timestamp, bulatkan ke jam, buang di luar periode",MLG-01,semua,baris_dibulatkan_ke_jam_terdekat,24432.0,baris,,,"Timestamp bergeser dari awal jam (mis. 23:48, 00:11, milidetik) dibulatkan ke jam terdekat"
+3,"Parse timestamp, bulatkan ke jam, buang di luar periode",MLG-01,semua,baris_subjam_dipotong_ke_jam_penuh,0.0,baris,,,Bacaan beresolusi < 1 jam (:00/:15/:30/:45): floor ke jam penuh lalu dirata-rata pada langkah 5
+3,"Parse timestamp, bulatkan ke jam, buang di luar periode",MLG-01,semua,jumlah_baris,0.0,baris,24432.0,24432.0,Baris yang dibuang pada langkah 3 (tak terbaca + di luar periode)
+4,Buang nilai mustahil & sentinel,MLG-01,semua,sel_sentinel_menjadi_nan,0.0,sel,,,"Nilai pengganti galat/saturasi (±999, ±9999, -9999, 99999); 999 pada CO µg/m³ dikecualikan (konsentrasi wajar)"
+4,Buang nilai mustahil & sentinel,MLG-01,semua,sel_negatif_menjadi_nan,0.0,sel,,,Konsentrasi polutan negatif mustahil secara fisik
+4,Buang nilai mustahil & sentinel,MLG-01,semua,sel_di_luar_batas_fisik_cuaca_menjadi_nan,0.0,sel,,,"Suhu <5/>45 °C, RH di luar 0–100 %, angin >40 m/s, arah di luar 0–360°"
+4,Buang nilai mustahil & sentinel,MLG-01,semua,baris_valid_dengan_nilai_mustahil,0.0,baris,,,Informasi: baris berstatus VALID yang memuat nilai mustahil (penanda QC alat tidak cukup)
+4,Buang nilai mustahil & sentinel,MLG-01,semua,baris_valid_pm_ekstrem_dipertahankan,0.0,baris,,,PM > 500 µg/m³ pada baris VALID DIPERTAHANKAN (kemungkinan puncak kabut asap nyata)
+4,Buang nilai mustahil & sentinel,MLG-01,semua,baris_valid_pm25_lebih_besar_pm10,0.0,baris,,,"Informasi: PM2.5 > PM10 tidak konsisten fisik; hanya ditandai, tidak dibuang"
+5,Filter qc_flag = VALID & agregasi per jam (rata-rata),MLG-01,semua,baris_non_valid_dibuang[SUSPECT],141.0,baris,,,qc_flag selain VALID tidak dipakai untuk analisis konsentrasi
+5,Filter qc_flag = VALID & agregasi per jam (rata-rata),MLG-01,semua,jumlah_baris_non_valid,141.0,baris,24432.0,24291.0,Total baris non-VALID dibuang
+5,Filter qc_flag = VALID & agregasi per jam (rata-rata),MLG-01,semua,jam_diagregasi_rata2,0.0,jam,,,Jam berisi >1 baris VALID dirata-rata (arah angin: rata-rata melingkar)
+5,Filter qc_flag = VALID & agregasi per jam (rata-rata),MLG-01,semua,jumlah_baris_per_jam,0.0,baris,24291.0,24291.0,Baris tambahan yang digabung ke jam yang sama
+5,Filter qc_flag = VALID & agregasi per jam (rata-rata),MLG-01,semua,jam_valid_akhir,24291.0,jam,24432.0,24291.0,Jam dengan ≥1 baris VALID dari 24432 jam yang diharapkan
+1,Teks galat → NaN & cast numerik,MRS-01,semua,sel_teks_galat_menjadi_nan,0.0,sel,,,"Token galat (0xDEADBEEF, ERR_*, #VALUE!, INF, …) tidak dapat dibaca sebagai angka"
+1,Teks galat → NaN & cast numerik,MRS-01,semua,sel_kosong_dibaca_nan,0.0,sel,,,String kosong dibaca sebagai NaN (informasi; nilai sudah hilang di sumber)
+1,Teks galat → NaN & cast numerik,MRS-01,semua,kolom_di_cast_numerik,10.0,kolom,,,10 kolom polutan + cuaca dibaca sebagai teks lalu di-cast ke float
+2,Standarisasi satuan ke µg/m³,MRS-01,semua,sel_dikonversi_ppm_ke_ugm3,0.0,sel,,,"PM ×1000 (hipotesis mg/m³ salah label); gas ppm × BM / 24,45 × 1000 (25 °C, 1 atm). Validasi: median vs stasiun sejenis (notebook 03)"
+3,"Parse timestamp, bulatkan ke jam, buang di luar periode",MRS-01,semua,baris_timestamp_tak_terbaca,0.0,baris,,,Format waktu tidak dapat di-parse; baris tidak dapat ditempatkan pada sumbu waktu
+3,"Parse timestamp, bulatkan ke jam, buang di luar periode",MRS-01,semua,baris_di_luar_periode,0.0,baris,,,Di luar 2024-01-01 00:00…2026-10-14 23:00 (mis. epoch 1970)
+3,"Parse timestamp, bulatkan ke jam, buang di luar periode",MRS-01,semua,baris_dibulatkan_ke_jam_terdekat,24432.0,baris,,,"Timestamp bergeser dari awal jam (mis. 23:48, 00:11, milidetik) dibulatkan ke jam terdekat"
+3,"Parse timestamp, bulatkan ke jam, buang di luar periode",MRS-01,semua,baris_subjam_dipotong_ke_jam_penuh,0.0,baris,,,Bacaan beresolusi < 1 jam (:00/:15/:30/:45): floor ke jam penuh lalu dirata-rata pada langkah 5
+3,"Parse timestamp, bulatkan ke jam, buang di luar periode",MRS-01,semua,jumlah_baris,0.0,baris,24432.0,24432.0,Baris yang dibuang pada langkah 3 (tak terbaca + di luar periode)
+4,Buang nilai mustahil & sentinel,MRS-01,semua,sel_sentinel_menjadi_nan,0.0,sel,,,"Nilai pengganti galat/saturasi (±999, ±9999, -9999, 99999); 999 pada CO µg/m³ dikecualikan (konsentrasi wajar)"
+4,Buang nilai mustahil & sentinel,MRS-01,semua,sel_negatif_menjadi_nan,0.0,sel,,,Konsentrasi polutan negatif mustahil secara fisik
+4,Buang nilai mustahil & sentinel,MRS-01,semua,sel_di_luar_batas_fisik_cuaca_menjadi_nan,0.0,sel,,,"Suhu <5/>45 °C, RH di luar 0–100 %, angin >40 m/s, arah di luar 0–360°"
+4,Buang nilai mustahil & sentinel,MRS-01,semua,baris_valid_dengan_nilai_mustahil,0.0,baris,,,Informasi: baris berstatus VALID yang memuat nilai mustahil (penanda QC alat tidak cukup)
+4,Buang nilai mustahil & sentinel,MRS-01,semua,baris_valid_pm_ekstrem_dipertahankan,0.0,baris,,,PM > 500 µg/m³ pada baris VALID DIPERTAHANKAN (kemungkinan puncak kabut asap nyata)
+4,Buang nilai mustahil & sentinel,MRS-01,semua,baris_valid_pm25_lebih_besar_pm10,0.0,baris,,,"Informasi: PM2.5 > PM10 tidak konsisten fisik; hanya ditandai, tidak dibuang"
+5,Filter qc_flag = VALID & agregasi per jam (rata-rata),MRS-01,semua,baris_non_valid_dibuang[SUSPECT],167.0,baris,,,qc_flag selain VALID tidak dipakai untuk analisis konsentrasi
+5,Filter qc_flag = VALID & agregasi per jam (rata-rata),MRS-01,semua,jumlah_baris_non_valid,167.0,baris,24432.0,24265.0,Total baris non-VALID dibuang
+5,Filter qc_flag = VALID & agregasi per jam (rata-rata),MRS-01,semua,jam_diagregasi_rata2,0.0,jam,,,Jam berisi >1 baris VALID dirata-rata (arah angin: rata-rata melingkar)
+5,Filter qc_flag = VALID & agregasi per jam (rata-rata),MRS-01,semua,jumlah_baris_per_jam,0.0,baris,24265.0,24265.0,Baris tambahan yang digabung ke jam yang sama
+5,Filter qc_flag = VALID & agregasi per jam (rata-rata),MRS-01,semua,jam_valid_akhir,24265.0,jam,24432.0,24265.0,Jam dengan ≥1 baris VALID dari 24432 jam yang diharapkan
+1,Teks galat → NaN & cast numerik,PKN-01,semua,sel_teks_galat_menjadi_nan,0.0,sel,,,"Token galat (0xDEADBEEF, ERR_*, #VALUE!, INF, …) tidak dapat dibaca sebagai angka"
+1,Teks galat → NaN & cast numerik,PKN-01,semua,sel_kosong_dibaca_nan,0.0,sel,,,String kosong dibaca sebagai NaN (informasi; nilai sudah hilang di sumber)
+1,Teks galat → NaN & cast numerik,PKN-01,semua,kolom_di_cast_numerik,10.0,kolom,,,10 kolom polutan + cuaca dibaca sebagai teks lalu di-cast ke float
+2,Standarisasi satuan ke µg/m³,PKN-01,semua,sel_dikonversi_ppm_ke_ugm3,0.0,sel,,,"PM ×1000 (hipotesis mg/m³ salah label); gas ppm × BM / 24,45 × 1000 (25 °C, 1 atm). Validasi: median vs stasiun sejenis (notebook 03)"
+3,"Parse timestamp, bulatkan ke jam, buang di luar periode",PKN-01,semua,baris_timestamp_tak_terbaca,0.0,baris,,,Format waktu tidak dapat di-parse; baris tidak dapat ditempatkan pada sumbu waktu
+3,"Parse timestamp, bulatkan ke jam, buang di luar periode",PKN-01,semua,baris_di_luar_periode,0.0,baris,,,Di luar 2024-01-01 00:00…2026-10-14 23:00 (mis. epoch 1970)
+3,"Parse timestamp, bulatkan ke jam, buang di luar periode",PKN-01,semua,baris_dibulatkan_ke_jam_terdekat,24432.0,baris,,,"Timestamp bergeser dari awal jam (mis. 23:48, 00:11, milidetik) dibulatkan ke jam terdekat"
+3,"Parse timestamp, bulatkan ke jam, buang di luar periode",PKN-01,semua,baris_subjam_dipotong_ke_jam_penuh,0.0,baris,,,Bacaan beresolusi < 1 jam (:00/:15/:30/:45): floor ke jam penuh lalu dirata-rata pada langkah 5
+3,"Parse timestamp, bulatkan ke jam, buang di luar periode",PKN-01,semua,jumlah_baris,0.0,baris,24432.0,24432.0,Baris yang dibuang pada langkah 3 (tak terbaca + di luar periode)
+4,Buang nilai mustahil & sentinel,PKN-01,semua,sel_sentinel_menjadi_nan,0.0,sel,,,"Nilai pengganti galat/saturasi (±999, ±9999, -9999, 99999); 999 pada CO µg/m³ dikecualikan (konsentrasi wajar)"
+4,Buang nilai mustahil & sentinel,PKN-01,semua,sel_negatif_menjadi_nan,0.0,sel,,,Konsentrasi polutan negatif mustahil secara fisik
+4,Buang nilai mustahil & sentinel,PKN-01,semua,sel_di_luar_batas_fisik_cuaca_menjadi_nan,0.0,sel,,,"Suhu <5/>45 °C, RH di luar 0–100 %, angin >40 m/s, arah di luar 0–360°"
+4,Buang nilai mustahil & sentinel,PKN-01,semua,baris_valid_dengan_nilai_mustahil,0.0,baris,,,Informasi: baris berstatus VALID yang memuat nilai mustahil (penanda QC alat tidak cukup)
+4,Buang nilai mustahil & sentinel,PKN-01,semua,baris_valid_pm_ekstrem_dipertahankan,71.0,baris,,,PM > 500 µg/m³ pada baris VALID DIPERTAHANKAN (kemungkinan puncak kabut asap nyata)
+4,Buang nilai mustahil & sentinel,PKN-01,semua,baris_valid_pm25_lebih_besar_pm10,0.0,baris,,,"Informasi: PM2.5 > PM10 tidak konsisten fisik; hanya ditandai, tidak dibuang"
+5,Filter qc_flag = VALID & agregasi per jam (rata-rata),PKN-01,semua,baris_non_valid_dibuang[SUSPECT],146.0,baris,,,qc_flag selain VALID tidak dipakai untuk analisis konsentrasi
+5,Filter qc_flag = VALID & agregasi per jam (rata-rata),PKN-01,semua,jumlah_baris_non_valid,146.0,baris,24432.0,24286.0,Total baris non-VALID dibuang
+5,Filter qc_flag = VALID & agregasi per jam (rata-rata),PKN-01,semua,jam_diagregasi_rata2,0.0,jam,,,Jam berisi >1 baris VALID dirata-rata (arah angin: rata-rata melingkar)
+5,Filter qc_flag = VALID & agregasi per jam (rata-rata),PKN-01,semua,jumlah_baris_per_jam,0.0,baris,24286.0,24286.0,Baris tambahan yang digabung ke jam yang sama
+5,Filter qc_flag = VALID & agregasi per jam (rata-rata),PKN-01,semua,jam_valid_akhir,24286.0,jam,24432.0,24286.0,Jam dengan ≥1 baris VALID dari 24432 jam yang diharapkan
+1,Teks galat → NaN & cast numerik,PKU-01,semua,sel_teks_galat_menjadi_nan,0.0,sel,,,"Token galat (0xDEADBEEF, ERR_*, #VALUE!, INF, …) tidak dapat dibaca sebagai angka"
+1,Teks galat → NaN & cast numerik,PKU-01,semua,sel_kosong_dibaca_nan,0.0,sel,,,String kosong dibaca sebagai NaN (informasi; nilai sudah hilang di sumber)
+1,Teks galat → NaN & cast numerik,PKU-01,semua,kolom_di_cast_numerik,10.0,kolom,,,10 kolom polutan + cuaca dibaca sebagai teks lalu di-cast ke float
+2,Standarisasi satuan ke µg/m³,PKU-01,semua,sel_dikonversi_ppm_ke_ugm3,0.0,sel,,,"PM ×1000 (hipotesis mg/m³ salah label); gas ppm × BM / 24,45 × 1000 (25 °C, 1 atm). Validasi: median vs stasiun sejenis (notebook 03)"
+3,"Parse timestamp, bulatkan ke jam, buang di luar periode",PKU-01,semua,baris_timestamp_tak_terbaca,0.0,baris,,,Format waktu tidak dapat di-parse; baris tidak dapat ditempatkan pada sumbu waktu
+3,"Parse timestamp, bulatkan ke jam, buang di luar periode",PKU-01,semua,baris_di_luar_periode,0.0,baris,,,Di luar 2024-01-01 00:00…2026-10-14 23:00 (mis. epoch 1970)
+3,"Parse timestamp, bulatkan ke jam, buang di luar periode",PKU-01,semua,baris_dibulatkan_ke_jam_terdekat,24432.0,baris,,,"Timestamp bergeser dari awal jam (mis. 23:48, 00:11, milidetik) dibulatkan ke jam terdekat"
+3,"Parse timestamp, bulatkan ke jam, buang di luar periode",PKU-01,semua,baris_subjam_dipotong_ke_jam_penuh,0.0,baris,,,Bacaan beresolusi < 1 jam (:00/:15/:30/:45): floor ke jam penuh lalu dirata-rata pada langkah 5
+3,"Parse timestamp, bulatkan ke jam, buang di luar periode",PKU-01,semua,jumlah_baris,0.0,baris,24432.0,24432.0,Baris yang dibuang pada langkah 3 (tak terbaca + di luar periode)
+4,Buang nilai mustahil & sentinel,PKU-01,semua,sel_sentinel_menjadi_nan,0.0,sel,,,"Nilai pengganti galat/saturasi (±999, ±9999, -9999, 99999); 999 pada CO µg/m³ dikecualikan (konsentrasi wajar)"
+4,Buang nilai mustahil & sentinel,PKU-01,semua,sel_negatif_menjadi_nan,0.0,sel,,,Konsentrasi polutan negatif mustahil secara fisik
+4,Buang nilai mustahil & sentinel,PKU-01,semua,sel_di_luar_batas_fisik_cuaca_menjadi_nan,0.0,sel,,,"Suhu <5/>45 °C, RH di luar 0–100 %, angin >40 m/s, arah di luar 0–360°"
+4,Buang nilai mustahil & sentinel,PKU-01,semua,baris_valid_dengan_nilai_mustahil,0.0,baris,,,Informasi: baris berstatus VALID yang memuat nilai mustahil (penanda QC alat tidak cukup)
+4,Buang nilai mustahil & sentinel,PKU-01,semua,baris_valid_pm_ekstrem_dipertahankan,0.0,baris,,,PM > 500 µg/m³ pada baris VALID DIPERTAHANKAN (kemungkinan puncak kabut asap nyata)
+4,Buang nilai mustahil & sentinel,PKU-01,semua,baris_valid_pm25_lebih_besar_pm10,0.0,baris,,,"Informasi: PM2.5 > PM10 tidak konsisten fisik; hanya ditandai, tidak dibuang"
+5,Filter qc_flag = VALID & agregasi per jam (rata-rata),PKU-01,semua,baris_non_valid_dibuang[SUSPECT],132.0,baris,,,qc_flag selain VALID tidak dipakai untuk analisis konsentrasi
+5,Filter qc_flag = VALID & agregasi per jam (rata-rata),PKU-01,semua,jumlah_baris_non_valid,132.0,baris,24432.0,24300.0,Total baris non-VALID dibuang
+5,Filter qc_flag = VALID & agregasi per jam (rata-rata),PKU-01,semua,jam_diagregasi_rata2,0.0,jam,,,Jam berisi >1 baris VALID dirata-rata (arah angin: rata-rata melingkar)
+5,Filter qc_flag = VALID & agregasi per jam (rata-rata),PKU-01,semua,jumlah_baris_per_jam,0.0,baris,24300.0,24300.0,Baris tambahan yang digabung ke jam yang sama
+5,Filter qc_flag = VALID & agregasi per jam (rata-rata),PKU-01,semua,jam_valid_akhir,24300.0,jam,24432.0,24300.0,Jam dengan ≥1 baris VALID dari 24432 jam yang diharapkan
+1,Teks galat → NaN & cast numerik,PLB-01,semua,sel_teks_galat_menjadi_nan,0.0,sel,,,"Token galat (0xDEADBEEF, ERR_*, #VALUE!, INF, …) tidak dapat dibaca sebagai angka"
+1,Teks galat → NaN & cast numerik,PLB-01,semua,sel_kosong_dibaca_nan,51360.0,sel,,,String kosong dibaca sebagai NaN (informasi; nilai sudah hilang di sumber)
+1,Teks galat → NaN & cast numerik,PLB-01,semua,kolom_di_cast_numerik,10.0,kolom,,,10 kolom polutan + cuaca dibaca sebagai teks lalu di-cast ke float
+2,Standarisasi satuan ke µg/m³,PLB-01,semua,sel_dikonversi_ppm_ke_ugm3,0.0,sel,,,"PM ×1000 (hipotesis mg/m³ salah label); gas ppm × BM / 24,45 × 1000 (25 °C, 1 atm). Validasi: median vs stasiun sejenis (notebook 03)"
+3,"Parse timestamp, bulatkan ke jam, buang di luar periode",PLB-01,semua,baris_timestamp_tak_terbaca,0.0,baris,,,Format waktu tidak dapat di-parse; baris tidak dapat ditempatkan pada sumbu waktu
+3,"Parse timestamp, bulatkan ke jam, buang di luar periode",PLB-01,semua,baris_di_luar_periode,0.0,baris,,,Di luar 2024-01-01 00:00…2026-10-14 23:00 (mis. epoch 1970)
+3,"Parse timestamp, bulatkan ke jam, buang di luar periode",PLB-01,semua,baris_dibulatkan_ke_jam_terdekat,0.0,baris,,,"Timestamp bergeser dari awal jam (mis. 23:48, 00:11, milidetik) dibulatkan ke jam terdekat"
+3,"Parse timestamp, bulatkan ke jam, buang di luar periode",PLB-01,semua,baris_subjam_dipotong_ke_jam_penuh,15933.0,baris,,,Bacaan beresolusi < 1 jam (:00/:15/:30/:45): floor ke jam penuh lalu dirata-rata pada langkah 5
+3,"Parse timestamp, bulatkan ke jam, buang di luar periode",PLB-01,semua,jumlah_baris,0.0,baris,36381.0,36381.0,Baris yang dibuang pada langkah 3 (tak terbaca + di luar periode)
+4,Buang nilai mustahil & sentinel,PLB-01,semua,sel_sentinel_menjadi_nan,0.0,sel,,,"Nilai pengganti galat/saturasi (±999, ±9999, -9999, 99999); 999 pada CO µg/m³ dikecualikan (konsentrasi wajar)"
+4,Buang nilai mustahil & sentinel,PLB-01,semua,sel_negatif_menjadi_nan,0.0,sel,,,Konsentrasi polutan negatif mustahil secara fisik
+4,Buang nilai mustahil & sentinel,PLB-01,semua,sel_di_luar_batas_fisik_cuaca_menjadi_nan,0.0,sel,,,"Suhu <5/>45 °C, RH di luar 0–100 %, angin >40 m/s, arah di luar 0–360°"
+4,Buang nilai mustahil & sentinel,PLB-01,semua,baris_valid_dengan_nilai_mustahil,0.0,baris,,,Informasi: baris berstatus VALID yang memuat nilai mustahil (penanda QC alat tidak cukup)
+4,Buang nilai mustahil & sentinel,PLB-01,semua,baris_valid_pm_ekstrem_dipertahankan,0.0,baris,,,PM > 500 µg/m³ pada baris VALID DIPERTAHANKAN (kemungkinan puncak kabut asap nyata)
+4,Buang nilai mustahil & sentinel,PLB-01,semua,baris_valid_pm25_lebih_besar_pm10,0.0,baris,,,"Informasi: PM2.5 > PM10 tidak konsisten fisik; hanya ditandai, tidak dibuang"
+5,Filter qc_flag = VALID & agregasi per jam (rata-rata),PLB-01,semua,baris_non_valid_dibuang[MISSING],5136.0,baris,,,qc_flag selain VALID tidak dipakai untuk analisis konsentrasi
+5,Filter qc_flag = VALID & agregasi per jam (rata-rata),PLB-01,semua,baris_non_valid_dibuang[SUSPECT],2202.0,baris,,,qc_flag selain VALID tidak dipakai untuk analisis konsentrasi
+5,Filter qc_flag = VALID & agregasi per jam (rata-rata),PLB-01,semua,baris_non_valid_dibuang[CALIBRATING],1596.0,baris,,,qc_flag selain VALID tidak dipakai untuk analisis konsentrasi
+5,Filter qc_flag = VALID & agregasi per jam (rata-rata),PLB-01,semua,jumlah_baris_non_valid,8934.0,baris,36381.0,27447.0,Total baris non-VALID dibuang
+5,Filter qc_flag = VALID & agregasi per jam (rata-rata),PLB-01,semua,jam_diagregasi_rata2,3770.0,jam,,,Jam berisi >1 baris VALID dirata-rata (arah angin: rata-rata melingkar)
+5,Filter qc_flag = VALID & agregasi per jam (rata-rata),PLB-01,semua,jumlah_baris_per_jam,8016.0,baris,27447.0,19431.0,Baris tambahan yang digabung ke jam yang sama
+5,Filter qc_flag = VALID & agregasi per jam (rata-rata),PLB-01,semua,jam_valid_akhir,19431.0,jam,24432.0,19431.0,Jam dengan ≥1 baris VALID dari 24432 jam yang diharapkan
+1,Teks galat → NaN & cast numerik,PLU-01,semua,sel_teks_galat_menjadi_nan,0.0,sel,,,"Token galat (0xDEADBEEF, ERR_*, #VALUE!, INF, …) tidak dapat dibaca sebagai angka"
+1,Teks galat → NaN & cast numerik,PLU-01,semua,sel_kosong_dibaca_nan,0.0,sel,,,String kosong dibaca sebagai NaN (informasi; nilai sudah hilang di sumber)
+1,Teks galat → NaN & cast numerik,PLU-01,semua,kolom_di_cast_numerik,10.0,kolom,,,10 kolom polutan + cuaca dibaca sebagai teks lalu di-cast ke float
+2,Standarisasi satuan ke µg/m³,PLU-01,semua,sel_dikonversi_ppm_ke_ugm3,0.0,sel,,,"PM ×1000 (hipotesis mg/m³ salah label); gas ppm × BM / 24,45 × 1000 (25 °C, 1 atm). Validasi: median vs stasiun sejenis (notebook 03)"
+3,"Parse timestamp, bulatkan ke jam, buang di luar periode",PLU-01,semua,baris_timestamp_tak_terbaca,0.0,baris,,,Format waktu tidak dapat di-parse; baris tidak dapat ditempatkan pada sumbu waktu
+3,"Parse timestamp, bulatkan ke jam, buang di luar periode",PLU-01,semua,baris_di_luar_periode,0.0,baris,,,Di luar 2024-01-01 00:00…2026-10-14 23:00 (mis. epoch 1970)
+3,"Parse timestamp, bulatkan ke jam, buang di luar periode",PLU-01,semua,baris_dibulatkan_ke_jam_terdekat,24432.0,baris,,,"Timestamp bergeser dari awal jam (mis. 23:48, 00:11, milidetik) dibulatkan ke jam terdekat"
+3,"Parse timestamp, bulatkan ke jam, buang di luar periode",PLU-01,semua,baris_subjam_dipotong_ke_jam_penuh,0.0,baris,,,Bacaan beresolusi < 1 jam (:00/:15/:30/:45): floor ke jam penuh lalu dirata-rata pada langkah 5
+3,"Parse timestamp, bulatkan ke jam, buang di luar periode",PLU-01,semua,jumlah_baris,0.0,baris,24432.0,24432.0,Baris yang dibuang pada langkah 3 (tak terbaca + di luar periode)
+4,Buang nilai mustahil & sentinel,PLU-01,semua,sel_sentinel_menjadi_nan,0.0,sel,,,"Nilai pengganti galat/saturasi (±999, ±9999, -9999, 99999); 999 pada CO µg/m³ dikecualikan (konsentrasi wajar)"
+4,Buang nilai mustahil & sentinel,PLU-01,semua,sel_negatif_menjadi_nan,0.0,sel,,,Konsentrasi polutan negatif mustahil secara fisik
+4,Buang nilai mustahil & sentinel,PLU-01,semua,sel_di_luar_batas_fisik_cuaca_menjadi_nan,0.0,sel,,,"Suhu <5/>45 °C, RH di luar 0–100 %, angin >40 m/s, arah di luar 0–360°"
+4,Buang nilai mustahil & sentinel,PLU-01,semua,baris_valid_dengan_nilai_mustahil,0.0,baris,,,Informasi: baris berstatus VALID yang memuat nilai mustahil (penanda QC alat tidak cukup)
+4,Buang nilai mustahil & sentinel,PLU-01,semua,baris_valid_pm_ekstrem_dipertahankan,0.0,baris,,,PM > 500 µg/m³ pada baris VALID DIPERTAHANKAN (kemungkinan puncak kabut asap nyata)
+4,Buang nilai mustahil & sentinel,PLU-01,semua,baris_valid_pm25_lebih_besar_pm10,0.0,baris,,,"Informasi: PM2.5 > PM10 tidak konsisten fisik; hanya ditandai, tidak dibuang"
+5,Filter qc_flag = VALID & agregasi per jam (rata-rata),PLU-01,semua,baris_non_valid_dibuang[SUSPECT],142.0,baris,,,qc_flag selain VALID tidak dipakai untuk analisis konsentrasi
+5,Filter qc_flag = VALID & agregasi per jam (rata-rata),PLU-01,semua,jumlah_baris_non_valid,142.0,baris,24432.0,24290.0,Total baris non-VALID dibuang
+5,Filter qc_flag = VALID & agregasi per jam (rata-rata),PLU-01,semua,jam_diagregasi_rata2,0.0,jam,,,Jam berisi >1 baris VALID dirata-rata (arah angin: rata-rata melingkar)
+5,Filter qc_flag = VALID & agregasi per jam (rata-rata),PLU-01,semua,jumlah_baris_per_jam,0.0,baris,24290.0,24290.0,Baris tambahan yang digabung ke jam yang sama
+5,Filter qc_flag = VALID & agregasi per jam (rata-rata),PLU-01,semua,jam_valid_akhir,24290.0,jam,24432.0,24290.0,Jam dengan ≥1 baris VALID dari 24432 jam yang diharapkan
+1,Teks galat → NaN & cast numerik,PSW-01,semua,sel_teks_galat_menjadi_nan,0.0,sel,,,"Token galat (0xDEADBEEF, ERR_*, #VALUE!, INF, …) tidak dapat dibaca sebagai angka"
+1,Teks galat → NaN & cast numerik,PSW-01,semua,sel_kosong_dibaca_nan,0.0,sel,,,String kosong dibaca sebagai NaN (informasi; nilai sudah hilang di sumber)
+1,Teks galat → NaN & cast numerik,PSW-01,semua,kolom_di_cast_numerik,10.0,kolom,,,10 kolom polutan + cuaca dibaca sebagai teks lalu di-cast ke float
+2,Standarisasi satuan ke µg/m³,PSW-01,semua,sel_dikonversi_ppm_ke_ugm3,146592.0,sel,,,"PM ×1000 (hipotesis mg/m³ salah label); gas ppm × BM / 24,45 × 1000 (25 °C, 1 atm). Validasi: median vs stasiun sejenis (notebook 03)"
+3,"Parse timestamp, bulatkan ke jam, buang di luar periode",PSW-01,semua,baris_timestamp_tak_terbaca,0.0,baris,,,Format waktu tidak dapat di-parse; baris tidak dapat ditempatkan pada sumbu waktu
+3,"Parse timestamp, bulatkan ke jam, buang di luar periode",PSW-01,semua,baris_di_luar_periode,0.0,baris,,,Di luar 2024-01-01 00:00…2026-10-14 23:00 (mis. epoch 1970)
+3,"Parse timestamp, bulatkan ke jam, buang di luar periode",PSW-01,semua,baris_dibulatkan_ke_jam_terdekat,24432.0,baris,,,"Timestamp bergeser dari awal jam (mis. 23:48, 00:11, milidetik) dibulatkan ke jam terdekat"
+3,"Parse timestamp, bulatkan ke jam, buang di luar periode",PSW-01,semua,baris_subjam_dipotong_ke_jam_penuh,0.0,baris,,,Bacaan beresolusi < 1 jam (:00/:15/:30/:45): floor ke jam penuh lalu dirata-rata pada langkah 5
+3,"Parse timestamp, bulatkan ke jam, buang di luar periode",PSW-01,semua,jumlah_baris,0.0,baris,24432.0,24432.0,Baris yang dibuang pada langkah 3 (tak terbaca + di luar periode)
+4,Buang nilai mustahil & sentinel,PSW-01,semua,sel_sentinel_menjadi_nan,0.0,sel,,,"Nilai pengganti galat/saturasi (±999, ±9999, -9999, 99999); 999 pada CO µg/m³ dikecualikan (konsentrasi wajar)"
+4,Buang nilai mustahil & sentinel,PSW-01,semua,sel_negatif_menjadi_nan,0.0,sel,,,Konsentrasi polutan negatif mustahil secara fisik
+4,Buang nilai mustahil & sentinel,PSW-01,semua,sel_di_luar_batas_fisik_cuaca_menjadi_nan,0.0,sel,,,"Suhu <5/>45 °C, RH di luar 0–100 %, angin >40 m/s, arah di luar 0–360°"
+4,Buang nilai mustahil & sentinel,PSW-01,semua,baris_valid_dengan_nilai_mustahil,0.0,baris,,,Informasi: baris berstatus VALID yang memuat nilai mustahil (penanda QC alat tidak cukup)
+4,Buang nilai mustahil & sentinel,PSW-01,semua,baris_valid_pm_ekstrem_dipertahankan,0.0,baris,,,PM > 500 µg/m³ pada baris VALID DIPERTAHANKAN (kemungkinan puncak kabut asap nyata)
+4,Buang nilai mustahil & sentinel,PSW-01,semua,baris_valid_pm25_lebih_besar_pm10,0.0,baris,,,"Informasi: PM2.5 > PM10 tidak konsisten fisik; hanya ditandai, tidak dibuang"
+5,Filter qc_flag = VALID & agregasi per jam (rata-rata),PSW-01,semua,baris_non_valid_dibuang[SUSPECT],138.0,baris,,,qc_flag selain VALID tidak dipakai untuk analisis konsentrasi
+5,Filter qc_flag = VALID & agregasi per jam (rata-rata),PSW-01,semua,jumlah_baris_non_valid,138.0,baris,24432.0,24294.0,Total baris non-VALID dibuang
+5,Filter qc_flag = VALID & agregasi per jam (rata-rata),PSW-01,semua,jam_diagregasi_rata2,0.0,jam,,,Jam berisi >1 baris VALID dirata-rata (arah angin: rata-rata melingkar)
+5,Filter qc_flag = VALID & agregasi per jam (rata-rata),PSW-01,semua,jumlah_baris_per_jam,0.0,baris,24294.0,24294.0,Baris tambahan yang digabung ke jam yang sama
+5,Filter qc_flag = VALID & agregasi per jam (rata-rata),PSW-01,semua,jam_valid_akhir,24294.0,jam,24432.0,24294.0,Jam dengan ≥1 baris VALID dari 24432 jam yang diharapkan
+1,Teks galat → NaN & cast numerik,SM2-01,semua,sel_teks_galat_menjadi_nan,0.0,sel,,,"Token galat (0xDEADBEEF, ERR_*, #VALUE!, INF, …) tidak dapat dibaca sebagai angka"
+1,Teks galat → NaN & cast numerik,SM2-01,semua,sel_kosong_dibaca_nan,1466.0,sel,,,String kosong dibaca sebagai NaN (informasi; nilai sudah hilang di sumber)
+1,Teks galat → NaN & cast numerik,SM2-01,semua,kolom_di_cast_numerik,10.0,kolom,,,10 kolom polutan + cuaca dibaca sebagai teks lalu di-cast ke float
+2,Standarisasi satuan ke µg/m³,SM2-01,semua,sel_dikonversi_ppm_ke_ugm3,0.0,sel,,,"PM ×1000 (hipotesis mg/m³ salah label); gas ppm × BM / 24,45 × 1000 (25 °C, 1 atm). Validasi: median vs stasiun sejenis (notebook 03)"
+3,"Parse timestamp, bulatkan ke jam, buang di luar periode",SM2-01,semua,baris_timestamp_tak_terbaca,0.0,baris,,,Format waktu tidak dapat di-parse; baris tidak dapat ditempatkan pada sumbu waktu
+3,"Parse timestamp, bulatkan ke jam, buang di luar periode",SM2-01,semua,baris_di_luar_periode,0.0,baris,,,Di luar 2024-01-01 00:00…2026-10-14 23:00 (mis. epoch 1970)
+3,"Parse timestamp, bulatkan ke jam, buang di luar periode",SM2-01,semua,baris_dibulatkan_ke_jam_terdekat,24432.0,baris,,,"Timestamp bergeser dari awal jam (mis. 23:48, 00:11, milidetik) dibulatkan ke jam terdekat"
+3,"Parse timestamp, bulatkan ke jam, buang di luar periode",SM2-01,semua,baris_subjam_dipotong_ke_jam_penuh,0.0,baris,,,Bacaan beresolusi < 1 jam (:00/:15/:30/:45): floor ke jam penuh lalu dirata-rata pada langkah 5
+3,"Parse timestamp, bulatkan ke jam, buang di luar periode",SM2-01,semua,jumlah_baris,0.0,baris,24432.0,24432.0,Baris yang dibuang pada langkah 3 (tak terbaca + di luar periode)
+4,Buang nilai mustahil & sentinel,SM2-01,semua,sel_sentinel_menjadi_nan,2078.0,sel,,,"Nilai pengganti galat/saturasi (±999, ±9999, -9999, 99999); 999 pada CO µg/m³ dikecualikan (konsentrasi wajar)"
+4,Buang nilai mustahil & sentinel,SM2-01,semua,sel_negatif_menjadi_nan,0.0,sel,,,Konsentrasi polutan negatif mustahil secara fisik
+4,Buang nilai mustahil & sentinel,SM2-01,semua,sel_di_luar_batas_fisik_cuaca_menjadi_nan,0.0,sel,,,"Suhu <5/>45 °C, RH di luar 0–100 %, angin >40 m/s, arah di luar 0–360°"
+4,Buang nilai mustahil & sentinel,SM2-01,semua,baris_valid_dengan_nilai_mustahil,0.0,baris,,,Informasi: baris berstatus VALID yang memuat nilai mustahil (penanda QC alat tidak cukup)
+4,Buang nilai mustahil & sentinel,SM2-01,semua,baris_valid_pm_ekstrem_dipertahankan,610.0,baris,,,PM > 500 µg/m³ pada baris VALID DIPERTAHANKAN (kemungkinan puncak kabut asap nyata)
+4,Buang nilai mustahil & sentinel,SM2-01,semua,baris_valid_pm25_lebih_besar_pm10,0.0,baris,,,"Informasi: PM2.5 > PM10 tidak konsisten fisik; hanya ditandai, tidak dibuang"
+5,Filter qc_flag = VALID & agregasi per jam (rata-rata),SM2-01,semua,baris_non_valid_dibuang[SUSPECT],1710.0,baris,,,qc_flag selain VALID tidak dipakai untuk analisis konsentrasi
+5,Filter qc_flag = VALID & agregasi per jam (rata-rata),SM2-01,semua,baris_non_valid_dibuang[CALIBRATING],733.0,baris,,,qc_flag selain VALID tidak dipakai untuk analisis konsentrasi
+5,Filter qc_flag = VALID & agregasi per jam (rata-rata),SM2-01,semua,baris_non_valid_dibuang[MAINTENANCE],733.0,baris,,,qc_flag selain VALID tidak dipakai untuk analisis konsentrasi
+5,Filter qc_flag = VALID & agregasi per jam (rata-rata),SM2-01,semua,baris_non_valid_dibuang[WARMUP],489.0,baris,,,qc_flag selain VALID tidak dipakai untuk analisis konsentrasi
+5,Filter qc_flag = VALID & agregasi per jam (rata-rata),SM2-01,semua,jumlah_baris_non_valid,3665.0,baris,24432.0,20767.0,Total baris non-VALID dibuang
+5,Filter qc_flag = VALID & agregasi per jam (rata-rata),SM2-01,semua,jam_diagregasi_rata2,0.0,jam,,,Jam berisi >1 baris VALID dirata-rata (arah angin: rata-rata melingkar)
+5,Filter qc_flag = VALID & agregasi per jam (rata-rata),SM2-01,semua,jumlah_baris_per_jam,0.0,baris,20767.0,20767.0,Baris tambahan yang digabung ke jam yang sama
+5,Filter qc_flag = VALID & agregasi per jam (rata-rata),SM2-01,semua,jam_valid_akhir,20767.0,jam,24432.0,20767.0,Jam dengan ≥1 baris VALID dari 24432 jam yang diharapkan
+1,Teks galat → NaN & cast numerik,SRG-01,semua,sel_teks_galat_menjadi_nan,0.0,sel,,,"Token galat (0xDEADBEEF, ERR_*, #VALUE!, INF, …) tidak dapat dibaca sebagai angka"
+1,Teks galat → NaN & cast numerik,SRG-01,semua,sel_kosong_dibaca_nan,0.0,sel,,,String kosong dibaca sebagai NaN (informasi; nilai sudah hilang di sumber)
+1,Teks galat → NaN & cast numerik,SRG-01,semua,kolom_di_cast_numerik,10.0,kolom,,,10 kolom polutan + cuaca dibaca sebagai teks lalu di-cast ke float
+2,Standarisasi satuan ke µg/m³,SRG-01,semua,sel_dikonversi_ppm_ke_ugm3,0.0,sel,,,"PM ×1000 (hipotesis mg/m³ salah label); gas ppm × BM / 24,45 × 1000 (25 °C, 1 atm). Validasi: median vs stasiun sejenis (notebook 03)"
+3,"Parse timestamp, bulatkan ke jam, buang di luar periode",SRG-01,semua,baris_timestamp_tak_terbaca,0.0,baris,,,Format waktu tidak dapat di-parse; baris tidak dapat ditempatkan pada sumbu waktu
+3,"Parse timestamp, bulatkan ke jam, buang di luar periode",SRG-01,semua,baris_di_luar_periode,0.0,baris,,,Di luar 2024-01-01 00:00…2026-10-14 23:00 (mis. epoch 1970)
+3,"Parse timestamp, bulatkan ke jam, buang di luar periode",SRG-01,semua,baris_dibulatkan_ke_jam_terdekat,24432.0,baris,,,"Timestamp bergeser dari awal jam (mis. 23:48, 00:11, milidetik) dibulatkan ke jam terdekat"
+3,"Parse timestamp, bulatkan ke jam, buang di luar periode",SRG-01,semua,baris_subjam_dipotong_ke_jam_penuh,0.0,baris,,,Bacaan beresolusi < 1 jam (:00/:15/:30/:45): floor ke jam penuh lalu dirata-rata pada langkah 5
+3,"Parse timestamp, bulatkan ke jam, buang di luar periode",SRG-01,semua,jumlah_baris,0.0,baris,24432.0,24432.0,Baris yang dibuang pada langkah 3 (tak terbaca + di luar periode)
+4,Buang nilai mustahil & sentinel,SRG-01,semua,sel_sentinel_menjadi_nan,0.0,sel,,,"Nilai pengganti galat/saturasi (±999, ±9999, -9999, 99999); 999 pada CO µg/m³ dikecualikan (konsentrasi wajar)"
+4,Buang nilai mustahil & sentinel,SRG-01,semua,sel_negatif_menjadi_nan,0.0,sel,,,Konsentrasi polutan negatif mustahil secara fisik
+4,Buang nilai mustahil & sentinel,SRG-01,semua,sel_di_luar_batas_fisik_cuaca_menjadi_nan,0.0,sel,,,"Suhu <5/>45 °C, RH di luar 0–100 %, angin >40 m/s, arah di luar 0–360°"
+4,Buang nilai mustahil & sentinel,SRG-01,semua,baris_valid_dengan_nilai_mustahil,0.0,baris,,,Informasi: baris berstatus VALID yang memuat nilai mustahil (penanda QC alat tidak cukup)
+4,Buang nilai mustahil & sentinel,SRG-01,semua,baris_valid_pm_ekstrem_dipertahankan,0.0,baris,,,PM > 500 µg/m³ pada baris VALID DIPERTAHANKAN (kemungkinan puncak kabut asap nyata)
+4,Buang nilai mustahil & sentinel,SRG-01,semua,baris_valid_pm25_lebih_besar_pm10,0.0,baris,,,"Informasi: PM2.5 > PM10 tidak konsisten fisik; hanya ditandai, tidak dibuang"
+5,Filter qc_flag = VALID & agregasi per jam (rata-rata),SRG-01,semua,baris_non_valid_dibuang[SUSPECT],155.0,baris,,,qc_flag selain VALID tidak dipakai untuk analisis konsentrasi
+5,Filter qc_flag = VALID & agregasi per jam (rata-rata),SRG-01,semua,jumlah_baris_non_valid,155.0,baris,24432.0,24277.0,Total baris non-VALID dibuang
+5,Filter qc_flag = VALID & agregasi per jam (rata-rata),SRG-01,semua,jam_diagregasi_rata2,0.0,jam,,,Jam berisi >1 baris VALID dirata-rata (arah angin: rata-rata melingkar)
+5,Filter qc_flag = VALID & agregasi per jam (rata-rata),SRG-01,semua,jumlah_baris_per_jam,0.0,baris,24277.0,24277.0,Baris tambahan yang digabung ke jam yang sama
+5,Filter qc_flag = VALID & agregasi per jam (rata-rata),SRG-01,semua,jam_valid_akhir,24277.0,jam,24432.0,24277.0,Jam dengan ≥1 baris VALID dari 24432 jam yang diharapkan
+1,Teks galat → NaN & cast numerik,STG-01,semua,sel_teks_galat_menjadi_nan,0.0,sel,,,"Token galat (0xDEADBEEF, ERR_*, #VALUE!, INF, …) tidak dapat dibaca sebagai angka"
+1,Teks galat → NaN & cast numerik,STG-01,semua,sel_kosong_dibaca_nan,0.0,sel,,,String kosong dibaca sebagai NaN (informasi; nilai sudah hilang di sumber)
+1,Teks galat → NaN & cast numerik,STG-01,semua,kolom_di_cast_numerik,10.0,kolom,,,10 kolom polutan + cuaca dibaca sebagai teks lalu di-cast ke float
+2,Standarisasi satuan ke µg/m³,STG-01,semua,sel_dikonversi_ppm_ke_ugm3,0.0,sel,,,"PM ×1000 (hipotesis mg/m³ salah label); gas ppm × BM / 24,45 × 1000 (25 °C, 1 atm). Validasi: median vs stasiun sejenis (notebook 03)"
+3,"Parse timestamp, bulatkan ke jam, buang di luar periode",STG-01,semua,baris_timestamp_tak_terbaca,0.0,baris,,,Format waktu tidak dapat di-parse; baris tidak dapat ditempatkan pada sumbu waktu
+3,"Parse timestamp, bulatkan ke jam, buang di luar periode",STG-01,semua,baris_di_luar_periode,0.0,baris,,,Di luar 2024-01-01 00:00…2026-10-14 23:00 (mis. epoch 1970)
+3,"Parse timestamp, bulatkan ke jam, buang di luar periode",STG-01,semua,baris_dibulatkan_ke_jam_terdekat,24432.0,baris,,,"Timestamp bergeser dari awal jam (mis. 23:48, 00:11, milidetik) dibulatkan ke jam terdekat"
+3,"Parse timestamp, bulatkan ke jam, buang di luar periode",STG-01,semua,baris_subjam_dipotong_ke_jam_penuh,0.0,baris,,,Bacaan beresolusi < 1 jam (:00/:15/:30/:45): floor ke jam penuh lalu dirata-rata pada langkah 5
+3,"Parse timestamp, bulatkan ke jam, buang di luar periode",STG-01,semua,jumlah_baris,0.0,baris,24432.0,24432.0,Baris yang dibuang pada langkah 3 (tak terbaca + di luar periode)
+4,Buang nilai mustahil & sentinel,STG-01,semua,sel_sentinel_menjadi_nan,0.0,sel,,,"Nilai pengganti galat/saturasi (±999, ±9999, -9999, 99999); 999 pada CO µg/m³ dikecualikan (konsentrasi wajar)"
+4,Buang nilai mustahil & sentinel,STG-01,semua,sel_negatif_menjadi_nan,0.0,sel,,,Konsentrasi polutan negatif mustahil secara fisik
+4,Buang nilai mustahil & sentinel,STG-01,semua,sel_di_luar_batas_fisik_cuaca_menjadi_nan,0.0,sel,,,"Suhu <5/>45 °C, RH di luar 0–100 %, angin >40 m/s, arah di luar 0–360°"
+4,Buang nilai mustahil & sentinel,STG-01,semua,baris_valid_dengan_nilai_mustahil,0.0,baris,,,Informasi: baris berstatus VALID yang memuat nilai mustahil (penanda QC alat tidak cukup)
+4,Buang nilai mustahil & sentinel,STG-01,semua,baris_valid_pm_ekstrem_dipertahankan,0.0,baris,,,PM > 500 µg/m³ pada baris VALID DIPERTAHANKAN (kemungkinan puncak kabut asap nyata)
+4,Buang nilai mustahil & sentinel,STG-01,semua,baris_valid_pm25_lebih_besar_pm10,0.0,baris,,,"Informasi: PM2.5 > PM10 tidak konsisten fisik; hanya ditandai, tidak dibuang"
+5,Filter qc_flag = VALID & agregasi per jam (rata-rata),STG-01,semua,baris_non_valid_dibuang[SUSPECT],133.0,baris,,,qc_flag selain VALID tidak dipakai untuk analisis konsentrasi
+5,Filter qc_flag = VALID & agregasi per jam (rata-rata),STG-01,semua,jumlah_baris_non_valid,133.0,baris,24432.0,24299.0,Total baris non-VALID dibuang
+5,Filter qc_flag = VALID & agregasi per jam (rata-rata),STG-01,semua,jam_diagregasi_rata2,0.0,jam,,,Jam berisi >1 baris VALID dirata-rata (arah angin: rata-rata melingkar)
+5,Filter qc_flag = VALID & agregasi per jam (rata-rata),STG-01,semua,jumlah_baris_per_jam,0.0,baris,24299.0,24299.0,Baris tambahan yang digabung ke jam yang sama
+5,Filter qc_flag = VALID & agregasi per jam (rata-rata),STG-01,semua,jam_valid_akhir,24299.0,jam,24432.0,24299.0,Jam dengan ≥1 baris VALID dari 24432 jam yang diharapkan
+1,Teks galat → NaN & cast numerik,YKY-01,semua,sel_teks_galat_menjadi_nan,0.0,sel,,,"Token galat (0xDEADBEEF, ERR_*, #VALUE!, INF, …) tidak dapat dibaca sebagai angka"
+1,Teks galat → NaN & cast numerik,YKY-01,semua,sel_kosong_dibaca_nan,0.0,sel,,,String kosong dibaca sebagai NaN (informasi; nilai sudah hilang di sumber)
+1,Teks galat → NaN & cast numerik,YKY-01,semua,kolom_di_cast_numerik,10.0,kolom,,,10 kolom polutan + cuaca dibaca sebagai teks lalu di-cast ke float
+2,Standarisasi satuan ke µg/m³,YKY-01,semua,sel_dikonversi_ppm_ke_ugm3,0.0,sel,,,"PM ×1000 (hipotesis mg/m³ salah label); gas ppm × BM / 24,45 × 1000 (25 °C, 1 atm). Validasi: median vs stasiun sejenis (notebook 03)"
+3,"Parse timestamp, bulatkan ke jam, buang di luar periode",YKY-01,semua,baris_timestamp_tak_terbaca,0.0,baris,,,Format waktu tidak dapat di-parse; baris tidak dapat ditempatkan pada sumbu waktu
+3,"Parse timestamp, bulatkan ke jam, buang di luar periode",YKY-01,semua,baris_di_luar_periode,0.0,baris,,,Di luar 2024-01-01 00:00…2026-10-14 23:00 (mis. epoch 1970)
+3,"Parse timestamp, bulatkan ke jam, buang di luar periode",YKY-01,semua,baris_dibulatkan_ke_jam_terdekat,0.0,baris,,,"Timestamp bergeser dari awal jam (mis. 23:48, 00:11, milidetik) dibulatkan ke jam terdekat"
+3,"Parse timestamp, bulatkan ke jam, buang di luar periode",YKY-01,semua,baris_subjam_dipotong_ke_jam_penuh,0.0,baris,,,Bacaan beresolusi < 1 jam (:00/:15/:30/:45): floor ke jam penuh lalu dirata-rata pada langkah 5
+3,"Parse timestamp, bulatkan ke jam, buang di luar periode",YKY-01,semua,jumlah_baris,0.0,baris,24432.0,24432.0,Baris yang dibuang pada langkah 3 (tak terbaca + di luar periode)
+4,Buang nilai mustahil & sentinel,YKY-01,semua,sel_sentinel_menjadi_nan,0.0,sel,,,"Nilai pengganti galat/saturasi (±999, ±9999, -9999, 99999); 999 pada CO µg/m³ dikecualikan (konsentrasi wajar)"
+4,Buang nilai mustahil & sentinel,YKY-01,semua,sel_negatif_menjadi_nan,0.0,sel,,,Konsentrasi polutan negatif mustahil secara fisik
+4,Buang nilai mustahil & sentinel,YKY-01,semua,sel_di_luar_batas_fisik_cuaca_menjadi_nan,0.0,sel,,,"Suhu <5/>45 °C, RH di luar 0–100 %, angin >40 m/s, arah di luar 0–360°"
+4,Buang nilai mustahil & sentinel,YKY-01,semua,baris_valid_dengan_nilai_mustahil,0.0,baris,,,Informasi: baris berstatus VALID yang memuat nilai mustahil (penanda QC alat tidak cukup)
+4,Buang nilai mustahil & sentinel,YKY-01,semua,baris_valid_pm_ekstrem_dipertahankan,0.0,baris,,,PM > 500 µg/m³ pada baris VALID DIPERTAHANKAN (kemungkinan puncak kabut asap nyata)
+4,Buang nilai mustahil & sentinel,YKY-01,semua,baris_valid_pm25_lebih_besar_pm10,0.0,baris,,,"Informasi: PM2.5 > PM10 tidak konsisten fisik; hanya ditandai, tidak dibuang"
+5,Filter qc_flag = VALID & agregasi per jam (rata-rata),YKY-01,semua,baris_non_valid_dibuang[SUSPECT],141.0,baris,,,qc_flag selain VALID tidak dipakai untuk analisis konsentrasi
+5,Filter qc_flag = VALID & agregasi per jam (rata-rata),YKY-01,semua,jumlah_baris_non_valid,141.0,baris,24432.0,24291.0,Total baris non-VALID dibuang
+5,Filter qc_flag = VALID & agregasi per jam (rata-rata),YKY-01,semua,jam_diagregasi_rata2,0.0,jam,,,Jam berisi >1 baris VALID dirata-rata (arah angin: rata-rata melingkar)
+5,Filter qc_flag = VALID & agregasi per jam (rata-rata),YKY-01,semua,jumlah_baris_per_jam,0.0,baris,24291.0,24291.0,Baris tambahan yang digabung ke jam yang sama
+5,Filter qc_flag = VALID & agregasi per jam (rata-rata),YKY-01,semua,jam_valid_akhir,24291.0,jam,24432.0,24291.0,Jam dengan ≥1 baris VALID dari 24432 jam yang diharapkan
+5,Filter qc_flag = VALID & agregasi per jam (rata-rata),JMB-02,semua,stasiun_dikecualikan_dari_tabel_analisis,121.0,jam,121.0,0.0,"Dikecualikan dari aq_hourly, aq_daily, dan paparan kesehatan. Sensor Defective; hanya 0,5% baris VALID, tersebar acak dan berhenti setelah Agustus 2024; 99,5% baris berisi galat/mustahil. Dipertahankan di sites_clean & qc_summary sebagai bukti kebutuhan jaringan (Tujuan 5)."
+7,Feature engineering,BGL-01,semua,fitur_waktu_dan_lokasi_ditambahkan,24307.0,jam,,,"tahun, bulan, hari, akhir_pekan, musim (kemarau Mei–Okt), jam_wib, jam_lokal, pulau, kelompok_lokasi, pm_ekstrem"
+7,Feature engineering,BGR-01,semua,fitur_waktu_dan_lokasi_ditambahkan,23688.0,jam,,,"tahun, bulan, hari, akhir_pekan, musim (kemarau Mei–Okt), jam_wib, jam_lokal, pulau, kelompok_lokasi, pm_ekstrem"
+7,Feature engineering,BGR-02,semua,fitur_waktu_dan_lokasi_ditambahkan,23695.0,jam,,,"tahun, bulan, hari, akhir_pekan, musim (kemarau Mei–Okt), jam_wib, jam_lokal, pulau, kelompok_lokasi, pm_ekstrem"
+7,Feature engineering,BJB-01,semua,fitur_waktu_dan_lokasi_ditambahkan,24432.0,jam,,,"tahun, bulan, hari, akhir_pekan, musim (kemarau Mei–Okt), jam_wib, jam_lokal, pulau, kelompok_lokasi, pm_ekstrem"
+7,Feature engineering,BTM-01,semua,fitur_waktu_dan_lokasi_ditambahkan,24278.0,jam,,,"tahun, bulan, hari, akhir_pekan, musim (kemarau Mei–Okt), jam_wib, jam_lokal, pulau, kelompok_lokasi, pm_ekstrem"
+7,Feature engineering,IDP-01,semua,fitur_waktu_dan_lokasi_ditambahkan,24322.0,jam,,,"tahun, bulan, hari, akhir_pekan, musim (kemarau Mei–Okt), jam_wib, jam_lokal, pulau, kelompok_lokasi, pm_ekstrem"
+7,Feature engineering,JKT-01,semua,fitur_waktu_dan_lokasi_ditambahkan,23454.0,jam,,,"tahun, bulan, hari, akhir_pekan, musim (kemarau Mei–Okt), jam_wib, jam_lokal, pulau, kelompok_lokasi, pm_ekstrem"
+7,Feature engineering,JKT-02,semua,fitur_waktu_dan_lokasi_ditambahkan,23480.0,jam,,,"tahun, bulan, hari, akhir_pekan, musim (kemarau Mei–Okt), jam_wib, jam_lokal, pulau, kelompok_lokasi, pm_ekstrem"
+7,Feature engineering,JKT-03,semua,fitur_waktu_dan_lokasi_ditambahkan,23470.0,jam,,,"tahun, bulan, hari, akhir_pekan, musim (kemarau Mei–Okt), jam_wib, jam_lokal, pulau, kelompok_lokasi, pm_ekstrem"
+7,Feature engineering,JMB-01,semua,fitur_waktu_dan_lokasi_ditambahkan,24264.0,jam,,,"tahun, bulan, hari, akhir_pekan, musim (kemarau Mei–Okt), jam_wib, jam_lokal, pulau, kelompok_lokasi, pm_ekstrem"
+7,Feature engineering,KTB-01,semua,fitur_waktu_dan_lokasi_ditambahkan,24305.0,jam,,,"tahun, bulan, hari, akhir_pekan, musim (kemarau Mei–Okt), jam_wib, jam_lokal, pulau, kelompok_lokasi, pm_ekstrem"
+7,Feature engineering,KTG-01,semua,fitur_waktu_dan_lokasi_ditambahkan,23506.0,jam,,,"tahun, bulan, hari, akhir_pekan, musim (kemarau Mei–Okt), jam_wib, jam_lokal, pulau, kelompok_lokasi, pm_ekstrem"
+7,Feature engineering,KTG-02,semua,fitur_waktu_dan_lokasi_ditambahkan,23524.0,jam,,,"tahun, bulan, hari, akhir_pekan, musim (kemarau Mei–Okt), jam_wib, jam_lokal, pulau, kelompok_lokasi, pm_ekstrem"
+7,Feature engineering,MDN-01,semua,fitur_waktu_dan_lokasi_ditambahkan,16640.0,jam,,,"tahun, bulan, hari, akhir_pekan, musim (kemarau Mei–Okt), jam_wib, jam_lokal, pulau, kelompok_lokasi, pm_ekstrem"
+7,Feature engineering,MER-01,semua,fitur_waktu_dan_lokasi_ditambahkan,4891.0,jam,,,"tahun, bulan, hari, akhir_pekan, musim (kemarau Mei–Okt), jam_wib, jam_lokal, pulau, kelompok_lokasi, pm_ekstrem"
+7,Feature engineering,MLG-01,semua,fitur_waktu_dan_lokasi_ditambahkan,24291.0,jam,,,"tahun, bulan, hari, akhir_pekan, musim (kemarau Mei–Okt), jam_wib, jam_lokal, pulau, kelompok_lokasi, pm_ekstrem"
+7,Feature engineering,MRS-01,semua,fitur_waktu_dan_lokasi_ditambahkan,24265.0,jam,,,"tahun, bulan, hari, akhir_pekan, musim (kemarau Mei–Okt), jam_wib, jam_lokal, pulau, kelompok_lokasi, pm_ekstrem"
+7,Feature engineering,PKN-01,semua,fitur_waktu_dan_lokasi_ditambahkan,24286.0,jam,,,"tahun, bulan, hari, akhir_pekan, musim (kemarau Mei–Okt), jam_wib, jam_lokal, pulau, kelompok_lokasi, pm_ekstrem"
+7,Feature engineering,PKU-01,semua,fitur_waktu_dan_lokasi_ditambahkan,24300.0,jam,,,"tahun, bulan, hari, akhir_pekan, musim (kemarau Mei–Okt), jam_wib, jam_lokal, pulau, kelompok_lokasi, pm_ekstrem"
+7,Feature engineering,PLB-01,semua,fitur_waktu_dan_lokasi_ditambahkan,19431.0,jam,,,"tahun, bulan, hari, akhir_pekan, musim (kemarau Mei–Okt), jam_wib, jam_lokal, pulau, kelompok_lokasi, pm_ekstrem"
+7,Feature engineering,PLU-01,semua,fitur_waktu_dan_lokasi_ditambahkan,24290.0,jam,,,"tahun, bulan, hari, akhir_pekan, musim (kemarau Mei–Okt), jam_wib, jam_lokal, pulau, kelompok_lokasi, pm_ekstrem"
+7,Feature engineering,PSW-01,semua,fitur_waktu_dan_lokasi_ditambahkan,24294.0,jam,,,"tahun, bulan, hari, akhir_pekan, musim (kemarau Mei–Okt), jam_wib, jam_lokal, pulau, kelompok_lokasi, pm_ekstrem"
+7,Feature engineering,SM2-01,semua,fitur_waktu_dan_lokasi_ditambahkan,20767.0,jam,,,"tahun, bulan, hari, akhir_pekan, musim (kemarau Mei–Okt), jam_wib, jam_lokal, pulau, kelompok_lokasi, pm_ekstrem"
+7,Feature engineering,SRG-01,semua,fitur_waktu_dan_lokasi_ditambahkan,24277.0,jam,,,"tahun, bulan, hari, akhir_pekan, musim (kemarau Mei–Okt), jam_wib, jam_lokal, pulau, kelompok_lokasi, pm_ekstrem"
+7,Feature engineering,STG-01,semua,fitur_waktu_dan_lokasi_ditambahkan,24299.0,jam,,,"tahun, bulan, hari, akhir_pekan, musim (kemarau Mei–Okt), jam_wib, jam_lokal, pulau, kelompok_lokasi, pm_ekstrem"
+7,Feature engineering,YKY-01,semua,fitur_waktu_dan_lokasi_ditambahkan,24291.0,jam,,,"tahun, bulan, hari, akhir_pekan, musim (kemarau Mei–Okt), jam_wib, jam_lokal, pulau, kelompok_lokasi, pm_ekstrem"
+6,Agregasi harian (≥ 18 dari 24 jam valid),BGL-01,semua,hari_kalender,1018.0,hari,,,Grid kalender lengkap 2024-01-01…2026-10-14
+6,Agregasi harian (≥ 18 dari 24 jam valid),BGL-01,semua,hari_dengan_data_pm25,1018.0,hari,,,Hari dengan ≥1 jam PM2.5 valid
+6,Agregasi harian (≥ 18 dari 24 jam valid),BGL-01,semua,hari_pm25_ditolak_kurang_dari_18_jam,0.0,hari,1018.0,1018.0,Rata-rata harian tidak dihitung bila < 18 dari 24 jam valid (75%)
+6,Agregasi harian (≥ 18 dari 24 jam valid),BGL-01,semua,hari_pm25_valid,1018.0,hari,,,Hari dengan rata-rata PM2.5 sah
+6,Agregasi harian (≥ 18 dari 24 jam valid),BGL-01,semua,hari_tanpa_data,0.0,hari,,,Tidak ada satu pun jam PM2.5 valid
+6,Agregasi harian (≥ 18 dari 24 jam valid),BGR-01,semua,hari_kalender,1018.0,hari,,,Grid kalender lengkap 2024-01-01…2026-10-14
+6,Agregasi harian (≥ 18 dari 24 jam valid),BGR-01,semua,hari_dengan_data_pm25,1018.0,hari,,,Hari dengan ≥1 jam PM2.5 valid
+6,Agregasi harian (≥ 18 dari 24 jam valid),BGR-01,semua,hari_pm25_ditolak_kurang_dari_18_jam,0.0,hari,1018.0,1018.0,Rata-rata harian tidak dihitung bila < 18 dari 24 jam valid (75%)
+6,Agregasi harian (≥ 18 dari 24 jam valid),BGR-01,semua,hari_pm25_valid,1018.0,hari,,,Hari dengan rata-rata PM2.5 sah
+6,Agregasi harian (≥ 18 dari 24 jam valid),BGR-01,semua,hari_tanpa_data,0.0,hari,,,Tidak ada satu pun jam PM2.5 valid
+6,Agregasi harian (≥ 18 dari 24 jam valid),BGR-02,semua,hari_kalender,1018.0,hari,,,Grid kalender lengkap 2024-01-01…2026-10-14
+6,Agregasi harian (≥ 18 dari 24 jam valid),BGR-02,semua,hari_dengan_data_pm25,1018.0,hari,,,Hari dengan ≥1 jam PM2.5 valid
+6,Agregasi harian (≥ 18 dari 24 jam valid),BGR-02,semua,hari_pm25_ditolak_kurang_dari_18_jam,0.0,hari,1018.0,1018.0,Rata-rata harian tidak dihitung bila < 18 dari 24 jam valid (75%)
+6,Agregasi harian (≥ 18 dari 24 jam valid),BGR-02,semua,hari_pm25_valid,1018.0,hari,,,Hari dengan rata-rata PM2.5 sah
+6,Agregasi harian (≥ 18 dari 24 jam valid),BGR-02,semua,hari_tanpa_data,0.0,hari,,,Tidak ada satu pun jam PM2.5 valid
+6,Agregasi harian (≥ 18 dari 24 jam valid),BJB-01,semua,hari_kalender,1018.0,hari,,,Grid kalender lengkap 2024-01-01…2026-10-14
+6,Agregasi harian (≥ 18 dari 24 jam valid),BJB-01,semua,hari_dengan_data_pm25,1018.0,hari,,,Hari dengan ≥1 jam PM2.5 valid
+6,Agregasi harian (≥ 18 dari 24 jam valid),BJB-01,semua,hari_pm25_ditolak_kurang_dari_18_jam,0.0,hari,1018.0,1018.0,Rata-rata harian tidak dihitung bila < 18 dari 24 jam valid (75%)
+6,Agregasi harian (≥ 18 dari 24 jam valid),BJB-01,semua,hari_pm25_valid,1018.0,hari,,,Hari dengan rata-rata PM2.5 sah
+6,Agregasi harian (≥ 18 dari 24 jam valid),BJB-01,semua,hari_tanpa_data,0.0,hari,,,Tidak ada satu pun jam PM2.5 valid
+6,Agregasi harian (≥ 18 dari 24 jam valid),BTM-01,semua,hari_kalender,1018.0,hari,,,Grid kalender lengkap 2024-01-01…2026-10-14
+6,Agregasi harian (≥ 18 dari 24 jam valid),BTM-01,semua,hari_dengan_data_pm25,1018.0,hari,,,Hari dengan ≥1 jam PM2.5 valid
+6,Agregasi harian (≥ 18 dari 24 jam valid),BTM-01,semua,hari_pm25_ditolak_kurang_dari_18_jam,0.0,hari,1018.0,1018.0,Rata-rata harian tidak dihitung bila < 18 dari 24 jam valid (75%)
+6,Agregasi harian (≥ 18 dari 24 jam valid),BTM-01,semua,hari_pm25_valid,1018.0,hari,,,Hari dengan rata-rata PM2.5 sah
+6,Agregasi harian (≥ 18 dari 24 jam valid),BTM-01,semua,hari_tanpa_data,0.0,hari,,,Tidak ada satu pun jam PM2.5 valid
+6,Agregasi harian (≥ 18 dari 24 jam valid),IDP-01,semua,hari_kalender,1018.0,hari,,,Grid kalender lengkap 2024-01-01…2026-10-14
+6,Agregasi harian (≥ 18 dari 24 jam valid),IDP-01,semua,hari_dengan_data_pm25,1018.0,hari,,,Hari dengan ≥1 jam PM2.5 valid
+6,Agregasi harian (≥ 18 dari 24 jam valid),IDP-01,semua,hari_pm25_ditolak_kurang_dari_18_jam,0.0,hari,1018.0,1018.0,Rata-rata harian tidak dihitung bila < 18 dari 24 jam valid (75%)
+6,Agregasi harian (≥ 18 dari 24 jam valid),IDP-01,semua,hari_pm25_valid,1018.0,hari,,,Hari dengan rata-rata PM2.5 sah
+6,Agregasi harian (≥ 18 dari 24 jam valid),IDP-01,semua,hari_tanpa_data,0.0,hari,,,Tidak ada satu pun jam PM2.5 valid
+6,Agregasi harian (≥ 18 dari 24 jam valid),JKT-01,semua,hari_kalender,1018.0,hari,,,Grid kalender lengkap 2024-01-01…2026-10-14
+6,Agregasi harian (≥ 18 dari 24 jam valid),JKT-01,semua,hari_dengan_data_pm25,1018.0,hari,,,Hari dengan ≥1 jam PM2.5 valid
+6,Agregasi harian (≥ 18 dari 24 jam valid),JKT-01,semua,hari_pm25_ditolak_kurang_dari_18_jam,0.0,hari,1018.0,1018.0,Rata-rata harian tidak dihitung bila < 18 dari 24 jam valid (75%)
+6,Agregasi harian (≥ 18 dari 24 jam valid),JKT-01,semua,hari_pm25_valid,1018.0,hari,,,Hari dengan rata-rata PM2.5 sah
+6,Agregasi harian (≥ 18 dari 24 jam valid),JKT-01,semua,hari_tanpa_data,0.0,hari,,,Tidak ada satu pun jam PM2.5 valid
+6,Agregasi harian (≥ 18 dari 24 jam valid),JKT-02,semua,hari_kalender,1018.0,hari,,,Grid kalender lengkap 2024-01-01…2026-10-14
+6,Agregasi harian (≥ 18 dari 24 jam valid),JKT-02,semua,hari_dengan_data_pm25,1018.0,hari,,,Hari dengan ≥1 jam PM2.5 valid
+6,Agregasi harian (≥ 18 dari 24 jam valid),JKT-02,semua,hari_pm25_ditolak_kurang_dari_18_jam,0.0,hari,1018.0,1018.0,Rata-rata harian tidak dihitung bila < 18 dari 24 jam valid (75%)
+6,Agregasi harian (≥ 18 dari 24 jam valid),JKT-02,semua,hari_pm25_valid,1018.0,hari,,,Hari dengan rata-rata PM2.5 sah
+6,Agregasi harian (≥ 18 dari 24 jam valid),JKT-02,semua,hari_tanpa_data,0.0,hari,,,Tidak ada satu pun jam PM2.5 valid
+6,Agregasi harian (≥ 18 dari 24 jam valid),JKT-03,semua,hari_kalender,1018.0,hari,,,Grid kalender lengkap 2024-01-01…2026-10-14
+6,Agregasi harian (≥ 18 dari 24 jam valid),JKT-03,semua,hari_dengan_data_pm25,1018.0,hari,,,Hari dengan ≥1 jam PM2.5 valid
+6,Agregasi harian (≥ 18 dari 24 jam valid),JKT-03,semua,hari_pm25_ditolak_kurang_dari_18_jam,0.0,hari,1018.0,1018.0,Rata-rata harian tidak dihitung bila < 18 dari 24 jam valid (75%)
+6,Agregasi harian (≥ 18 dari 24 jam valid),JKT-03,semua,hari_pm25_valid,1018.0,hari,,,Hari dengan rata-rata PM2.5 sah
+6,Agregasi harian (≥ 18 dari 24 jam valid),JKT-03,semua,hari_tanpa_data,0.0,hari,,,Tidak ada satu pun jam PM2.5 valid
+6,Agregasi harian (≥ 18 dari 24 jam valid),JMB-01,semua,hari_kalender,1018.0,hari,,,Grid kalender lengkap 2024-01-01…2026-10-14
+6,Agregasi harian (≥ 18 dari 24 jam valid),JMB-01,semua,hari_dengan_data_pm25,1018.0,hari,,,Hari dengan ≥1 jam PM2.5 valid
+6,Agregasi harian (≥ 18 dari 24 jam valid),JMB-01,semua,hari_pm25_ditolak_kurang_dari_18_jam,0.0,hari,1018.0,1018.0,Rata-rata harian tidak dihitung bila < 18 dari 24 jam valid (75%)
+6,Agregasi harian (≥ 18 dari 24 jam valid),JMB-01,semua,hari_pm25_valid,1018.0,hari,,,Hari dengan rata-rata PM2.5 sah
+6,Agregasi harian (≥ 18 dari 24 jam valid),JMB-01,semua,hari_tanpa_data,0.0,hari,,,Tidak ada satu pun jam PM2.5 valid
+6,Agregasi harian (≥ 18 dari 24 jam valid),KTB-01,semua,hari_kalender,1018.0,hari,,,Grid kalender lengkap 2024-01-01…2026-10-14
+6,Agregasi harian (≥ 18 dari 24 jam valid),KTB-01,semua,hari_dengan_data_pm25,1018.0,hari,,,Hari dengan ≥1 jam PM2.5 valid
+6,Agregasi harian (≥ 18 dari 24 jam valid),KTB-01,semua,hari_pm25_ditolak_kurang_dari_18_jam,0.0,hari,1018.0,1018.0,Rata-rata harian tidak dihitung bila < 18 dari 24 jam valid (75%)
+6,Agregasi harian (≥ 18 dari 24 jam valid),KTB-01,semua,hari_pm25_valid,1018.0,hari,,,Hari dengan rata-rata PM2.5 sah
+6,Agregasi harian (≥ 18 dari 24 jam valid),KTB-01,semua,hari_tanpa_data,0.0,hari,,,Tidak ada satu pun jam PM2.5 valid
+6,Agregasi harian (≥ 18 dari 24 jam valid),KTG-01,semua,hari_kalender,1018.0,hari,,,Grid kalender lengkap 2024-01-01…2026-10-14
+6,Agregasi harian (≥ 18 dari 24 jam valid),KTG-01,semua,hari_dengan_data_pm25,1018.0,hari,,,Hari dengan ≥1 jam PM2.5 valid
+6,Agregasi harian (≥ 18 dari 24 jam valid),KTG-01,semua,hari_pm25_ditolak_kurang_dari_18_jam,0.0,hari,1018.0,1018.0,Rata-rata harian tidak dihitung bila < 18 dari 24 jam valid (75%)
+6,Agregasi harian (≥ 18 dari 24 jam valid),KTG-01,semua,hari_pm25_valid,1018.0,hari,,,Hari dengan rata-rata PM2.5 sah
+6,Agregasi harian (≥ 18 dari 24 jam valid),KTG-01,semua,hari_tanpa_data,0.0,hari,,,Tidak ada satu pun jam PM2.5 valid
+6,Agregasi harian (≥ 18 dari 24 jam valid),KTG-02,semua,hari_kalender,1018.0,hari,,,Grid kalender lengkap 2024-01-01…2026-10-14
+6,Agregasi harian (≥ 18 dari 24 jam valid),KTG-02,semua,hari_dengan_data_pm25,1018.0,hari,,,Hari dengan ≥1 jam PM2.5 valid
+6,Agregasi harian (≥ 18 dari 24 jam valid),KTG-02,semua,hari_pm25_ditolak_kurang_dari_18_jam,0.0,hari,1018.0,1018.0,Rata-rata harian tidak dihitung bila < 18 dari 24 jam valid (75%)
+6,Agregasi harian (≥ 18 dari 24 jam valid),KTG-02,semua,hari_pm25_valid,1018.0,hari,,,Hari dengan rata-rata PM2.5 sah
+6,Agregasi harian (≥ 18 dari 24 jam valid),KTG-02,semua,hari_tanpa_data,0.0,hari,,,Tidak ada satu pun jam PM2.5 valid
+6,Agregasi harian (≥ 18 dari 24 jam valid),MDN-01,semua,hari_kalender,1018.0,hari,,,Grid kalender lengkap 2024-01-01…2026-10-14
+6,Agregasi harian (≥ 18 dari 24 jam valid),MDN-01,semua,hari_dengan_data_pm25,999.0,hari,,,Hari dengan ≥1 jam PM2.5 valid
+6,Agregasi harian (≥ 18 dari 24 jam valid),MDN-01,semua,hari_pm25_ditolak_kurang_dari_18_jam,628.0,hari,999.0,371.0,Rata-rata harian tidak dihitung bila < 18 dari 24 jam valid (75%)
+6,Agregasi harian (≥ 18 dari 24 jam valid),MDN-01,semua,hari_pm25_valid,371.0,hari,,,Hari dengan rata-rata PM2.5 sah
+6,Agregasi harian (≥ 18 dari 24 jam valid),MDN-01,semua,hari_tanpa_data,19.0,hari,,,Tidak ada satu pun jam PM2.5 valid
+6,Agregasi harian (≥ 18 dari 24 jam valid),MER-01,semua,hari_kalender,1018.0,hari,,,Grid kalender lengkap 2024-01-01…2026-10-14
+6,Agregasi harian (≥ 18 dari 24 jam valid),MER-01,semua,hari_dengan_data_pm25,801.0,hari,,,Hari dengan ≥1 jam PM2.5 valid
+6,Agregasi harian (≥ 18 dari 24 jam valid),MER-01,semua,hari_pm25_ditolak_kurang_dari_18_jam,799.0,hari,801.0,2.0,Rata-rata harian tidak dihitung bila < 18 dari 24 jam valid (75%)
+6,Agregasi harian (≥ 18 dari 24 jam valid),MER-01,semua,hari_pm25_valid,2.0,hari,,,Hari dengan rata-rata PM2.5 sah
+6,Agregasi harian (≥ 18 dari 24 jam valid),MER-01,semua,hari_tanpa_data,217.0,hari,,,Tidak ada satu pun jam PM2.5 valid
+6,Agregasi harian (≥ 18 dari 24 jam valid),MLG-01,semua,hari_kalender,1018.0,hari,,,Grid kalender lengkap 2024-01-01…2026-10-14
+6,Agregasi harian (≥ 18 dari 24 jam valid),MLG-01,semua,hari_dengan_data_pm25,1018.0,hari,,,Hari dengan ≥1 jam PM2.5 valid
+6,Agregasi harian (≥ 18 dari 24 jam valid),MLG-01,semua,hari_pm25_ditolak_kurang_dari_18_jam,0.0,hari,1018.0,1018.0,Rata-rata harian tidak dihitung bila < 18 dari 24 jam valid (75%)
+6,Agregasi harian (≥ 18 dari 24 jam valid),MLG-01,semua,hari_pm25_valid,1018.0,hari,,,Hari dengan rata-rata PM2.5 sah
+6,Agregasi harian (≥ 18 dari 24 jam valid),MLG-01,semua,hari_tanpa_data,0.0,hari,,,Tidak ada satu pun jam PM2.5 valid
+6,Agregasi harian (≥ 18 dari 24 jam valid),MRS-01,semua,hari_kalender,1018.0,hari,,,Grid kalender lengkap 2024-01-01…2026-10-14
+6,Agregasi harian (≥ 18 dari 24 jam valid),MRS-01,semua,hari_dengan_data_pm25,1018.0,hari,,,Hari dengan ≥1 jam PM2.5 valid
+6,Agregasi harian (≥ 18 dari 24 jam valid),MRS-01,semua,hari_pm25_ditolak_kurang_dari_18_jam,0.0,hari,1018.0,1018.0,Rata-rata harian tidak dihitung bila < 18 dari 24 jam valid (75%)
+6,Agregasi harian (≥ 18 dari 24 jam valid),MRS-01,semua,hari_pm25_valid,1018.0,hari,,,Hari dengan rata-rata PM2.5 sah
+6,Agregasi harian (≥ 18 dari 24 jam valid),MRS-01,semua,hari_tanpa_data,0.0,hari,,,Tidak ada satu pun jam PM2.5 valid
+6,Agregasi harian (≥ 18 dari 24 jam valid),PKN-01,semua,hari_kalender,1018.0,hari,,,Grid kalender lengkap 2024-01-01…2026-10-14
+6,Agregasi harian (≥ 18 dari 24 jam valid),PKN-01,semua,hari_dengan_data_pm25,1018.0,hari,,,Hari dengan ≥1 jam PM2.5 valid
+6,Agregasi harian (≥ 18 dari 24 jam valid),PKN-01,semua,hari_pm25_ditolak_kurang_dari_18_jam,0.0,hari,1018.0,1018.0,Rata-rata harian tidak dihitung bila < 18 dari 24 jam valid (75%)
+6,Agregasi harian (≥ 18 dari 24 jam valid),PKN-01,semua,hari_pm25_valid,1018.0,hari,,,Hari dengan rata-rata PM2.5 sah
+6,Agregasi harian (≥ 18 dari 24 jam valid),PKN-01,semua,hari_tanpa_data,0.0,hari,,,Tidak ada satu pun jam PM2.5 valid
+6,Agregasi harian (≥ 18 dari 24 jam valid),PKU-01,semua,hari_kalender,1018.0,hari,,,Grid kalender lengkap 2024-01-01…2026-10-14
+6,Agregasi harian (≥ 18 dari 24 jam valid),PKU-01,semua,hari_dengan_data_pm25,1018.0,hari,,,Hari dengan ≥1 jam PM2.5 valid
+6,Agregasi harian (≥ 18 dari 24 jam valid),PKU-01,semua,hari_pm25_ditolak_kurang_dari_18_jam,0.0,hari,1018.0,1018.0,Rata-rata harian tidak dihitung bila < 18 dari 24 jam valid (75%)
+6,Agregasi harian (≥ 18 dari 24 jam valid),PKU-01,semua,hari_pm25_valid,1018.0,hari,,,Hari dengan rata-rata PM2.5 sah
+6,Agregasi harian (≥ 18 dari 24 jam valid),PKU-01,semua,hari_tanpa_data,0.0,hari,,,Tidak ada satu pun jam PM2.5 valid
+6,Agregasi harian (≥ 18 dari 24 jam valid),PLB-01,semua,hari_kalender,1018.0,hari,,,Grid kalender lengkap 2024-01-01…2026-10-14
+6,Agregasi harian (≥ 18 dari 24 jam valid),PLB-01,semua,hari_dengan_data_pm25,1018.0,hari,,,Hari dengan ≥1 jam PM2.5 valid
+6,Agregasi harian (≥ 18 dari 24 jam valid),PLB-01,semua,hari_pm25_ditolak_kurang_dari_18_jam,322.0,hari,1018.0,696.0,Rata-rata harian tidak dihitung bila < 18 dari 24 jam valid (75%)
+6,Agregasi harian (≥ 18 dari 24 jam valid),PLB-01,semua,hari_pm25_valid,696.0,hari,,,Hari dengan rata-rata PM2.5 sah
+6,Agregasi harian (≥ 18 dari 24 jam valid),PLB-01,semua,hari_tanpa_data,0.0,hari,,,Tidak ada satu pun jam PM2.5 valid
+6,Agregasi harian (≥ 18 dari 24 jam valid),PLU-01,semua,hari_kalender,1018.0,hari,,,Grid kalender lengkap 2024-01-01…2026-10-14
+6,Agregasi harian (≥ 18 dari 24 jam valid),PLU-01,semua,hari_dengan_data_pm25,1018.0,hari,,,Hari dengan ≥1 jam PM2.5 valid
+6,Agregasi harian (≥ 18 dari 24 jam valid),PLU-01,semua,hari_pm25_ditolak_kurang_dari_18_jam,0.0,hari,1018.0,1018.0,Rata-rata harian tidak dihitung bila < 18 dari 24 jam valid (75%)
+6,Agregasi harian (≥ 18 dari 24 jam valid),PLU-01,semua,hari_pm25_valid,1018.0,hari,,,Hari dengan rata-rata PM2.5 sah
+6,Agregasi harian (≥ 18 dari 24 jam valid),PLU-01,semua,hari_tanpa_data,0.0,hari,,,Tidak ada satu pun jam PM2.5 valid
+6,Agregasi harian (≥ 18 dari 24 jam valid),PSW-01,semua,hari_kalender,1018.0,hari,,,Grid kalender lengkap 2024-01-01…2026-10-14
+6,Agregasi harian (≥ 18 dari 24 jam valid),PSW-01,semua,hari_dengan_data_pm25,1018.0,hari,,,Hari dengan ≥1 jam PM2.5 valid
+6,Agregasi harian (≥ 18 dari 24 jam valid),PSW-01,semua,hari_pm25_ditolak_kurang_dari_18_jam,0.0,hari,1018.0,1018.0,Rata-rata harian tidak dihitung bila < 18 dari 24 jam valid (75%)
+6,Agregasi harian (≥ 18 dari 24 jam valid),PSW-01,semua,hari_pm25_valid,1018.0,hari,,,Hari dengan rata-rata PM2.5 sah
+6,Agregasi harian (≥ 18 dari 24 jam valid),PSW-01,semua,hari_tanpa_data,0.0,hari,,,Tidak ada satu pun jam PM2.5 valid
+6,Agregasi harian (≥ 18 dari 24 jam valid),SM2-01,semua,hari_kalender,1018.0,hari,,,Grid kalender lengkap 2024-01-01…2026-10-14
+6,Agregasi harian (≥ 18 dari 24 jam valid),SM2-01,semua,hari_dengan_data_pm25,1018.0,hari,,,Hari dengan ≥1 jam PM2.5 valid
+6,Agregasi harian (≥ 18 dari 24 jam valid),SM2-01,semua,hari_pm25_ditolak_kurang_dari_18_jam,247.0,hari,1018.0,771.0,Rata-rata harian tidak dihitung bila < 18 dari 24 jam valid (75%)
+6,Agregasi harian (≥ 18 dari 24 jam valid),SM2-01,semua,hari_pm25_valid,771.0,hari,,,Hari dengan rata-rata PM2.5 sah
+6,Agregasi harian (≥ 18 dari 24 jam valid),SM2-01,semua,hari_tanpa_data,0.0,hari,,,Tidak ada satu pun jam PM2.5 valid
+6,Agregasi harian (≥ 18 dari 24 jam valid),SRG-01,semua,hari_kalender,1018.0,hari,,,Grid kalender lengkap 2024-01-01…2026-10-14
+6,Agregasi harian (≥ 18 dari 24 jam valid),SRG-01,semua,hari_dengan_data_pm25,1018.0,hari,,,Hari dengan ≥1 jam PM2.5 valid
+6,Agregasi harian (≥ 18 dari 24 jam valid),SRG-01,semua,hari_pm25_ditolak_kurang_dari_18_jam,0.0,hari,1018.0,1018.0,Rata-rata harian tidak dihitung bila < 18 dari 24 jam valid (75%)
+6,Agregasi harian (≥ 18 dari 24 jam valid),SRG-01,semua,hari_pm25_valid,1018.0,hari,,,Hari dengan rata-rata PM2.5 sah
+6,Agregasi harian (≥ 18 dari 24 jam valid),SRG-01,semua,hari_tanpa_data,0.0,hari,,,Tidak ada satu pun jam PM2.5 valid
+6,Agregasi harian (≥ 18 dari 24 jam valid),STG-01,semua,hari_kalender,1018.0,hari,,,Grid kalender lengkap 2024-01-01…2026-10-14
+6,Agregasi harian (≥ 18 dari 24 jam valid),STG-01,semua,hari_dengan_data_pm25,1018.0,hari,,,Hari dengan ≥1 jam PM2.5 valid
+6,Agregasi harian (≥ 18 dari 24 jam valid),STG-01,semua,hari_pm25_ditolak_kurang_dari_18_jam,0.0,hari,1018.0,1018.0,Rata-rata harian tidak dihitung bila < 18 dari 24 jam valid (75%)
+6,Agregasi harian (≥ 18 dari 24 jam valid),STG-01,semua,hari_pm25_valid,1018.0,hari,,,Hari dengan rata-rata PM2.5 sah
+6,Agregasi harian (≥ 18 dari 24 jam valid),STG-01,semua,hari_tanpa_data,0.0,hari,,,Tidak ada satu pun jam PM2.5 valid
+6,Agregasi harian (≥ 18 dari 24 jam valid),YKY-01,semua,hari_kalender,1018.0,hari,,,Grid kalender lengkap 2024-01-01…2026-10-14
+6,Agregasi harian (≥ 18 dari 24 jam valid),YKY-01,semua,hari_dengan_data_pm25,1018.0,hari,,,Hari dengan ≥1 jam PM2.5 valid
+6,Agregasi harian (≥ 18 dari 24 jam valid),YKY-01,semua,hari_pm25_ditolak_kurang_dari_18_jam,0.0,hari,1018.0,1018.0,Rata-rata harian tidak dihitung bila < 18 dari 24 jam valid (75%)
+6,Agregasi harian (≥ 18 dari 24 jam valid),YKY-01,semua,hari_pm25_valid,1018.0,hari,,,Hari dengan rata-rata PM2.5 sah
+6,Agregasi harian (≥ 18 dari 24 jam valid),YKY-01,semua,hari_tanpa_data,0.0,hari,,,Tidak ada satu pun jam PM2.5 valid
+7,Feature engineering,BGL-01,semua,episode_kabut_asap,0.0,episode,,,PM2.5 harian > 150 µg/m³ selama ≥ 3 hari kalender berturut-turut
+7,Feature engineering,BGL-01,semua,hari_dalam_episode,0.0,hari,,,Jumlah hari yang ditandai episode
+7,Feature engineering,BGR-01,semua,episode_kabut_asap,0.0,episode,,,PM2.5 harian > 150 µg/m³ selama ≥ 3 hari kalender berturut-turut
+7,Feature engineering,BGR-01,semua,hari_dalam_episode,0.0,hari,,,Jumlah hari yang ditandai episode
+7,Feature engineering,BGR-02,semua,episode_kabut_asap,0.0,episode,,,PM2.5 harian > 150 µg/m³ selama ≥ 3 hari kalender berturut-turut
+7,Feature engineering,BGR-02,semua,hari_dalam_episode,0.0,hari,,,Jumlah hari yang ditandai episode
+7,Feature engineering,BJB-01,semua,episode_kabut_asap,1.0,episode,,,PM2.5 harian > 150 µg/m³ selama ≥ 3 hari kalender berturut-turut
+7,Feature engineering,BJB-01,semua,hari_dalam_episode,204.0,hari,,,Jumlah hari yang ditandai episode
+7,Feature engineering,BTM-01,semua,episode_kabut_asap,0.0,episode,,,PM2.5 harian > 150 µg/m³ selama ≥ 3 hari kalender berturut-turut
+7,Feature engineering,BTM-01,semua,hari_dalam_episode,0.0,hari,,,Jumlah hari yang ditandai episode
+7,Feature engineering,IDP-01,semua,episode_kabut_asap,0.0,episode,,,PM2.5 harian > 150 µg/m³ selama ≥ 3 hari kalender berturut-turut
+7,Feature engineering,IDP-01,semua,hari_dalam_episode,0.0,hari,,,Jumlah hari yang ditandai episode
+7,Feature engineering,JKT-01,semua,episode_kabut_asap,0.0,episode,,,PM2.5 harian > 150 µg/m³ selama ≥ 3 hari kalender berturut-turut
+7,Feature engineering,JKT-01,semua,hari_dalam_episode,0.0,hari,,,Jumlah hari yang ditandai episode
+7,Feature engineering,JKT-02,semua,episode_kabut_asap,0.0,episode,,,PM2.5 harian > 150 µg/m³ selama ≥ 3 hari kalender berturut-turut
+7,Feature engineering,JKT-02,semua,hari_dalam_episode,0.0,hari,,,Jumlah hari yang ditandai episode
+7,Feature engineering,JKT-03,semua,episode_kabut_asap,0.0,episode,,,PM2.5 harian > 150 µg/m³ selama ≥ 3 hari kalender berturut-turut
+7,Feature engineering,JKT-03,semua,hari_dalam_episode,0.0,hari,,,Jumlah hari yang ditandai episode
+7,Feature engineering,JMB-01,semua,episode_kabut_asap,0.0,episode,,,PM2.5 harian > 150 µg/m³ selama ≥ 3 hari kalender berturut-turut
+7,Feature engineering,JMB-01,semua,hari_dalam_episode,0.0,hari,,,Jumlah hari yang ditandai episode
+7,Feature engineering,KTB-01,semua,episode_kabut_asap,0.0,episode,,,PM2.5 harian > 150 µg/m³ selama ≥ 3 hari kalender berturut-turut
+7,Feature engineering,KTB-01,semua,hari_dalam_episode,0.0,hari,,,Jumlah hari yang ditandai episode
+7,Feature engineering,KTG-01,semua,episode_kabut_asap,1.0,episode,,,PM2.5 harian > 150 µg/m³ selama ≥ 3 hari kalender berturut-turut
+7,Feature engineering,KTG-01,semua,hari_dalam_episode,44.0,hari,,,Jumlah hari yang ditandai episode
+7,Feature engineering,KTG-02,semua,episode_kabut_asap,1.0,episode,,,PM2.5 harian > 150 µg/m³ selama ≥ 3 hari kalender berturut-turut
+7,Feature engineering,KTG-02,semua,hari_dalam_episode,44.0,hari,,,Jumlah hari yang ditandai episode
+7,Feature engineering,MDN-01,semua,episode_kabut_asap,0.0,episode,,,PM2.5 harian > 150 µg/m³ selama ≥ 3 hari kalender berturut-turut
+7,Feature engineering,MDN-01,semua,hari_dalam_episode,0.0,hari,,,Jumlah hari yang ditandai episode
+7,Feature engineering,MER-01,semua,episode_kabut_asap,0.0,episode,,,PM2.5 harian > 150 µg/m³ selama ≥ 3 hari kalender berturut-turut
+7,Feature engineering,MER-01,semua,hari_dalam_episode,0.0,hari,,,Jumlah hari yang ditandai episode
+7,Feature engineering,MLG-01,semua,episode_kabut_asap,0.0,episode,,,PM2.5 harian > 150 µg/m³ selama ≥ 3 hari kalender berturut-turut
+7,Feature engineering,MLG-01,semua,hari_dalam_episode,0.0,hari,,,Jumlah hari yang ditandai episode
+7,Feature engineering,MRS-01,semua,episode_kabut_asap,0.0,episode,,,PM2.5 harian > 150 µg/m³ selama ≥ 3 hari kalender berturut-turut
+7,Feature engineering,MRS-01,semua,hari_dalam_episode,0.0,hari,,,Jumlah hari yang ditandai episode
+7,Feature engineering,PKN-01,semua,episode_kabut_asap,1.0,episode,,,PM2.5 harian > 150 µg/m³ selama ≥ 3 hari kalender berturut-turut
+7,Feature engineering,PKN-01,semua,hari_dalam_episode,6.0,hari,,,Jumlah hari yang ditandai episode
+7,Feature engineering,PKU-01,semua,episode_kabut_asap,0.0,episode,,,PM2.5 harian > 150 µg/m³ selama ≥ 3 hari kalender berturut-turut
+7,Feature engineering,PKU-01,semua,hari_dalam_episode,0.0,hari,,,Jumlah hari yang ditandai episode
+7,Feature engineering,PLB-01,semua,episode_kabut_asap,10.0,episode,,,PM2.5 harian > 150 µg/m³ selama ≥ 3 hari kalender berturut-turut
+7,Feature engineering,PLB-01,semua,hari_dalam_episode,73.0,hari,,,Jumlah hari yang ditandai episode
+7,Feature engineering,PLU-01,semua,episode_kabut_asap,0.0,episode,,,PM2.5 harian > 150 µg/m³ selama ≥ 3 hari kalender berturut-turut
+7,Feature engineering,PLU-01,semua,hari_dalam_episode,0.0,hari,,,Jumlah hari yang ditandai episode
+7,Feature engineering,PSW-01,semua,episode_kabut_asap,0.0,episode,,,PM2.5 harian > 150 µg/m³ selama ≥ 3 hari kalender berturut-turut
+7,Feature engineering,PSW-01,semua,hari_dalam_episode,0.0,hari,,,Jumlah hari yang ditandai episode
+7,Feature engineering,SM2-01,semua,episode_kabut_asap,6.0,episode,,,PM2.5 harian > 150 µg/m³ selama ≥ 3 hari kalender berturut-turut
+7,Feature engineering,SM2-01,semua,hari_dalam_episode,20.0,hari,,,Jumlah hari yang ditandai episode
+7,Feature engineering,SRG-01,semua,episode_kabut_asap,0.0,episode,,,PM2.5 harian > 150 µg/m³ selama ≥ 3 hari kalender berturut-turut
+7,Feature engineering,SRG-01,semua,hari_dalam_episode,0.0,hari,,,Jumlah hari yang ditandai episode
+7,Feature engineering,STG-01,semua,episode_kabut_asap,1.0,episode,,,PM2.5 harian > 150 µg/m³ selama ≥ 3 hari kalender berturut-turut
+7,Feature engineering,STG-01,semua,hari_dalam_episode,5.0,hari,,,Jumlah hari yang ditandai episode
+7,Feature engineering,YKY-01,semua,episode_kabut_asap,0.0,episode,,,PM2.5 harian > 150 µg/m³ selama ≥ 3 hari kalender berturut-turut
+7,Feature engineering,YKY-01,semua,hari_dalam_episode,0.0,hari,,,Jumlah hari yang ditandai episode
+7,Feature engineering,BGL-01,semua,hari_pm25_lewat_baku_mutu_pp22,0.0,hari,,,PM2.5 harian > 55 µg/m³ (PP 22/2021)
+7,Feature engineering,BGR-01,semua,hari_pm25_lewat_baku_mutu_pp22,0.0,hari,,,PM2.5 harian > 55 µg/m³ (PP 22/2021)
+7,Feature engineering,BGR-02,semua,hari_pm25_lewat_baku_mutu_pp22,0.0,hari,,,PM2.5 harian > 55 µg/m³ (PP 22/2021)
+7,Feature engineering,BJB-01,semua,hari_pm25_lewat_baku_mutu_pp22,408.0,hari,,,PM2.5 harian > 55 µg/m³ (PP 22/2021)
+7,Feature engineering,BTM-01,semua,hari_pm25_lewat_baku_mutu_pp22,259.0,hari,,,PM2.5 harian > 55 µg/m³ (PP 22/2021)
+7,Feature engineering,IDP-01,semua,hari_pm25_lewat_baku_mutu_pp22,0.0,hari,,,PM2.5 harian > 55 µg/m³ (PP 22/2021)
+7,Feature engineering,JKT-01,semua,hari_pm25_lewat_baku_mutu_pp22,0.0,hari,,,PM2.5 harian > 55 µg/m³ (PP 22/2021)
+7,Feature engineering,JKT-02,semua,hari_pm25_lewat_baku_mutu_pp22,1018.0,hari,,,PM2.5 harian > 55 µg/m³ (PP 22/2021)
+7,Feature engineering,JKT-03,semua,hari_pm25_lewat_baku_mutu_pp22,352.0,hari,,,PM2.5 harian > 55 µg/m³ (PP 22/2021)
+7,Feature engineering,JMB-01,semua,hari_pm25_lewat_baku_mutu_pp22,258.0,hari,,,PM2.5 harian > 55 µg/m³ (PP 22/2021)
+7,Feature engineering,KTB-01,semua,hari_pm25_lewat_baku_mutu_pp22,6.0,hari,,,PM2.5 harian > 55 µg/m³ (PP 22/2021)
+7,Feature engineering,KTG-01,semua,hari_pm25_lewat_baku_mutu_pp22,254.0,hari,,,PM2.5 harian > 55 µg/m³ (PP 22/2021)
+7,Feature engineering,KTG-02,semua,hari_pm25_lewat_baku_mutu_pp22,263.0,hari,,,PM2.5 harian > 55 µg/m³ (PP 22/2021)
+7,Feature engineering,MDN-01,semua,hari_pm25_lewat_baku_mutu_pp22,33.0,hari,,,PM2.5 harian > 55 µg/m³ (PP 22/2021)
+7,Feature engineering,MER-01,semua,hari_pm25_lewat_baku_mutu_pp22,0.0,hari,,,PM2.5 harian > 55 µg/m³ (PP 22/2021)
+7,Feature engineering,MLG-01,semua,hari_pm25_lewat_baku_mutu_pp22,0.0,hari,,,PM2.5 harian > 55 µg/m³ (PP 22/2021)
+7,Feature engineering,MRS-01,semua,hari_pm25_lewat_baku_mutu_pp22,0.0,hari,,,PM2.5 harian > 55 µg/m³ (PP 22/2021)
+7,Feature engineering,PKN-01,semua,hari_pm25_lewat_baku_mutu_pp22,258.0,hari,,,PM2.5 harian > 55 µg/m³ (PP 22/2021)
+7,Feature engineering,PKU-01,semua,hari_pm25_lewat_baku_mutu_pp22,259.0,hari,,,PM2.5 harian > 55 µg/m³ (PP 22/2021)
+7,Feature engineering,PLB-01,semua,hari_pm25_lewat_baku_mutu_pp22,227.0,hari,,,PM2.5 harian > 55 µg/m³ (PP 22/2021)
+7,Feature engineering,PLU-01,semua,hari_pm25_lewat_baku_mutu_pp22,0.0,hari,,,PM2.5 harian > 55 µg/m³ (PP 22/2021)
+7,Feature engineering,PSW-01,semua,hari_pm25_lewat_baku_mutu_pp22,261.0,hari,,,PM2.5 harian > 55 µg/m³ (PP 22/2021)
+7,Feature engineering,SM2-01,semua,hari_pm25_lewat_baku_mutu_pp22,106.0,hari,,,PM2.5 harian > 55 µg/m³ (PP 22/2021)
+7,Feature engineering,SRG-01,semua,hari_pm25_lewat_baku_mutu_pp22,0.0,hari,,,PM2.5 harian > 55 µg/m³ (PP 22/2021)
+7,Feature engineering,STG-01,semua,hari_pm25_lewat_baku_mutu_pp22,229.0,hari,,,PM2.5 harian > 55 µg/m³ (PP 22/2021)
+7,Feature engineering,YKY-01,semua,hari_pm25_lewat_baku_mutu_pp22,10.0,hari,,,PM2.5 harian > 55 µg/m³ (PP 22/2021)
+8,Penggabungan master + kesehatan,BGL-01,semua,status_analisis,,label,,,"Layak: cakupan terendah 99.5% (jam 99.5%, hari 100.0%, hari kemarau 100.0%). Layak ≥75%; Terbatas <75%; Dikecualikan bila jam valid <10%"
+8,Penggabungan master + kesehatan,BGR-01,semua,status_analisis,,label,,,"Layak: cakupan terendah 97.0% (jam 97.0%, hari 100.0%, hari kemarau 100.0%). Layak ≥75%; Terbatas <75%; Dikecualikan bila jam valid <10%"
+8,Penggabungan master + kesehatan,BGR-02,semua,status_analisis,,label,,,"Layak: cakupan terendah 97.0% (jam 97.0%, hari 100.0%, hari kemarau 100.0%). Layak ≥75%; Terbatas <75%; Dikecualikan bila jam valid <10%"
+8,Penggabungan master + kesehatan,BJB-01,semua,status_analisis,,label,,,"Layak: cakupan terendah 100.0% (jam 100.0%, hari 100.0%, hari kemarau 100.0%). Layak ≥75%; Terbatas <75%; Dikecualikan bila jam valid <10%"
+8,Penggabungan master + kesehatan,BTM-01,semua,status_analisis,,label,,,"Layak: cakupan terendah 99.4% (jam 99.4%, hari 100.0%, hari kemarau 100.0%). Layak ≥75%; Terbatas <75%; Dikecualikan bila jam valid <10%"
+8,Penggabungan master + kesehatan,IDP-01,semua,status_analisis,,label,,,"Layak: cakupan terendah 99.5% (jam 99.5%, hari 100.0%, hari kemarau 100.0%). Layak ≥75%; Terbatas <75%; Dikecualikan bila jam valid <10%"
+8,Penggabungan master + kesehatan,JKT-01,semua,status_analisis,,label,,,"Layak: cakupan terendah 96.0% (jam 96.0%, hari 100.0%, hari kemarau 100.0%). Layak ≥75%; Terbatas <75%; Dikecualikan bila jam valid <10%"
+8,Penggabungan master + kesehatan,JKT-02,semua,status_analisis,,label,,,"Layak: cakupan terendah 96.1% (jam 96.1%, hari 100.0%, hari kemarau 100.0%). Layak ≥75%; Terbatas <75%; Dikecualikan bila jam valid <10%"
+8,Penggabungan master + kesehatan,JKT-03,semua,status_analisis,,label,,,"Layak: cakupan terendah 96.1% (jam 96.1%, hari 100.0%, hari kemarau 100.0%). Layak ≥75%; Terbatas <75%; Dikecualikan bila jam valid <10%"
+8,Penggabungan master + kesehatan,JMB-01,semua,status_analisis,,label,,,"Layak: cakupan terendah 99.3% (jam 99.3%, hari 100.0%, hari kemarau 100.0%). Layak ≥75%; Terbatas <75%; Dikecualikan bila jam valid <10%"
+8,Penggabungan master + kesehatan,JMB-02,semua,status_analisis,,label,,,"Dikecualikan: cakupan terendah 0.5% (jam 0.5%, hari nan%, hari kemarau nan%). Layak ≥75%; Terbatas <75%; Dikecualikan bila jam valid <10%"
+8,Penggabungan master + kesehatan,KTB-01,semua,status_analisis,,label,,,"Layak: cakupan terendah 99.5% (jam 99.5%, hari 100.0%, hari kemarau 100.0%). Layak ≥75%; Terbatas <75%; Dikecualikan bila jam valid <10%"
+8,Penggabungan master + kesehatan,KTG-01,semua,status_analisis,,label,,,"Layak: cakupan terendah 96.2% (jam 96.2%, hari 100.0%, hari kemarau 100.0%). Layak ≥75%; Terbatas <75%; Dikecualikan bila jam valid <10%"
+8,Penggabungan master + kesehatan,KTG-02,semua,status_analisis,,label,,,"Layak: cakupan terendah 96.3% (jam 96.3%, hari 100.0%, hari kemarau 100.0%). Layak ≥75%; Terbatas <75%; Dikecualikan bila jam valid <10%"
+8,Penggabungan master + kesehatan,MDN-01,semua,status_analisis,,label,,,"Terbatas: cakupan terendah 36.4% (jam 68.1%, hari 36.4%, hari kemarau 37.2%). Layak ≥75%; Terbatas <75%; Dikecualikan bila jam valid <10%"
+8,Penggabungan master + kesehatan,MER-01,semua,status_analisis,,label,,,"Terbatas: cakupan terendah 0.2% (jam 20.0%, hari 0.2%, hari kemarau 0.4%). Layak ≥75%; Terbatas <75%; Dikecualikan bila jam valid <10%"
+8,Penggabungan master + kesehatan,MLG-01,semua,status_analisis,,label,,,"Layak: cakupan terendah 99.4% (jam 99.4%, hari 100.0%, hari kemarau 100.0%). Layak ≥75%; Terbatas <75%; Dikecualikan bila jam valid <10%"
+8,Penggabungan master + kesehatan,MRS-01,semua,status_analisis,,label,,,"Layak: cakupan terendah 99.3% (jam 99.3%, hari 100.0%, hari kemarau 100.0%). Layak ≥75%; Terbatas <75%; Dikecualikan bila jam valid <10%"
+8,Penggabungan master + kesehatan,PKN-01,semua,status_analisis,,label,,,"Layak: cakupan terendah 99.4% (jam 99.4%, hari 100.0%, hari kemarau 100.0%). Layak ≥75%; Terbatas <75%; Dikecualikan bila jam valid <10%"
+8,Penggabungan master + kesehatan,PKU-01,semua,status_analisis,,label,,,"Layak: cakupan terendah 99.5% (jam 99.5%, hari 100.0%, hari kemarau 100.0%). Layak ≥75%; Terbatas <75%; Dikecualikan bila jam valid <10%"
+8,Penggabungan master + kesehatan,PLB-01,semua,status_analisis,,label,,,"Terbatas: cakupan terendah 68.4% (jam 79.5%, hari 68.4%, hari kemarau 72.3%). Layak ≥75%; Terbatas <75%; Dikecualikan bila jam valid <10%"
+8,Penggabungan master + kesehatan,PLU-01,semua,status_analisis,,label,,,"Layak: cakupan terendah 99.4% (jam 99.4%, hari 100.0%, hari kemarau 100.0%). Layak ≥75%; Terbatas <75%; Dikecualikan bila jam valid <10%"
+8,Penggabungan master + kesehatan,PSW-01,semua,status_analisis,,label,,,"Layak: cakupan terendah 99.4% (jam 99.4%, hari 100.0%, hari kemarau 100.0%). Layak ≥75%; Terbatas <75%; Dikecualikan bila jam valid <10%"
+8,Penggabungan master + kesehatan,SM2-01,semua,status_analisis,,label,,,"Terbatas: cakupan terendah 53.8% (jam 85.0%, hari 75.7%, hari kemarau 53.8%). Layak ≥75%; Terbatas <75%; Dikecualikan bila jam valid <10%"
+8,Penggabungan master + kesehatan,SRG-01,semua,status_analisis,,label,,,"Layak: cakupan terendah 99.4% (jam 99.4%, hari 100.0%, hari kemarau 100.0%). Layak ≥75%; Terbatas <75%; Dikecualikan bila jam valid <10%"
+8,Penggabungan master + kesehatan,STG-01,semua,status_analisis,,label,,,"Layak: cakupan terendah 99.5% (jam 99.5%, hari 100.0%, hari kemarau 100.0%). Layak ≥75%; Terbatas <75%; Dikecualikan bila jam valid <10%"
+8,Penggabungan master + kesehatan,YKY-01,semua,status_analisis,,label,,,"Layak: cakupan terendah 99.4% (jam 99.4%, hari 100.0%, hari kemarau 100.0%). Layak ≥75%; Terbatas <75%; Dikecualikan bila jam valid <10%"
+8,Penggabungan master + kesehatan,HLT-01,semua,baris_sebelum_periode_aqms_dibuang,5.0,baris,,,Baris 2023-12-31 tidak punya pasangan data paparan AQMS (hanya ada di 5 RS)
+8,Penggabungan master + kesehatan,HLT-01,semua,jumlah_baris,5.0,baris,27491.0,27486.0,Baris kesehatan dibatasi pada periode AQMS
+8,Penggabungan master + kesehatan,RS-XXX-01/JKT-01,semua,hari_dengan_paparan_pm25_lag0,1018.0,hari,1018.0,1018.0,Hari kesehatan yang punya PM2.5 harian sah di stasiun pasangan
+8,Penggabungan master + kesehatan,RS-XXX-01/JKT-01,semua,hari_dengan_lag0_sampai_lag7_lengkap,1011.0,hari,,,Hari dengan PM2.5 lag 0–7 lengkap (dipakai model efek jeda)
+8,Penggabungan master + kesehatan,RS-XXX-02/JKT-02,semua,hari_dengan_paparan_pm25_lag0,1018.0,hari,1018.0,1018.0,Hari kesehatan yang punya PM2.5 harian sah di stasiun pasangan
+8,Penggabungan master + kesehatan,RS-XXX-02/JKT-02,semua,hari_dengan_lag0_sampai_lag7_lengkap,1011.0,hari,,,Hari dengan PM2.5 lag 0–7 lengkap (dipakai model efek jeda)
+8,Penggabungan master + kesehatan,RS-XXX-03/JKT-03,semua,hari_dengan_paparan_pm25_lag0,1018.0,hari,1018.0,1018.0,Hari kesehatan yang punya PM2.5 harian sah di stasiun pasangan
+8,Penggabungan master + kesehatan,RS-XXX-03/JKT-03,semua,hari_dengan_lag0_sampai_lag7_lengkap,1011.0,hari,,,Hari dengan PM2.5 lag 0–7 lengkap (dipakai model efek jeda)
+8,Penggabungan master + kesehatan,RS-XXX-04/KTG-01,semua,hari_dengan_paparan_pm25_lag0,1018.0,hari,1018.0,1018.0,Hari kesehatan yang punya PM2.5 harian sah di stasiun pasangan
+8,Penggabungan master + kesehatan,RS-XXX-04/KTG-01,semua,hari_dengan_lag0_sampai_lag7_lengkap,1011.0,hari,,,Hari dengan PM2.5 lag 0–7 lengkap (dipakai model efek jeda)
+8,Penggabungan master + kesehatan,RS-XXX-05/KTG-02,semua,hari_dengan_paparan_pm25_lag0,1018.0,hari,1018.0,1018.0,Hari kesehatan yang punya PM2.5 harian sah di stasiun pasangan
+8,Penggabungan master + kesehatan,RS-XXX-05/KTG-02,semua,hari_dengan_lag0_sampai_lag7_lengkap,1011.0,hari,,,Hari dengan PM2.5 lag 0–7 lengkap (dipakai model efek jeda)
+8,Penggabungan master + kesehatan,RS-XXX-06/BGR-01,semua,hari_dengan_paparan_pm25_lag0,1018.0,hari,1018.0,1018.0,Hari kesehatan yang punya PM2.5 harian sah di stasiun pasangan
+8,Penggabungan master + kesehatan,RS-XXX-06/BGR-01,semua,hari_dengan_lag0_sampai_lag7_lengkap,1011.0,hari,,,Hari dengan PM2.5 lag 0–7 lengkap (dipakai model efek jeda)
+8,Penggabungan master + kesehatan,RS-XXX-07/BGR-02,semua,hari_dengan_paparan_pm25_lag0,1018.0,hari,1018.0,1018.0,Hari kesehatan yang punya PM2.5 harian sah di stasiun pasangan
+8,Penggabungan master + kesehatan,RS-XXX-07/BGR-02,semua,hari_dengan_lag0_sampai_lag7_lengkap,1011.0,hari,,,Hari dengan PM2.5 lag 0–7 lengkap (dipakai model efek jeda)
+8,Penggabungan master + kesehatan,RS-XXX-08/YKY-01,semua,hari_dengan_paparan_pm25_lag0,1018.0,hari,1018.0,1018.0,Hari kesehatan yang punya PM2.5 harian sah di stasiun pasangan
+8,Penggabungan master + kesehatan,RS-XXX-08/YKY-01,semua,hari_dengan_lag0_sampai_lag7_lengkap,1011.0,hari,,,Hari dengan PM2.5 lag 0–7 lengkap (dipakai model efek jeda)
+8,Penggabungan master + kesehatan,RS-XXX-09/IDP-01,semua,hari_dengan_paparan_pm25_lag0,1018.0,hari,1018.0,1018.0,Hari kesehatan yang punya PM2.5 harian sah di stasiun pasangan
+8,Penggabungan master + kesehatan,RS-XXX-09/IDP-01,semua,hari_dengan_lag0_sampai_lag7_lengkap,1011.0,hari,,,Hari dengan PM2.5 lag 0–7 lengkap (dipakai model efek jeda)
+8,Penggabungan master + kesehatan,RS-XXX-10/KTB-01,semua,hari_dengan_paparan_pm25_lag0,1018.0,hari,1018.0,1018.0,Hari kesehatan yang punya PM2.5 harian sah di stasiun pasangan
+8,Penggabungan master + kesehatan,RS-XXX-10/KTB-01,semua,hari_dengan_lag0_sampai_lag7_lengkap,1011.0,hari,,,Hari dengan PM2.5 lag 0–7 lengkap (dipakai model efek jeda)
+8,Penggabungan master + kesehatan,RS-XXX-11/PKU-01,semua,hari_dengan_paparan_pm25_lag0,1018.0,hari,1018.0,1018.0,Hari kesehatan yang punya PM2.5 harian sah di stasiun pasangan
+8,Penggabungan master + kesehatan,RS-XXX-11/PKU-01,semua,hari_dengan_lag0_sampai_lag7_lengkap,1011.0,hari,,,Hari dengan PM2.5 lag 0–7 lengkap (dipakai model efek jeda)
+8,Penggabungan master + kesehatan,RS-XXX-12/JMB-01,semua,hari_dengan_paparan_pm25_lag0,1018.0,hari,1018.0,1018.0,Hari kesehatan yang punya PM2.5 harian sah di stasiun pasangan
+8,Penggabungan master + kesehatan,RS-XXX-12/JMB-01,semua,hari_dengan_lag0_sampai_lag7_lengkap,1011.0,hari,,,Hari dengan PM2.5 lag 0–7 lengkap (dipakai model efek jeda)
+8,Penggabungan master + kesehatan,RS-XXX-13/BTM-01,semua,hari_dengan_paparan_pm25_lag0,1018.0,hari,1018.0,1018.0,Hari kesehatan yang punya PM2.5 harian sah di stasiun pasangan
+8,Penggabungan master + kesehatan,RS-XXX-13/BTM-01,semua,hari_dengan_lag0_sampai_lag7_lengkap,1011.0,hari,,,Hari dengan PM2.5 lag 0–7 lengkap (dipakai model efek jeda)
+8,Penggabungan master + kesehatan,RS-XXX-14/BGL-01,semua,hari_dengan_paparan_pm25_lag0,1018.0,hari,1018.0,1018.0,Hari kesehatan yang punya PM2.5 harian sah di stasiun pasangan
+8,Penggabungan master + kesehatan,RS-XXX-14/BGL-01,semua,hari_dengan_lag0_sampai_lag7_lengkap,1011.0,hari,,,Hari dengan PM2.5 lag 0–7 lengkap (dipakai model efek jeda)
+8,Penggabungan master + kesehatan,RS-XXX-15/SRG-01,semua,hari_dengan_paparan_pm25_lag0,1018.0,hari,1018.0,1018.0,Hari kesehatan yang punya PM2.5 harian sah di stasiun pasangan
+8,Penggabungan master + kesehatan,RS-XXX-15/SRG-01,semua,hari_dengan_lag0_sampai_lag7_lengkap,1011.0,hari,,,Hari dengan PM2.5 lag 0–7 lengkap (dipakai model efek jeda)
+8,Penggabungan master + kesehatan,RS-XXX-16/MLG-01,semua,hari_dengan_paparan_pm25_lag0,1018.0,hari,1018.0,1018.0,Hari kesehatan yang punya PM2.5 harian sah di stasiun pasangan
+8,Penggabungan master + kesehatan,RS-XXX-16/MLG-01,semua,hari_dengan_lag0_sampai_lag7_lengkap,1011.0,hari,,,Hari dengan PM2.5 lag 0–7 lengkap (dipakai model efek jeda)
+8,Penggabungan master + kesehatan,RS-XXX-17/MRS-01,semua,hari_dengan_paparan_pm25_lag0,1018.0,hari,1018.0,1018.0,Hari kesehatan yang punya PM2.5 harian sah di stasiun pasangan
+8,Penggabungan master + kesehatan,RS-XXX-17/MRS-01,semua,hari_dengan_lag0_sampai_lag7_lengkap,1011.0,hari,,,Hari dengan PM2.5 lag 0–7 lengkap (dipakai model efek jeda)
+8,Penggabungan master + kesehatan,RS-XXX-18/PLU-01,semua,hari_dengan_paparan_pm25_lag0,1018.0,hari,1018.0,1018.0,Hari kesehatan yang punya PM2.5 harian sah di stasiun pasangan
+8,Penggabungan master + kesehatan,RS-XXX-18/PLU-01,semua,hari_dengan_lag0_sampai_lag7_lengkap,1011.0,hari,,,Hari dengan PM2.5 lag 0–7 lengkap (dipakai model efek jeda)
+8,Penggabungan master + kesehatan,RS-XXX-19/STG-01,semua,hari_dengan_paparan_pm25_lag0,1018.0,hari,1018.0,1018.0,Hari kesehatan yang punya PM2.5 harian sah di stasiun pasangan
+8,Penggabungan master + kesehatan,RS-XXX-19/STG-01,semua,hari_dengan_lag0_sampai_lag7_lengkap,1011.0,hari,,,Hari dengan PM2.5 lag 0–7 lengkap (dipakai model efek jeda)
+8,Penggabungan master + kesehatan,RS-XXX-20/PKN-01,semua,hari_dengan_paparan_pm25_lag0,1018.0,hari,1018.0,1018.0,Hari kesehatan yang punya PM2.5 harian sah di stasiun pasangan
+8,Penggabungan master + kesehatan,RS-XXX-20/PKN-01,semua,hari_dengan_lag0_sampai_lag7_lengkap,1011.0,hari,,,Hari dengan PM2.5 lag 0–7 lengkap (dipakai model efek jeda)
+8,Penggabungan master + kesehatan,RS-XXX-21/PLB-01,semua,hari_dengan_paparan_pm25_lag0,696.0,hari,1018.0,696.0,Hari kesehatan yang punya PM2.5 harian sah di stasiun pasangan
+8,Penggabungan master + kesehatan,RS-XXX-21/PLB-01,semua,hari_dengan_lag0_sampai_lag7_lengkap,166.0,hari,,,Hari dengan PM2.5 lag 0–7 lengkap (dipakai model efek jeda)
+8,Penggabungan master + kesehatan,RS-XXX-22/PSW-01,semua,hari_dengan_paparan_pm25_lag0,1018.0,hari,1018.0,1018.0,Hari kesehatan yang punya PM2.5 harian sah di stasiun pasangan
+8,Penggabungan master + kesehatan,RS-XXX-22/PSW-01,semua,hari_dengan_lag0_sampai_lag7_lengkap,1011.0,hari,,,Hari dengan PM2.5 lag 0–7 lengkap (dipakai model efek jeda)
+8,Penggabungan master + kesehatan,RS-XXX-23/MER-01,semua,hari_dengan_paparan_pm25_lag0,2.0,hari,1018.0,2.0,Hari kesehatan yang punya PM2.5 harian sah di stasiun pasangan
+8,Penggabungan master + kesehatan,RS-XXX-23/MER-01,semua,hari_dengan_lag0_sampai_lag7_lengkap,0.0,hari,,,Hari dengan PM2.5 lag 0–7 lengkap (dipakai model efek jeda)
+8,Penggabungan master + kesehatan,RS-XXX-24/MDN-01,semua,hari_dengan_paparan_pm25_lag0,371.0,hari,1018.0,371.0,Hari kesehatan yang punya PM2.5 harian sah di stasiun pasangan
+8,Penggabungan master + kesehatan,RS-XXX-24/MDN-01,semua,hari_dengan_lag0_sampai_lag7_lengkap,0.0,hari,,,Hari dengan PM2.5 lag 0–7 lengkap (dipakai model efek jeda)
+8,Penggabungan master + kesehatan,RS-XXX-25/SM2-01,semua,hari_dengan_paparan_pm25_lag0,771.0,hari,1018.0,771.0,Hari kesehatan yang punya PM2.5 harian sah di stasiun pasangan
+8,Penggabungan master + kesehatan,RS-XXX-25/SM2-01,semua,hari_dengan_lag0_sampai_lag7_lengkap,646.0,hari,,,Hari dengan PM2.5 lag 0–7 lengkap (dipakai model efek jeda)
+8,Penggabungan master + kesehatan,RS-XXX-26/BJB-01,semua,hari_dengan_paparan_pm25_lag0,1018.0,hari,1018.0,1018.0,Hari kesehatan yang punya PM2.5 harian sah di stasiun pasangan
+8,Penggabungan master + kesehatan,RS-XXX-26/BJB-01,semua,hari_dengan_lag0_sampai_lag7_lengkap,1011.0,hari,,,Hari dengan PM2.5 lag 0–7 lengkap (dipakai model efek jeda)
+8,Penggabungan master + kesehatan,RS-XXX-27/JMB-02,semua,hari_dengan_paparan_pm25_lag0,0.0,hari,1018.0,0.0,Hari kesehatan yang punya PM2.5 harian sah di stasiun pasangan
+8,Penggabungan master + kesehatan,RS-XXX-27/JMB-02,semua,hari_dengan_lag0_sampai_lag7_lengkap,0.0,hari,,,Hari dengan PM2.5 lag 0–7 lengkap (dipakai model efek jeda)
+8,Penggabungan master + kesehatan,sites,semua,baris_sites_clean,27.0,stasiun,27.0,27.0,"sites + sensors + hospitals digabung 1 baris per stasiun (kunci location_id, sensor_id, hospital_id)"

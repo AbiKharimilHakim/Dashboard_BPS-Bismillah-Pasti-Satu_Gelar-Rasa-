@@ -1,0 +1,3590 @@
+{
+  "meta": {
+    "periode_awal": "2024-01-01",
+    "periode_akhir": "2026-10-14",
+    "n_stasiun_tabel_jam": 26,
+    "n_stasiun_analisis_harian": 25,
+    "stasiun_ditinggalkan_harian": [
+      "MER-01"
+    ],
+    "n_hari_pm25_sah": 24234,
+    "n_jam_pm25": 591047,
+    "gambar": [
+      "04_A1_rata2_pm25_stasiun",
+      "04_A2_hari_lewat_baku_mutu",
+      "04_A3_kategori_ispu_stasiun",
+      "04_A4_tren_sen_stasiun",
+      "04_A4_deret_bulanan_tipe",
+      "04_A5_kruskal_pulau_tipe",
+      "04_B1_profil_jam_tipe",
+      "04_B2_heatmap_jam_bulan",
+      "04_B3_hari_kerja_akhir_pekan",
+      "04_B4_stl_stasiun_terpilih",
+      "04_B5_linimasa_episode_asap",
+      "04_C1_korelasi_spearman_cuaca",
+      "04_C2_mawar_angin_polusi",
+      "04_C3_lalu_lintas_jarak",
+      "04_C4_boxplot_tipe_polutan",
+      "04_D1_korelasi_lag_kasus",
+      "04_D2_balita_vs_lansia",
+      "04_D3_dosis_respons",
+      "04_E1_histogram_pm25",
+      "04_E2_boxplot_outlier"
+    ],
+    "sumber": "data/processed/*.parquet (notebook 03); dibuat oleh notebooks/04_eda.ipynb"
+  },
+  "A": {
+    "rata2_semua_hari_stasiun": 41.72062934813574,
+    "median_semua_hari_stasiun": 30.84166666666667,
+    "n_stasiun_rata2_lebih_15": 22,
+    "n_stasiun_rata2_lebih_5": 25,
+    "stasiun_tertinggi": {
+      "kode": "BJB-01",
+      "rata2": 102.1350401113294
+    },
+    "stasiun_terendah": {
+      "kode": "IDP-01",
+      "rata2": 9.337883495629395
+    },
+    "per_pulau_rata2": {
+      "Sumatera": 38.35,
+      "Jawa": 37.87,
+      "Kalimantan": 61.31,
+      "Sulawesi": 24.05,
+      "Papua": 18.38
+    },
+    "per_tipe_rata2": {
+      "Perkotaan": 42.81,
+      "Jalan Raya": 36.65,
+      "Industri": 50.5,
+      "Gambut": 57.88,
+      "Latar Bersih": 14.17
+    },
+    "persen_hari_lewat_bm55": 17.33514896426508,
+    "persen_hari_lewat_who15": 82.6112073945696,
+    "persen_hari_lewat_bm55_per_tipe": {
+      "Perkotaan": 8.61,
+      "Jalan Raya": 17.29,
+      "Industri": 36.16,
+      "Gambut": 27.95,
+      "Latar Bersih": 0.12
+    },
+    "persen_hari_lewat_who15_per_tipe": {
+      "Perkotaan": 100.0,
+      "Jalan Raya": 100.0,
+      "Industri": 100.0,
+      "Gambut": 98.5,
+      "Latar Bersih": 19.21
+    },
+    "chi2_bm_tipe": {
+      "chi2": 2877.924246697038,
+      "p": 0.0,
+      "dof": 4,
+      "n": 24234,
+      "v": 0.3446094060847914
+    },
+    "stasiun_lewat_bm_terbanyak": {
+      "kode": "JKT-02",
+      "persen": 100.0
+    },
+    "ispu_persen_hari": {
+      "Baik": 17.69,
+      "Sedang": 65.12,
+      "Tidak Sehat": 15.24,
+      "Sangat Tidak Sehat": 0.71,
+      "Berbahaya": 1.24
+    },
+    "ispu_tidak_sehat_atau_lebih_persen": 17.19485021044813,
+    "chi2_ispu_tipe": {
+      "chi2": 20416.822433955855,
+      "p": 0.0,
+      "dof": 16,
+      "n": 24234,
+      "v": 0.4589353684140309
+    },
+    "ispu_per_tipe_tidak_sehat_atau_lebih": {
+      "Perkotaan": 8.27,
+      "Jalan Raya": 17.29,
+      "Industri": 36.13,
+      "Gambut": 27.79,
+      "Latar Bersih": 0.12
+    },
+    "ispu_stasiun_sangat_tidak_sehat_atau_lebih": {
+      "BJB-01": 20.039292730844796,
+      "PLB-01": 12.5,
+      "SM2-01": 9.857328145265889,
+      "KTG-02": 4.322200392927308
+    },
+    "n_stasiun_satu_kategori_99persen": 10,
+    "tren": {
+      "n_stasiun_diuji": 22,
+      "stasiun_dikecualikan": [
+        "MDN-01",
+        "PLB-01",
+        "SM2-01"
+      ],
+      "n_signifikan_p005_mentah": 1,
+      "n_signifikan_setelah_bh": 0,
+      "slope_median_stasiun_ugm3_per_tahun": 0.010128826518249312,
+      "slope_min": {
+        "kode": "BJB-01",
+        "nilai": -0.06982526881720297
+      },
+      "slope_maks": {
+        "kode": "KTG-02",
+        "nilai": 0.16808072522965478
+      },
+      "agregat_semua_layak": {
+        "tau": 0.2,
+        "z": 0.8333333333333334,
+        "p": 0.4046567619272863,
+        "slope_tahun": 1.3874972077076748,
+        "ci_bawah": -0.01731442405558603,
+        "ci_atas": 4.431243405611745
+      },
+      "verifikasi_pymannkendall": "identik pada 6 stasiun uji"
+    },
+    "kruskal_wallis": {
+      "pulau": {
+        "H": 1887.92419617637,
+        "p": 0.0,
+        "epsilon2": 0.07790715950053109,
+        "n": 24234,
+        "k": 5,
+        "df": 4,
+        "kw_median_stasiun": {
+          "H": 3.1134065934065944,
+          "p": 0.5390296809824173,
+          "epsilon2": 0.12972527472527476,
+          "n": 25,
+          "k": 5,
+          "df": 4
+        },
+        "n_pasangan_dunn_signifikan": 10,
+        "n_pasangan": 10
+      },
+      "tipe": {
+        "H": 10575.09444649192,
+        "p": 0.0,
+        "epsilon2": 0.4363922934218594,
+        "n": 24234,
+        "k": 5,
+        "df": 4,
+        "kw_median_stasiun": {
+          "H": 13.320659340659333,
+          "p": 0.009810768700549389,
+          "epsilon2": 0.5550274725274722,
+          "n": 25,
+          "k": 5,
+          "df": 4
+        },
+        "n_pasangan_dunn_signifikan": 9,
+        "n_pasangan": 10
+      }
+    }
+  },
+  "B": {
+    "diurnal": {
+      "amplitudo_relatif_persen_per_tipe": {
+        "Perkotaan": 69.2,
+        "Jalan Raya": 25.5,
+        "Industri": 57.2,
+        "Gambut": 68.1,
+        "Latar Bersih": 67.8
+      },
+      "jam_puncak_median_per_tipe": {
+        "Perkotaan": 7.0,
+        "Jalan Raya": 8.0,
+        "Industri": 13.5,
+        "Gambut": 7.0,
+        "Latar Bersih": 8.0
+      },
+      "jam_puncak_no2_median_per_tipe": {
+        "Perkotaan": 8.0,
+        "Jalan Raya": 17.0,
+        "Industri": 8.0,
+        "Gambut": 8.0,
+        "Latar Bersih": 7.5
+      },
+      "kruskal_amplitudo": {
+        "H": 4.219780219780233,
+        "p": 0.37707818764115425,
+        "epsilon2": 0.16879120879120932,
+        "n": 26,
+        "k": 5,
+        "df": 4
+      }
+    },
+    "musim": {
+      "Perkotaan": {
+        "H_bulan": 2706.3375,
+        "p_bulan": 0.0,
+        "eps2_bulan": 0.4178,
+        "bulan_tertinggi": 10,
+        "median_kemarau": 45.9917,
+        "median_hujan": 27.9229,
+        "selisih_persen": 64.7094,
+        "r_kemarau_vs_hujan": 0.6154,
+        "p_mw": 0.0,
+        "efek": "besar"
+      },
+      "Jalan Raya": {
+        "H_bulan": 93.1717,
+        "p_bulan": 0.0,
+        "eps2_bulan": 0.0458,
+        "bulan_tertinggi": 7,
+        "median_kemarau": 35.092,
+        "median_hujan": 35.0596,
+        "selisih_persen": 0.0923,
+        "r_kemarau_vs_hujan": 0.1669,
+        "p_mw": 0.0,
+        "efek": "kecil"
+      },
+      "Industri": {
+        "H_bulan": 1544.0569,
+        "p_bulan": 0.0,
+        "eps2_bulan": 0.4038,
+        "bulan_tertinggi": 9,
+        "median_kemarau": 51.7858,
+        "median_hujan": 35.0712,
+        "selisih_persen": 47.6591,
+        "r_kemarau_vs_hujan": 0.5705,
+        "p_mw": 0.0,
+        "efek": "besar"
+      },
+      "Gambut": {
+        "H_bulan": 4006.4081,
+        "p_bulan": 0.0,
+        "eps2_bulan": 0.5889,
+        "bulan_tertinggi": 10,
+        "median_kemarau": 53.8009,
+        "median_hujan": 24.8708,
+        "selisih_persen": 116.3211,
+        "r_kemarau_vs_hujan": 0.6239,
+        "p_mw": 0.0,
+        "efek": "besar"
+      },
+      "Latar Bersih": {
+        "H_bulan": 1317.4306,
+        "p_bulan": 0.0,
+        "eps2_bulan": 0.2589,
+        "bulan_tertinggi": 8,
+        "median_kemarau": 13.4868,
+        "median_hujan": 10.4217,
+        "selisih_persen": 29.4104,
+        "r_kemarau_vs_hujan": 0.5094,
+        "p_mw": 0.0,
+        "efek": "besar"
+      }
+    },
+    "akhir_pekan": {
+      "pm25": {
+        "n_stasiun": 25,
+        "n_signifikan_bh": 1,
+        "median_r": 0.000184729064039324,
+        "median_selisih_persen": 0.20196094304033727,
+        "wilcoxon_p": 0.9158032536506653
+      },
+      "no2": {
+        "n_stasiun": 25,
+        "n_signifikan_bh": 0,
+        "median_r": -0.012831564986737432,
+        "median_selisih_persen": 0.0,
+        "wilcoxon_p": 0.018744707107543945,
+        "median_r_per_tipe": {
+          "Gambut": -0.013,
+          "Industri": -0.015,
+          "Jalan Raya": -0.015,
+          "Latar Bersih": -0.023,
+          "Perkotaan": 0.016
+        }
+      }
+    },
+    "stl": {
+      "kekuatan_musiman_median_per_tipe": {
+        "Perkotaan": 1.0,
+        "Jalan Raya": 0.746,
+        "Industri": 1.0,
+        "Gambut": 0.999,
+        "Latar Bersih": 1.0
+      },
+      "kekuatan_tren_median_per_tipe": {
+        "Perkotaan": 0.042,
+        "Jalan Raya": 0.1,
+        "Industri": 0.229,
+        "Gambut": 0.985,
+        "Latar Bersih": 0.165
+      },
+      "amplitudo_musiman_median_per_tipe": {
+        "Perkotaan": 22.92,
+        "Jalan Raya": 3.33,
+        "Industri": 21.54,
+        "Gambut": 113.82,
+        "Latar Bersih": 6.6
+      },
+      "kruskal_musiman_antar_tipe": {
+        "H": 3.8134387351778685,
+        "p": 0.4318425229302929,
+        "epsilon2": 0.18159232072275563,
+        "n": 22,
+        "k": 5,
+        "df": 4
+      },
+      "n_stasiun": 22
+    },
+    "episode": {
+      "n_episode": 21,
+      "n_stasiun": 7,
+      "n_hari": 396,
+      "tanpa_bjb01": {
+        "n_episode": 20,
+        "n_hari": 192,
+        "persen_hari_agu_okt": 100.0,
+        "binomial_p": 2.5379418373156492e-116
+      },
+      "puncak_harian_tertinggi": {
+        "id": "KTG-01-E01",
+        "nilai": 1127.5741666666665,
+        "tanggal": "2026-10-14"
+      },
+      "terpanjang_tanpa_bjb01": {
+        "id": "KTG-02-E01",
+        "hari": 44
+      },
+      "per_tahun_tanpa_bjb01": {
+        "2024": {
+          "episode": 4,
+          "hari": 14,
+          "puncak": 244.8
+        },
+        "2025": {
+          "episode": 6,
+          "hari": 33,
+          "puncak": 207.2
+        },
+        "2026": {
+          "episode": 10,
+          "hari": 145,
+          "puncak": 1127.6
+        }
+      },
+      "bjb01_hari": 204,
+      "n_berlanjut_di_akhir_data": 5,
+      "stasiun_berlanjut_di_akhir_data": [
+        "KTG-02",
+        "KTG-01",
+        "PKN-01",
+        "STG-01",
+        "PLB-01"
+      ]
+    }
+  },
+  "C": {
+    "spearman_cuaca": {
+      "n_uji": 90,
+      "n_signifikan_bh": 22,
+      "n_abs_rho_ge_0.3": 0,
+      "terkuat": [
+        {
+          "tipe": "Industri",
+          "polutan": "O₃",
+          "cuaca": "Kelembapan",
+          "rho": -0.235,
+          "n": 3825
+        },
+        {
+          "tipe": "Industri",
+          "polutan": "O₃",
+          "cuaca": "Suhu",
+          "rho": 0.23,
+          "n": 3825
+        },
+        {
+          "tipe": "Jalan Raya",
+          "polutan": "O₃",
+          "cuaca": "Kelembapan",
+          "rho": -0.199,
+          "n": 2036
+        }
+      ],
+      "median_rho_pm25_vs_kec_angin": -0.005351289492295889,
+      "median_rho_pm25_vs_kelembapan": -0.003502587518365759,
+      "median_rho_pm25_vs_suhu": 0.005561380476991555
+    },
+    "mawar": {
+      "JKT-01": {
+        "p": 0.45667563056659666,
+        "epsilon2": 0.00019938085242921462,
+        "sektor_tertinggi": "B",
+        "rasio_maks_min": 1.006929040868281,
+        "persen_tenang": 1.9357039310991728
+      },
+      "JKT-03": {
+        "p": 0.5226849420674555,
+        "epsilon2": 0.00017844617758411445,
+        "sektor_tertinggi": "UTL",
+        "rasio_maks_min": 1.0052884120778711,
+        "persen_tenang": 1.861951427354069
+      },
+      "JKT-02": {
+        "p": 0.10799540145279472,
+        "epsilon2": 0.0003844676217101668,
+        "sektor_tertinggi": "TL",
+        "rasio_maks_min": 1.0064001373554037,
+        "persen_tenang": 1.963373083475298
+      },
+      "KTG-01": {
+        "p": 0.09778638593504024,
+        "epsilon2": 0.00033336219119660203,
+        "sektor_tertinggi": "S",
+        "rasio_maks_min": 1.04867060033821,
+        "persen_tenang": 13.456138858163873
+      },
+      "BGR-01": {
+        "p": 0.45959752536722875,
+        "epsilon2": 0.00015290359373322821,
+        "sektor_tertinggi": "BD",
+        "rasio_maks_min": 1.004796067448323,
+        "persen_tenang": 5.745525160418778
+      }
+    },
+    "antar_stasiun": {
+      "n_stasiun": 26,
+      "korelasi_lalu_lintas_vs_jarak": {
+        "rho": -0.8282373592544578,
+        "p": 1.7592718953274172e-07,
+        "n": 26
+      },
+      "pm25_ug_m3_traffic_intensity_per_h_semua": {
+        "rho": 0.765360809378479,
+        "p": 5.237253836954748e-06,
+        "n": 26
+      },
+      "pm25_ug_m3_traffic_intensity_per_h_non-Gambut": {
+        "rho": 0.757682469366724,
+        "p": 0.0001715647284656691,
+        "n": 19
+      },
+      "pm25_ug_m3_distance_to_road_m_semua": {
+        "rho": -0.6663303641145897,
+        "p": 0.00020210254675431441,
+        "n": 26
+      },
+      "pm25_ug_m3_distance_to_road_m_non-Gambut": {
+        "rho": -0.781694986717725,
+        "p": 7.723730954637927e-05,
+        "n": 19
+      },
+      "no2_ug_m3_traffic_intensity_per_h_semua": {
+        "rho": 0.46129497423257704,
+        "p": 0.017692344799855212,
+        "n": 26
+      },
+      "no2_ug_m3_traffic_intensity_per_h_non-Gambut": {
+        "rho": 0.5041993191361303,
+        "p": 0.02771707819260249,
+        "n": 19
+      },
+      "no2_ug_m3_distance_to_road_m_semua": {
+        "rho": -0.44431150096933436,
+        "p": 0.02296468270160279,
+        "n": 26
+      },
+      "no2_ug_m3_distance_to_road_m_non-Gambut": {
+        "rho": -0.5353241533875128,
+        "p": 0.01817811537013162,
+        "n": 19
+      },
+      "co_ug_m3_traffic_intensity_per_h_semua": {
+        "rho": 0.291130764051922,
+        "p": 0.14903564155845817,
+        "n": 26
+      },
+      "co_ug_m3_traffic_intensity_per_h_non-Gambut": {
+        "rho": 0.37483534627596066,
+        "p": 0.11382456922695311,
+        "n": 19
+      },
+      "co_ug_m3_distance_to_road_m_semua": {
+        "rho": -0.3398183754756424,
+        "p": 0.08941494446206413,
+        "n": 26
+      },
+      "co_ug_m3_distance_to_road_m_non-Gambut": {
+        "rho": -0.4221441720147682,
+        "p": 0.07179664036633614,
+        "n": 19
+      }
+    },
+    "tipe_polutan": {
+      "kruskal": {
+        "PM2.5": {
+          "H": 10575.09444649192,
+          "p": 0.0,
+          "epsilon2": 0.4363922934218594,
+          "n": 24234.0,
+          "k": 5.0,
+          "df": 4.0
+        },
+        "NO₂": {
+          "H": 5118.294612452284,
+          "p": 0.0,
+          "epsilon2": 0.21121176133587605,
+          "n": 24234.0,
+          "k": 5.0,
+          "df": 4.0
+        },
+        "CO": {
+          "H": 5514.197364573414,
+          "p": 0.0,
+          "epsilon2": 0.22754910100166773,
+          "n": 24234.0,
+          "k": 5.0,
+          "df": 4.0
+        },
+        "SO₂": {
+          "H": 5319.371489802074,
+          "p": 0.0,
+          "epsilon2": 0.2195094082367876,
+          "n": 24234.0,
+          "k": 5.0,
+          "df": 4.0
+        }
+      },
+      "median_per_tipe": {
+        "PM2.5": {
+          "Perkotaan": 37.04,
+          "Jalan Raya": 35.08,
+          "Industri": 44.88,
+          "Gambut": 33.44,
+          "Latar Bersih": 12.95
+        },
+        "NO₂": {
+          "Perkotaan": 21.34,
+          "Jalan Raya": 38.85,
+          "Industri": 20.45,
+          "Gambut": 20.15,
+          "Latar Bersih": 19.7
+        },
+        "CO": {
+          "Perkotaan": 544.46,
+          "Jalan Raya": 1163.19,
+          "Industri": 357.68,
+          "Gambut": 354.77,
+          "Latar Bersih": 350.2
+        },
+        "SO₂": {
+          "Perkotaan": 9.14,
+          "Jalan Raya": 14.36,
+          "Industri": 7.3,
+          "Gambut": 7.18,
+          "Latar Bersih": 7.02
+        }
+      }
+    }
+  },
+  "D": {
+    "n_rs": 25,
+    "lag_terbaik_ispa_balita": 0,
+    "rho_varian_A": {
+      "ISPA balita (<5 th)": {
+        "0": 0.4,
+        "1": 0.391,
+        "2": 0.396,
+        "3": 0.389,
+        "4": 0.382,
+        "5": 0.383,
+        "6": 0.382,
+        "7": 0.379
+      },
+      "ISPA lansia (>60 th)": {
+        "0": 0.396,
+        "1": 0.391,
+        "2": 0.388,
+        "3": 0.386,
+        "4": 0.379,
+        "5": 0.381,
+        "6": 0.372,
+        "7": 0.384
+      },
+      "Asma (IGD)": {
+        "0": 0.372,
+        "1": 0.365,
+        "2": 0.364,
+        "3": 0.364,
+        "4": 0.359,
+        "5": 0.358,
+        "6": 0.357,
+        "7": 0.353
+      },
+      "PPOK": {
+        "0": 0.385,
+        "1": 0.382,
+        "2": 0.382,
+        "3": 0.378,
+        "4": 0.371,
+        "5": 0.372,
+        "6": 0.367,
+        "7": 0.371
+      },
+      "Pernapasan umum": {
+        "0": 0.412,
+        "1": 0.401,
+        "2": 0.404,
+        "3": 0.397,
+        "4": 0.39,
+        "5": 0.392,
+        "6": 0.39,
+        "7": 0.394
+      },
+      "Kardiovaskular": {
+        "0": 0.233,
+        "1": 0.232,
+        "2": 0.231,
+        "3": 0.222,
+        "4": 0.224,
+        "5": 0.223,
+        "6": 0.226,
+        "7": 0.223
+      },
+      "Kematian": {
+        "0": 0.192,
+        "1": 0.189,
+        "2": 0.183,
+        "3": 0.196,
+        "4": 0.188,
+        "5": 0.185,
+        "6": 0.184,
+        "7": 0.182
+      }
+    },
+    "rho_varian_B": {
+      "ISPA balita (<5 th)": {
+        "0": 0.121,
+        "1": 0.078,
+        "2": 0.063,
+        "3": 0.023,
+        "4": -0.009,
+        "5": -0.041,
+        "6": -0.064,
+        "7": -0.072
+      },
+      "ISPA lansia (>60 th)": {
+        "0": 0.109,
+        "1": 0.075,
+        "2": 0.044,
+        "3": 0.016,
+        "4": -0.017,
+        "5": -0.041,
+        "6": -0.071,
+        "7": -0.066
+      },
+      "Asma (IGD)": {
+        "0": 0.1,
+        "1": 0.074,
+        "2": 0.048,
+        "3": 0.019,
+        "4": -0.017,
+        "5": -0.044,
+        "6": -0.056,
+        "7": -0.065
+      },
+      "PPOK": {
+        "0": 0.11,
+        "1": 0.083,
+        "2": 0.055,
+        "3": 0.028,
+        "4": -0.007,
+        "5": -0.037,
+        "6": -0.064,
+        "7": -0.061
+      },
+      "Pernapasan umum": {
+        "0": 0.123,
+        "1": 0.08,
+        "2": 0.055,
+        "3": 0.019,
+        "4": -0.018,
+        "5": -0.045,
+        "6": -0.061,
+        "7": -0.066
+      },
+      "Kardiovaskular": {
+        "0": 0.038,
+        "1": 0.035,
+        "2": 0.027,
+        "3": 0.009,
+        "4": -0.004,
+        "5": -0.018,
+        "6": -0.017,
+        "7": -0.021
+      },
+      "Kematian": {
+        "0": 0.033,
+        "1": 0.015,
+        "2": 0.004,
+        "3": 0.011,
+        "4": -0.003,
+        "5": -0.019,
+        "6": -0.015,
+        "7": -0.021
+      }
+    },
+    "rho_A_lag_terbaik": {
+      "ISPA balita (<5 th)": 0.3999135366899364,
+      "ISPA lansia (>60 th)": 0.396094121681547,
+      "Asma (IGD)": 0.3718605028693764,
+      "PPOK": 0.3845598774885432,
+      "Pernapasan umum": 0.4121170050414858,
+      "Kardiovaskular": 0.23300639047928595,
+      "Kematian": 0.1923142819835833
+    },
+    "rho_B_lag_terbaik": {
+      "ISPA balita (<5 th)": 0.12096269723791736,
+      "ISPA lansia (>60 th)": 0.10857320817436822,
+      "Asma (IGD)": 0.09987995590356358,
+      "PPOK": 0.11015429682201389,
+      "Pernapasan umum": 0.12277022669783515,
+      "Kardiovaskular": 0.038192734833187234,
+      "Kematian": 0.032928308387827676
+    },
+    "balita_vs_lansia": {
+      "A": {
+        "rho_balita": 0.3878,
+        "rho_lansia": 0.3846,
+        "selisih_median": 0.0024,
+        "n_rs": 25,
+        "rs_balita_lebih_besar": 14,
+        "p_wilcoxon": 0.4261
+      },
+      "B": {
+        "rho_balita": 0.0124,
+        "rho_lansia": 0.006,
+        "selisih_median": 0.005,
+        "n_rs": 25,
+        "rs_balita_lebih_besar": 17,
+        "p_wilcoxon": 0.1199
+      }
+    },
+    "dosis_respons": {
+      "lag": 0,
+      "resp_admissions_under5": {
+        "rho_gabungan": {
+          "rho": 0.3406943810817503,
+          "p": 0.0,
+          "n": 24234
+        },
+        "kw_kelas_eps2": 0.21680045186634425,
+        "kw_kelas_p": 0.0,
+        "rasio_per_kelas": {
+          "≤15,5": 0.968,
+          "15,5–35": 0.786,
+          "35–55,4": 1.001,
+          "55,4–150,4": 1.467,
+          "150,4–250,4": 2.059,
+          ">250,4": 1.856
+        },
+        "n_per_kelas": {
+          "≤15,5": 4286,
+          "15,5–35": 9523,
+          "35–55,4": 6258,
+          "55,4–150,4": 3694,
+          "150,4–250,4": 172,
+          ">250,4": 301
+        }
+      },
+      "resp_admissions_over60": {
+        "rho_gabungan": {
+          "rho": 0.3330977312101496,
+          "p": 0.0,
+          "n": 24234
+        },
+        "kw_kelas_eps2": 0.22395984716272396,
+        "kw_kelas_p": 0.0,
+        "rasio_per_kelas": {
+          "≤15,5": 0.973,
+          "15,5–35": 0.798,
+          "35–55,4": 0.997,
+          "55,4–150,4": 1.442,
+          "150,4–250,4": 1.992,
+          ">250,4": 1.836
+        },
+        "n_per_kelas": {
+          "≤15,5": 4286,
+          "15,5–35": 9523,
+          "35–55,4": 6258,
+          "55,4–150,4": 3694,
+          "150,4–250,4": 172,
+          ">250,4": 301
+        }
+      }
+    },
+    "heterogenitas": {
+      "rho_A_min": -0.1671482181541294,
+      "rho_A_maks": 0.9111100335332862,
+      "kruskal_antar_tipe": {
+        "H": 9.004879120879139,
+        "p": 0.06097764178571717,
+        "epsilon2": 0.37520329670329744,
+        "n": 25,
+        "k": 5,
+        "df": 4
+      },
+      "per_tipe": {
+        "Perkotaan": {
+          "n_rs": 7,
+          "rho_A": 0.427,
+          "rho_B": 0.081
+        },
+        "Jalan Raya": {
+          "n_rs": 2,
+          "rho_A": 0.063,
+          "rho_B": 0.044
+        },
+        "Industri": {
+          "n_rs": 4,
+          "rho_A": 0.465,
+          "rho_B": 0.08
+        },
+        "Gambut": {
+          "n_rs": 7,
+          "rho_A": 0.647,
+          "rho_B": 0.264
+        },
+        "Latar Bersih": {
+          "n_rs": 5,
+          "rho_A": 0.099,
+          "rho_B": 0.04
+        }
+      },
+      "sensitivitas": {
+        "semua RS": {
+          "n_rs": 25,
+          "rho_A": 0.3999135366899364,
+          "rho_B": 0.12096269723791736
+        },
+        "hanya stasiun Layak": {
+          "n_rs": 22,
+          "rho_A": 0.41024314818449864,
+          "rho_B": 0.10808845545335911
+        },
+        "tanpa BJB-01 & SM2-01": {
+          "n_rs": 23,
+          "rho_A": 0.4163890689477405,
+          "rho_B": 0.13560977843294003
+        },
+        "tanpa gambut": {
+          "n_rs": 18,
+          "rho_A": 0.30386779668960195,
+          "rho_B": 0.06536866068934598
+        }
+      },
+      "rs_rho_tertinggi": "RS-XXX-21",
+      "rs_rho_terendah": "RS-XXX-24"
+    }
+  },
+  "E": {
+    "distribusi_jam": {
+      "n_jam": 591047,
+      "mean": 42.33482805008883,
+      "median": 30.0,
+      "p95": 103.7,
+      "p99": 336.7,
+      "max": 1620.5,
+      "skew_raw": 7.369877114399471,
+      "kurt_raw": 86.96015502579736,
+      "skew_log": 0.2719951131358709,
+      "kurt_log": 1.1130957390077754,
+      "normaltest_p_raw": 0.0,
+      "normaltest_p_log": 1.0685907880886093e-39,
+      "persen_jam_gt_55": 19.672885574243672,
+      "persen_jam_gt_150": 2.141792446285997,
+      "persen_jam_gt_500": 0.15565597998128744
+    },
+    "outlier": {
+      "n_outlier_ringan": 1086,
+      "persen_ringan_dalam_episode": 30.29465930018416,
+      "n_outlier_ekstrem": 419,
+      "persen_ekstrem_dalam_episode": 76.84964200477327,
+      "fisher_or_ringan": 149.72000630927266,
+      "fisher_p_ringan": 0.0,
+      "fisher_or_ekstrem": 1065.0044580663136,
+      "fisher_p_ekstrem": 0.0,
+      "n_ekstrem_luar_episode": 97,
+      "stasiun_ekstrem_luar_episode": {
+        "SM2-01": 85,
+        "KTB-01": 6,
+        "JMB-01": 2,
+        "PKU-01": 2,
+        "BTM-01": 2
+      },
+      "n_ekstrem_luar_episode_sm2": 85,
+      "n_ekstrem_luar_episode_berdampingan_hari_tanpa_data": 75
+    }
+  },
+  "insight": {
+    "0_flatline": {
+      "n_run": 2,
+      "stasiun": [
+        "BJB-01"
+      ],
+      "jam_bertopeng": 7329,
+      "hari_bertopeng": 305,
+      "run_terpanjang_stasiun_lain_jam": 4,
+      "runs": [
+        {
+          "kode_stasiun": "BJB-01",
+          "awal": "2024-09-07 00:00",
+          "akhir": "2025-03-29 13:00",
+          "n_jam": 4886,
+          "nilai": 336.7,
+          "n_hari": 203.6
+        },
+        {
+          "kode_stasiun": "BJB-01",
+          "awal": "2025-03-29 14:00",
+          "akhir": "2025-07-09 08:00",
+          "n_jam": 2443,
+          "nilai": 3.5,
+          "n_hari": 101.8
+        }
+      ],
+      "dampak_pada_04": {
+        "n_stasiun": {
+          "apa_adanya": 25.0,
+          "bertopeng": 25.0
+        },
+        "rata2_semua_hari_stasiun": {
+          "apa_adanya": 41.72062934813574,
+          "bertopeng": 39.37298946700886
+        },
+        "median_semua_hari_stasiun": {
+          "apa_adanya": 30.84166666666667,
+          "bertopeng": 30.766666666666666
+        },
+        "n_stasiun_rata2_lebih_15": {
+          "apa_adanya": 22.0,
+          "bertopeng": 22.0
+        },
+        "persen_hari_lewat_bm55": {
+          "apa_adanya": 17.33514896426508,
+          "bertopeng": 16.70358142839233
+        },
+        "persen_hari_lewat_who15": {
+          "apa_adanya": 82.6112073945696,
+          "bertopeng": 82.81165113460655
+        },
+        "ispu_tidak_sehat_atau_lebih_persen": {
+          "apa_adanya": 17.19485021044813,
+          "bertopeng": 16.561494420995444
+        },
+        "hari_berbahaya": {
+          "apa_adanya": 301.0,
+          "bertopeng": 98.0
+        },
+        "n_episode": {
+          "apa_adanya": 21.0,
+          "bertopeng": 20.0
+        },
+        "n_hari_episode": {
+          "apa_adanya": 396.0,
+          "bertopeng": 192.0
+        },
+        "rata2_bjb01": {
+          "apa_adanya": 102.1350401113294,
+          "bertopeng": 49.1893466573165
+        },
+        "rata2_tipe_gambut": {
+          "apa_adanya": 57.87896863156979,
+          "bertopeng": 49.99338912179323
+        },
+        "kw_tipe_epsilon2": {
+          "apa_adanya": 0.4363922934218594,
+          "bertopeng": 0.4503665969131846
+        },
+        "stasiun_tertinggi": {
+          "apa_adanya": "BJB-01",
+          "bertopeng": "PLB-01"
+        }
+      }
+    },
+    "1_ml": {
+      "n_stasiun": 25,
+      "n_stasiun_hari": 23929,
+      "kinerja": [
+        {
+          "lipatan": "L1: latih 2024 → uji 2025",
+          "model": "Random Forest",
+          "r2_log": 0.9351,
+          "r2": 0.7797,
+          "mae": 4.3911,
+          "rmse": 13.0442,
+          "r2_non_episode": 0.7795,
+          "mae_non_episode": 4.1768
+        },
+        {
+          "lipatan": "L1: latih 2024 → uji 2025",
+          "model": "Gradient Boosting",
+          "r2_log": 0.9195,
+          "r2": 0.7374,
+          "mae": 5.4095,
+          "rmse": 14.2395,
+          "r2_non_episode": 0.7358,
+          "mae_non_episode": 5.1818
+        },
+        {
+          "lipatan": "L1: latih 2024 → uji 2025",
+          "model": "Regresi berganda",
+          "r2_log": 0.7486,
+          "r2": 0.4721,
+          "mae": 10.3674,
+          "rmse": 20.1894,
+          "r2_non_episode": 0.4776,
+          "mae_non_episode": 10.0189
+        },
+        {
+          "lipatan": "L1: latih 2024 → uji 2025",
+          "model": "Acuan: rata-rata latih",
+          "r2_log": -0.0068,
+          "r2": -0.1051,
+          "mae": 19.227,
+          "rmse": 29.2129,
+          "r2_non_episode": -0.1021,
+          "mae_non_episode": 18.7563
+        },
+        {
+          "lipatan": "L2: latih 2024–25 → uji 2026",
+          "model": "Random Forest",
+          "r2_log": 0.8617,
+          "r2": 0.2574,
+          "mae": 11.5254,
+          "rmse": 62.396,
+          "r2_non_episode": 0.7948,
+          "mae_non_episode": 4.6213
+        },
+        {
+          "lipatan": "L2: latih 2024–25 → uji 2026",
+          "model": "Gradient Boosting",
+          "r2_log": 0.8394,
+          "r2": 0.2339,
+          "mae": 13.0697,
+          "rmse": 63.3784,
+          "r2_non_episode": 0.7257,
+          "mae_non_episode": 6.0757
+        },
+        {
+          "lipatan": "L2: latih 2024–25 → uji 2026",
+          "model": "Regresi berganda",
+          "r2_log": 0.6441,
+          "r2": 0.1185,
+          "mae": 19.2849,
+          "rmse": 67.982,
+          "r2_non_episode": 0.4502,
+          "mae_non_episode": 11.8174
+        },
+        {
+          "lipatan": "L2: latih 2024–25 → uji 2026",
+          "model": "Acuan: rata-rata latih",
+          "r2_log": -0.012,
+          "r2": -0.056,
+          "mae": 28.1258,
+          "rmse": 74.4097,
+          "r2_non_episode": -0.0911,
+          "mae_non_episode": 20.1429
+        }
+      ],
+      "uji_wilcoxon_rf_vs_ols": [
+        {
+          "lipatan": "L1: latih 2024 → uji 2025",
+          "mae_rf": 4.3911,
+          "mae_ols": 10.3674,
+          "median_selisih": -3.1857,
+          "p_wilcoxon": 0.0,
+          "persen_hari_rf_lebih_baik": 88.3024
+        },
+        {
+          "lipatan": "L2: latih 2024–25 → uji 2026",
+          "mae_rf": 11.5254,
+          "mae_ols": 19.2849,
+          "median_selisih": -4.7511,
+          "p_wilcoxon": 0.0,
+          "persen_hari_rf_lebih_baik": 91.1333
+        }
+      ],
+      "fitur_utama": [
+        "temperature_c",
+        "humidity_pct",
+        "wind_speed_ms",
+        "bulan",
+        "doy",
+        "hari_ke",
+        "tipe_Perkotaan",
+        "tipe_Jalan Raya",
+        "tipe_Industri",
+        "tipe_Gambut",
+        "tipe_Latar Bersih",
+        "lalu_lintas",
+        "jarak_jalan"
+      ],
+      "maks_pm25_latih_uji": {
+        "L1: latih 2024 → uji 2025": [
+          292.2757894736842,
+          242.19777777777776
+        ],
+        "L2: latih 2024–25 → uji 2026": [
+          292.2757894736842,
+          1127.5741666666665
+        ]
+      },
+      "permutation_rf": {
+        "L1: latih 2024 → uji 2025": {
+          "Lalu lintas & jarak ke jalan": 0.5826,
+          "Waktu (bulan, hari-tahun, hari-minggu)": 0.56,
+          "Cuaca (suhu, kelembapan, angin)": 0.1741,
+          "Tipe lokasi": 0.1702
+        },
+        "L2: latih 2024–25 → uji 2026": {
+          "Waktu (bulan, hari-tahun, hari-minggu)": 0.6472,
+          "Lalu lintas & jarak ke jalan": 0.5217,
+          "Cuaca (suhu, kelembapan, angin)": 0.1773,
+          "Tipe lokasi": 0.1568
+        }
+      },
+      "permutation_gb": {
+        "L1: latih 2024 → uji 2025": {
+          "Lalu lintas & jarak ke jalan": 0.773,
+          "Waktu (bulan, hari-tahun, hari-minggu)": 0.5112,
+          "Cuaca (suhu, kelembapan, angin)": 0.167,
+          "Tipe lokasi": 0.087
+        },
+        "L2: latih 2024–25 → uji 2026": {
+          "Waktu (bulan, hari-tahun, hari-minggu)": 0.5881,
+          "Lalu lintas & jarak ke jalan": 0.4386,
+          "Cuaca (suhu, kelembapan, angin)": 0.1409,
+          "Tipe lokasi": 0.1197
+        }
+      },
+      "ablasi_r2_log": {
+        "+ koordinat (pengenal stasiun)": {
+          "L1: latih 2024 → uji 2025": 0.9354,
+          "L2: latih 2024–25 → uji 2026": 0.8634
+        },
+        "+ lalu lintas & jarak jalan": {
+          "L1: latih 2024 → uji 2025": 0.9351,
+          "L2: latih 2024–25 → uji 2026": 0.8617
+        },
+        "+ tipe lokasi": {
+          "L1: latih 2024 → uji 2025": 0.8971,
+          "L2: latih 2024–25 → uji 2026": 0.8251
+        },
+        "Cuaca + waktu": {
+          "L1: latih 2024 → uji 2025": 0.6659,
+          "L2: latih 2024–25 → uji 2026": 0.6377
+        }
+      },
+      "permutation_dalam_vs_seluruh": [
+        {
+          "lipatan": "L1: latih 2024 → uji 2025",
+          "kelompok": "Cuaca (suhu, kelembapan, angin)",
+          "acak_seluruh_data": 0.1741,
+          "acak_dalam_stasiun": -0.0004,
+          "sd": 0.0002
+        },
+        {
+          "lipatan": "L1: latih 2024 → uji 2025",
+          "kelompok": "Waktu (bulan, hari-tahun, hari-minggu)",
+          "acak_seluruh_data": 0.56,
+          "acak_dalam_stasiun": 0.5418,
+          "sd": 0.0073
+        },
+        {
+          "lipatan": "L2: latih 2024–25 → uji 2026",
+          "kelompok": "Cuaca (suhu, kelembapan, angin)",
+          "acak_seluruh_data": 0.1773,
+          "acak_dalam_stasiun": 0.0011,
+          "sd": 0.0012
+        },
+        {
+          "lipatan": "L2: latih 2024–25 → uji 2026",
+          "kelompok": "Waktu (bulan, hari-tahun, hari-minggu)",
+          "acak_seluruh_data": 0.6472,
+          "acak_dalam_stasiun": 0.6395,
+          "sd": 0.0099
+        }
+      ],
+      "baseline_stasiun": {
+        "L1: latih 2024 → uji 2025": {
+          "r2_log_stasiun_saja": 0.5998,
+          "r2_log_stasiun_x_bulan": 0.9349,
+          "r2_log_rf_penuh": 0.9351
+        },
+        "L2: latih 2024–25 → uji 2026": {
+          "r2_log_stasiun_saja": 0.4467,
+          "r2_log_stasiun_x_bulan": 0.8635,
+          "r2_log_rf_penuh": 0.8617
+        }
+      },
+      "shap_gb_lipatan2": {
+        "per_fitur": {
+          "bulan": 0.2067,
+          "jarak_jalan": 0.1921,
+          "tipe_Latar Bersih": 0.101,
+          "lalu_lintas": 0.0934,
+          "doy": 0.0562,
+          "humidity_pct": 0.0544,
+          "temperature_c": 0.0529,
+          "wind_speed_ms": 0.0266,
+          "tipe_Jalan Raya": 0.0186,
+          "tipe_Gambut": 0.0174,
+          "tipe_Perkotaan": 0.0046,
+          "tipe_Industri": 0.0046,
+          "hari_ke": 0.0002
+        },
+        "per_kelompok": {
+          "Lalu lintas & jarak ke jalan": 0.2855,
+          "Waktu (bulan, hari-tahun, hari-minggu)": 0.263,
+          "Tipe lokasi": 0.1463,
+          "Cuaca (suhu, kelembapan, angin)": 0.1339
+        }
+      },
+      "lipatan2_maks_teramati_vs_prediksi_rf": [
+        1127.5741666666665,
+        195.0943855405879
+      ]
+    },
+    "2_kesehatan": {
+      "n_rs_hari": 22742,
+      "n_rs": 24,
+      "cap_pm25": 250.4,
+      "df_waktu": 20,
+      "rr_lag_tunggal": {
+        "ISPA balita (<5 th)": {
+          "0": [
+            1.0876,
+            1.0528,
+            1.1236
+          ],
+          "1": [
+            1.086,
+            1.0512,
+            1.1221
+          ],
+          "2": [
+            1.0836,
+            1.0494,
+            1.119
+          ],
+          "3": [
+            1.0809,
+            1.0478,
+            1.1149
+          ],
+          "4": [
+            1.0783,
+            1.047,
+            1.1105
+          ],
+          "5": [
+            1.0759,
+            1.0464,
+            1.1062
+          ],
+          "6": [
+            1.0744,
+            1.0463,
+            1.1032
+          ],
+          "7": [
+            1.0743,
+            1.0463,
+            1.1031
+          ]
+        },
+        "ISPA lansia (>60 th)": {
+          "0": [
+            1.087,
+            1.0546,
+            1.1205
+          ],
+          "1": [
+            1.0857,
+            1.0532,
+            1.1193
+          ],
+          "2": [
+            1.0836,
+            1.0517,
+            1.1165
+          ],
+          "3": [
+            1.0812,
+            1.0503,
+            1.113
+          ],
+          "4": [
+            1.0786,
+            1.0493,
+            1.1087
+          ],
+          "5": [
+            1.0761,
+            1.0482,
+            1.1047
+          ],
+          "6": [
+            1.0746,
+            1.048,
+            1.1018
+          ],
+          "7": [
+            1.0747,
+            1.0483,
+            1.1017
+          ]
+        },
+        "Asma (IGD)": {
+          "0": [
+            1.0879,
+            1.0546,
+            1.1223
+          ],
+          "1": [
+            1.0866,
+            1.053,
+            1.1211
+          ],
+          "2": [
+            1.0846,
+            1.0517,
+            1.1186
+          ],
+          "3": [
+            1.0818,
+            1.0499,
+            1.1147
+          ],
+          "4": [
+            1.0788,
+            1.0482,
+            1.1102
+          ],
+          "5": [
+            1.0764,
+            1.0477,
+            1.1059
+          ],
+          "6": [
+            1.0747,
+            1.0474,
+            1.1028
+          ],
+          "7": [
+            1.0746,
+            1.0476,
+            1.1023
+          ]
+        },
+        "PPOK": {
+          "0": [
+            1.0922,
+            1.0585,
+            1.1269
+          ],
+          "1": [
+            1.0906,
+            1.0565,
+            1.1257
+          ],
+          "2": [
+            1.0881,
+            1.0547,
+            1.1227
+          ],
+          "3": [
+            1.085,
+            1.0527,
+            1.1184
+          ],
+          "4": [
+            1.0815,
+            1.051,
+            1.1129
+          ],
+          "5": [
+            1.0781,
+            1.0493,
+            1.1078
+          ],
+          "6": [
+            1.0759,
+            1.0485,
+            1.104
+          ],
+          "7": [
+            1.0758,
+            1.0486,
+            1.1036
+          ]
+        },
+        "Pernapasan umum": {
+          "0": [
+            1.0759,
+            1.0528,
+            1.0995
+          ],
+          "1": [
+            1.0748,
+            1.0516,
+            1.0986
+          ],
+          "2": [
+            1.0731,
+            1.0504,
+            1.0964
+          ],
+          "3": [
+            1.0711,
+            1.0491,
+            1.0937
+          ],
+          "4": [
+            1.0691,
+            1.0482,
+            1.0905
+          ],
+          "5": [
+            1.0674,
+            1.0475,
+            1.0876
+          ],
+          "6": [
+            1.0663,
+            1.0473,
+            1.0856
+          ],
+          "7": [
+            1.0663,
+            1.0473,
+            1.0856
+          ]
+        },
+        "Kardiovaskular": {
+          "0": [
+            1.0871,
+            1.0645,
+            1.1101
+          ],
+          "1": [
+            1.0872,
+            1.0654,
+            1.1094
+          ],
+          "2": [
+            1.0866,
+            1.0656,
+            1.108
+          ],
+          "3": [
+            1.0861,
+            1.0656,
+            1.107
+          ],
+          "4": [
+            1.0851,
+            1.0647,
+            1.1058
+          ],
+          "5": [
+            1.084,
+            1.0635,
+            1.105
+          ],
+          "6": [
+            1.0828,
+            1.0621,
+            1.1039
+          ],
+          "7": [
+            1.0823,
+            1.0617,
+            1.1034
+          ]
+        },
+        "Kematian": {
+          "0": [
+            1.0938,
+            1.0814,
+            1.1064
+          ],
+          "1": [
+            1.0937,
+            1.0816,
+            1.1059
+          ],
+          "2": [
+            1.093,
+            1.0812,
+            1.1049
+          ],
+          "3": [
+            1.0917,
+            1.0802,
+            1.1032
+          ],
+          "4": [
+            1.0904,
+            1.079,
+            1.102
+          ],
+          "5": [
+            1.0887,
+            1.0771,
+            1.1005
+          ],
+          "6": [
+            1.0879,
+            1.0763,
+            1.0996
+          ],
+          "7": [
+            1.0875,
+            1.076,
+            1.0992
+          ]
+        }
+      },
+      "rr_kumulatif": {
+        "ISPA balita (<5 th)": {
+          "rr": 1.08584,
+          "bawah": 1.05145,
+          "atas": 1.12136,
+          "p": 0.0,
+          "persen_per10": 8.58398
+        },
+        "ISPA lansia (>60 th)": {
+          "rr": 1.0856,
+          "bawah": 1.05319,
+          "atas": 1.11902,
+          "p": 0.0,
+          "persen_per10": 8.56026
+        },
+        "Asma (IGD)": {
+          "rr": 1.08626,
+          "bawah": 1.05265,
+          "atas": 1.12094,
+          "p": 0.0,
+          "persen_per10": 8.62596
+        },
+        "PPOK": {
+          "rr": 1.08987,
+          "bawah": 1.05511,
+          "atas": 1.12577,
+          "p": 0.0,
+          "persen_per10": 8.98694
+        },
+        "Pernapasan umum": {
+          "rr": 1.07476,
+          "bawah": 1.05213,
+          "atas": 1.09787,
+          "p": 0.0,
+          "persen_per10": 7.47586
+        },
+        "Kardiovaskular": {
+          "rr": 1.09095,
+          "bawah": 1.07023,
+          "atas": 1.11208,
+          "p": 0.0,
+          "persen_per10": 9.09525
+        },
+        "Kematian": {
+          "rr": 1.09647,
+          "bawah": 1.0855,
+          "atas": 1.10755,
+          "p": 0.0,
+          "persen_per10": 9.64696
+        }
+      },
+      "balita_vs_lansia": {
+        "lag0": {
+          "beta_a": 0.08399473786096728,
+          "beta_b": 0.08343028049936657,
+          "selisih": 0.000564457361600712,
+          "se": 0.001279196613619985,
+          "z": 0.4412592681928387,
+          "p": 0.6590253103109829,
+          "rasio_rr": 1.0005646166976352,
+          "rasio_bawah": 0.9980591179511383,
+          "rasio_atas": 1.0030764051757282
+        },
+        "kumulatif": {
+          "beta_a": 0.010293351331817888,
+          "beta_b": 0.010293455538280432,
+          "selisih": -1.0420646254401256e-07,
+          "se": 0.00014939198468743786,
+          "z": -0.0006975371721718288,
+          "p": 0.9994434459048707,
+          "rasio_rr": 0.9999998957935429,
+          "rasio_bawah": 0.9997071303982271,
+          "rasio_atas": 1.000292746925545
+        }
+      },
+      "dispersi_rentang": [
+        0.5371688790841798,
+        1.556747627429687
+      ],
+      "sensitivitas_kumulatif": [
+        {
+          "varian": "Utama (potong 250,4; df 20)",
+          "n_rs": 24,
+          "n_rs_hari": 22742,
+          "balita_rr": 1.0858,
+          "balita_bawah": 1.0514,
+          "balita_atas": 1.1214,
+          "lansia_rr": 1.0856,
+          "lansia_bawah": 1.0532,
+          "lansia_atas": 1.119
+        },
+        {
+          "varian": "Tanpa pemotongan eksposur",
+          "n_rs": 24,
+          "n_rs_hari": 22742,
+          "balita_rr": 1.0212,
+          "balita_bawah": 1.014,
+          "balita_atas": 1.0285,
+          "lansia_rr": 1.0219,
+          "lansia_bawah": 1.0148,
+          "lansia_atas": 1.0291
+        },
+        {
+          "varian": "Hanya stasiun Layak",
+          "n_rs": 22,
+          "n_rs_hari": 21930,
+          "balita_rr": 1.0858,
+          "balita_bawah": 1.0508,
+          "balita_atas": 1.122,
+          "lansia_rr": 1.0857,
+          "lansia_bawah": 1.0526,
+          "lansia_atas": 1.1198
+        },
+        {
+          "varian": "Tanpa RS stasiun gambut",
+          "n_rs": 17,
+          "n_rs_hari": 16822,
+          "balita_rr": 1.0735,
+          "balita_bawah": 1.0466,
+          "balita_atas": 1.101,
+          "lansia_rr": 1.0738,
+          "lansia_bawah": 1.0478,
+          "lansia_atas": 1.1004
+        },
+        {
+          "varian": "Tanpa BJB-01 & SM2-01",
+          "n_rs": 22,
+          "n_rs_hari": 21397,
+          "balita_rr": 1.0858,
+          "balita_bawah": 1.0511,
+          "balita_atas": 1.1217,
+          "lansia_rr": 1.0856,
+          "lansia_bawah": 1.0529,
+          "lansia_atas": 1.1193
+        },
+        {
+          "varian": "Spline waktu df 10",
+          "n_rs": 24,
+          "n_rs_hari": 22742,
+          "balita_rr": 1.0884,
+          "balita_bawah": 1.0535,
+          "balita_atas": 1.1245,
+          "lansia_rr": 1.0878,
+          "lansia_bawah": 1.055,
+          "lansia_atas": 1.1216
+        },
+        {
+          "varian": "Spline waktu df 30",
+          "n_rs": 24,
+          "n_rs_hari": 22742,
+          "balita_rr": 1.0866,
+          "balita_bawah": 1.0531,
+          "balita_atas": 1.1211,
+          "lansia_rr": 1.0863,
+          "lansia_bawah": 1.0548,
+          "lansia_atas": 1.1186
+        }
+      ],
+      "nb_vs_qp_lag0": [
+        {
+          "kasus": "ISPA balita (<5 th)",
+          "alpha": 0.0091,
+          "rr_quasiPoisson": 1.0876,
+          "rr_NB": 1.0914,
+          "bawah_NB": 1.0535,
+          "atas_NB": 1.1306
+        },
+        {
+          "kasus": "ISPA lansia (>60 th)",
+          "alpha": 0.0075,
+          "rr_quasiPoisson": 1.087,
+          "rr_NB": 1.0901,
+          "bawah_NB": 1.0551,
+          "atas_NB": 1.1261
+        }
+      ],
+      "respons_eksposur_kelas": [
+        {
+          "kasus": "ISPA balita (<5 th)",
+          "kelas": "≤15,5",
+          "n_hari": 4126,
+          "rr": 1.0,
+          "rr_bawah": 1.0,
+          "rr_atas": 1.0,
+          "p7_rata2": 11.4556,
+          "rr_linier_model_utama": 1.0
+        },
+        {
+          "kasus": "ISPA balita (<5 th)",
+          "kelas": "15,5–35",
+          "n_hari": 9164,
+          "rr": 1.1172,
+          "rr_bawah": 0.9574,
+          "rr_atas": 1.3037,
+          "p7_rata2": 24.6245,
+          "rr_linier_model_utama": 1.1145
+        },
+        {
+          "kasus": "ISPA balita (<5 th)",
+          "kelas": "35–55,4",
+          "n_hari": 5758,
+          "rr": 1.7205,
+          "rr_bawah": 1.3598,
+          "rr_atas": 2.1769,
+          "p7_rata2": 44.8831,
+          "rr_linier_model_utama": 1.3169
+        },
+        {
+          "kasus": "ISPA balita (<5 th)",
+          "kelas": "55,4–150,4",
+          "n_hari": 3550,
+          "rr": 2.7348,
+          "rr_bawah": 2.1084,
+          "rr_atas": 3.5473,
+          "p7_rata2": 77.8679,
+          "rr_linier_model_utama": 1.7279
+        },
+        {
+          "kasus": "ISPA balita (<5 th)",
+          "kelas": "150,4–250,4",
+          "n_hari": 60,
+          "rr": 4.0435,
+          "rr_bawah": 2.477,
+          "rr_atas": 6.6007,
+          "p7_rata2": 172.0588,
+          "rr_linier_model_utama": 3.7533
+        },
+        {
+          "kasus": "ISPA balita (<5 th)",
+          "kelas": ">250,4",
+          "n_hari": 84,
+          "rr": 4.5362,
+          "rr_bawah": 3.4577,
+          "rr_atas": 5.9512,
+          "p7_rata2": 516.3575,
+          "rr_linier_model_utama": 7.1549
+        },
+        {
+          "kasus": "ISPA lansia (>60 th)",
+          "kelas": "≤15,5",
+          "n_hari": 4126,
+          "rr": 1.0,
+          "rr_bawah": 1.0,
+          "rr_atas": 1.0,
+          "p7_rata2": 11.4556,
+          "rr_linier_model_utama": 1.0
+        },
+        {
+          "kasus": "ISPA lansia (>60 th)",
+          "kelas": "15,5–35",
+          "n_hari": 9164,
+          "rr": 1.0738,
+          "rr_bawah": 0.943,
+          "rr_atas": 1.2229,
+          "p7_rata2": 24.6245,
+          "rr_linier_model_utama": 1.1142
+        },
+        {
+          "kasus": "ISPA lansia (>60 th)",
+          "kelas": "35–55,4",
+          "n_hari": 5758,
+          "rr": 1.6141,
+          "rr_bawah": 1.3045,
+          "rr_atas": 1.9971,
+          "p7_rata2": 44.8831,
+          "rr_linier_model_utama": 1.3159
+        },
+        {
+          "kasus": "ISPA lansia (>60 th)",
+          "kelas": "55,4–150,4",
+          "n_hari": 3550,
+          "rr": 2.4993,
+          "rr_bawah": 1.9783,
+          "rr_atas": 3.1575,
+          "p7_rata2": 77.8679,
+          "rr_linier_model_utama": 1.7254
+        },
+        {
+          "kasus": "ISPA lansia (>60 th)",
+          "kelas": "150,4–250,4",
+          "n_hari": 60,
+          "rr": 3.6097,
+          "rr_bawah": 2.2816,
+          "rr_atas": 5.711,
+          "p7_rata2": 172.0588,
+          "rr_linier_model_utama": 3.7401
+        },
+        {
+          "kasus": "ISPA lansia (>60 th)",
+          "kelas": ">250,4",
+          "n_hari": 84,
+          "rr": 4.3983,
+          "rr_bawah": 3.4587,
+          "rr_atas": 5.5931,
+          "p7_rata2": 516.3575,
+          "rr_linier_model_utama": 7.1176
+        }
+      ],
+      "heterogenitas_tipe": [
+        {
+          "tipe": "Perkotaan",
+          "n_rs": 6,
+          "kasus": "ISPA balita (<5 th)",
+          "rr": 1.062,
+          "rr_bawah": 1.05,
+          "rr_atas": 1.0742,
+          "beta": 0.0602,
+          "se": 0.0058,
+          "p": 0.0
+        },
+        {
+          "tipe": "Perkotaan",
+          "n_rs": 6,
+          "kasus": "ISPA lansia (>60 th)",
+          "rr": 1.0627,
+          "rr_bawah": 1.0491,
+          "rr_atas": 1.0764,
+          "beta": 0.0608,
+          "se": 0.0065,
+          "p": 0.0
+        },
+        {
+          "tipe": "Jalan Raya",
+          "n_rs": 2,
+          "kasus": "ISPA balita (<5 th)",
+          "rr": 1.0466,
+          "rr_bawah": 0.9377,
+          "rr_atas": 1.1682,
+          "beta": 0.0456,
+          "se": 0.0561,
+          "p": 0.4164
+        },
+        {
+          "tipe": "Jalan Raya",
+          "n_rs": 2,
+          "kasus": "ISPA lansia (>60 th)",
+          "rr": 1.0212,
+          "rr_bawah": 0.9175,
+          "rr_atas": 1.1366,
+          "beta": 0.0209,
+          "se": 0.0546,
+          "p": 0.7014
+        },
+        {
+          "tipe": "Industri",
+          "n_rs": 4,
+          "kasus": "ISPA balita (<5 th)",
+          "rr": 1.2055,
+          "rr_bawah": 1.1683,
+          "rr_atas": 1.2439,
+          "beta": 0.1869,
+          "se": 0.016,
+          "p": 0.0
+        },
+        {
+          "tipe": "Industri",
+          "n_rs": 4,
+          "kasus": "ISPA lansia (>60 th)",
+          "rr": 1.1893,
+          "rr_bawah": 1.158,
+          "rr_atas": 1.2213,
+          "beta": 0.1733,
+          "se": 0.0136,
+          "p": 0.0
+        },
+        {
+          "tipe": "Gambut",
+          "n_rs": 7,
+          "kasus": "ISPA balita (<5 th)",
+          "rr": 1.0525,
+          "rr_bawah": 1.0056,
+          "rr_atas": 1.1015,
+          "beta": 0.0511,
+          "se": 0.0233,
+          "p": 0.0279
+        },
+        {
+          "tipe": "Gambut",
+          "n_rs": 7,
+          "kasus": "ISPA lansia (>60 th)",
+          "rr": 1.0535,
+          "rr_bawah": 1.0093,
+          "rr_atas": 1.0996,
+          "beta": 0.0521,
+          "se": 0.0219,
+          "p": 0.0171
+        },
+        {
+          "tipe": "Latar Bersih",
+          "n_rs": 5,
+          "kasus": "ISPA balita (<5 th)",
+          "rr": 1.2506,
+          "rr_bawah": 1.2236,
+          "rr_atas": 1.2782,
+          "beta": 0.2236,
+          "se": 0.0111,
+          "p": 0.0
+        },
+        {
+          "tipe": "Latar Bersih",
+          "n_rs": 5,
+          "kasus": "ISPA lansia (>60 th)",
+          "rr": 1.2093,
+          "rr_bawah": 1.1779,
+          "rr_atas": 1.2415,
+          "beta": 0.19,
+          "se": 0.0134,
+          "p": 0.0
+        }
+      ],
+      "rr_per_rs_rentang": [
+        0.4674427615481439,
+        2.229774980955228
+      ],
+      "kasus_berlebih": {
+        "total": {
+          "ISPA balita (<5 th)": {
+            "n_hari_episode": 148,
+            "teramati": 4957.0,
+            "berlebih_model": 3402.94,
+            "bawah": 2639.64,
+            "atas": 3857.03,
+            "berlebih_empiris": 2864.07,
+            "berlebih_tanpa_potong": 2401.64,
+            "persen_dari_kasus": 68.65
+          },
+          "ISPA lansia (>60 th)": {
+            "n_hari_episode": 148,
+            "teramati": 5588.0,
+            "berlebih_model": 3821.16,
+            "bawah": 3027.32,
+            "atas": 4314.33,
+            "berlebih_empiris": 3163.78,
+            "berlebih_tanpa_potong": 2775.67,
+            "persen_dari_kasus": 68.38
+          },
+          "Pernapasan umum": {
+            "n_hari_episode": 148,
+            "teramati": 17740.0,
+            "berlebih_model": 11740.79,
+            "bawah": 9757.95,
+            "atas": 13098.79,
+            "berlebih_empiris": 9933.88,
+            "berlebih_tanpa_potong": 8754.71,
+            "persen_dari_kasus": 66.18
+          }
+        },
+        "per_rs": [
+          {
+            "kasus": "ISPA balita (<5 th)",
+            "hospital_id": "RS-XXX-04",
+            "kode_stasiun": "KTG-01",
+            "n_hari_episode": 44,
+            "teramati": 1397.0,
+            "berlebih_model": 1113.44,
+            "bawah": 877.24,
+            "atas": 1237.4,
+            "persen_dari_kasus": 79.7,
+            "berlebih_empiris": 897.29,
+            "berlebih_model_tanpa_potong": 918.11
+          },
+          {
+            "kasus": "ISPA balita (<5 th)",
+            "hospital_id": "RS-XXX-05",
+            "kode_stasiun": "KTG-02",
+            "n_hari_episode": 44,
+            "teramati": 1406.0,
+            "berlebih_model": 1118.54,
+            "bawah": 880.26,
+            "atas": 1243.79,
+            "persen_dari_kasus": 79.55,
+            "berlebih_empiris": 929.29,
+            "berlebih_model_tanpa_potong": 928.06
+          },
+          {
+            "kasus": "ISPA balita (<5 th)",
+            "hospital_id": "RS-XXX-19",
+            "kode_stasiun": "STG-01",
+            "n_hari_episode": 5,
+            "teramati": 218.0,
+            "berlebih_model": 160.77,
+            "bawah": 132.46,
+            "atas": 177.9,
+            "persen_dari_kasus": 73.75,
+            "berlebih_empiris": 156.17,
+            "berlebih_model_tanpa_potong": 77.98
+          },
+          {
+            "kasus": "ISPA balita (<5 th)",
+            "hospital_id": "RS-XXX-20",
+            "kode_stasiun": "PKN-01",
+            "n_hari_episode": 6,
+            "teramati": 454.0,
+            "berlebih_model": 349.84,
+            "bawah": 281.16,
+            "atas": 389.46,
+            "persen_dari_kasus": 77.06,
+            "berlebih_empiris": 364.62,
+            "berlebih_model_tanpa_potong": 263.54
+          },
+          {
+            "kasus": "ISPA balita (<5 th)",
+            "hospital_id": "RS-XXX-21",
+            "kode_stasiun": "PLB-01",
+            "n_hari_episode": 49,
+            "teramati": 1482.0,
+            "berlebih_model": 660.34,
+            "bawah": 468.52,
+            "atas": 808.48,
+            "persen_dari_kasus": 44.56,
+            "berlebih_empiris": 516.7,
+            "berlebih_model_tanpa_potong": 213.96
+          },
+          {
+            "kasus": "ISPA lansia (>60 th)",
+            "hospital_id": "RS-XXX-04",
+            "kode_stasiun": "KTG-01",
+            "n_hari_episode": 44,
+            "teramati": 1588.0,
+            "berlebih_model": 1263.52,
+            "bawah": 1016.71,
+            "atas": 1400.04,
+            "persen_dari_kasus": 79.57,
+            "berlebih_empiris": 1041.14,
+            "berlebih_model_tanpa_potong": 1077.97
+          },
+          {
+            "kasus": "ISPA lansia (>60 th)",
+            "hospital_id": "RS-XXX-05",
+            "kode_stasiun": "KTG-02",
+            "n_hari_episode": 44,
+            "teramati": 1578.0,
+            "berlebih_model": 1254.87,
+            "bawah": 1009.69,
+            "atas": 1390.63,
+            "persen_dari_kasus": 79.52,
+            "berlebih_empiris": 1016.43,
+            "berlebih_model_tanpa_potong": 1066.38
+          },
+          {
+            "kasus": "ISPA lansia (>60 th)",
+            "hospital_id": "RS-XXX-19",
+            "kode_stasiun": "STG-01",
+            "n_hari_episode": 5,
+            "teramati": 238.0,
+            "berlebih_model": 174.25,
+            "bawah": 144.84,
+            "atas": 192.81,
+            "persen_dari_kasus": 73.21,
+            "berlebih_empiris": 166.16,
+            "berlebih_model_tanpa_potong": 86.04
+          },
+          {
+            "kasus": "ISPA lansia (>60 th)",
+            "hospital_id": "RS-XXX-20",
+            "kode_stasiun": "PKN-01",
+            "n_hari_episode": 6,
+            "teramati": 500.0,
+            "berlebih_model": 383.78,
+            "bawah": 313.67,
+            "atas": 425.95,
+            "persen_dari_kasus": 76.76,
+            "berlebih_empiris": 397.76,
+            "berlebih_model_tanpa_potong": 294.88
+          },
+          {
+            "kasus": "ISPA lansia (>60 th)",
+            "hospital_id": "RS-XXX-21",
+            "kode_stasiun": "PLB-01",
+            "n_hari_episode": 49,
+            "teramati": 1684.0,
+            "berlebih_model": 744.74,
+            "bawah": 542.4,
+            "atas": 904.91,
+            "persen_dari_kasus": 44.22,
+            "berlebih_empiris": 542.3,
+            "berlebih_model_tanpa_potong": 250.4
+          },
+          {
+            "kasus": "Pernapasan umum",
+            "hospital_id": "RS-XXX-04",
+            "kode_stasiun": "KTG-01",
+            "n_hari_episode": 44,
+            "teramati": 5733.0,
+            "berlebih_model": 4315.58,
+            "bawah": 3621.19,
+            "atas": 4760.59,
+            "persen_dari_kasus": 75.28,
+            "berlebih_empiris": 3577.43,
+            "berlebih_model_tanpa_potong": 3622.39
+          },
+          {
+            "kasus": "Pernapasan umum",
+            "hospital_id": "RS-XXX-05",
+            "kode_stasiun": "KTG-02",
+            "n_hari_episode": 44,
+            "teramati": 5778.0,
+            "berlebih_model": 4344.1,
+            "bawah": 3643.01,
+            "atas": 4793.57,
+            "persen_dari_kasus": 75.18,
+            "berlebih_empiris": 3637.29,
+            "berlebih_model_tanpa_potong": 3664.02
+          },
+          {
+            "kasus": "Pernapasan umum",
+            "hospital_id": "RS-XXX-19",
+            "kode_stasiun": "STG-01",
+            "n_hari_episode": 5,
+            "teramati": 603.0,
+            "berlebih_model": 415.84,
+            "bawah": 356.35,
+            "atas": 457.62,
+            "persen_dari_kasus": 68.96,
+            "berlebih_empiris": 402.74,
+            "berlebih_model_tanpa_potong": 197.73
+          },
+          {
+            "kasus": "Pernapasan umum",
+            "hospital_id": "RS-XXX-20",
+            "kode_stasiun": "PKN-01",
+            "n_hari_episode": 6,
+            "teramati": 1245.0,
+            "berlebih_model": 901.43,
+            "bawah": 761.58,
+            "atas": 997.33,
+            "persen_dari_kasus": 72.4,
+            "berlebih_empiris": 967.44,
+            "berlebih_model_tanpa_potong": 677.25
+          },
+          {
+            "kasus": "Pernapasan umum",
+            "hospital_id": "RS-XXX-21",
+            "kode_stasiun": "PLB-01",
+            "n_hari_episode": 49,
+            "teramati": 4381.0,
+            "berlebih_model": 1763.85,
+            "bawah": 1375.81,
+            "atas": 2089.69,
+            "persen_dari_kasus": 40.26,
+            "berlebih_empiris": 1348.99,
+            "berlebih_model_tanpa_potong": 593.32
+          }
+        ],
+        "n_hari_episode": 148,
+        "acuan": "median PM2.5 stasiun pada hari non-episode Jul–Okt"
+      }
+    },
+    "3_klaster": {
+      "k": 3,
+      "silhouette": [
+        {
+          "k": 2,
+          "silhouette_ward": 0.4705,
+          "silhouette_kmeans": 0.4909,
+          "ARI_ward_vs_kmeans": 0.5762
+        },
+        {
+          "k": 3,
+          "silhouette_ward": 0.5349,
+          "silhouette_kmeans": 0.5349,
+          "ARI_ward_vs_kmeans": 1.0
+        },
+        {
+          "k": 4,
+          "silhouette_ward": 0.4161,
+          "silhouette_kmeans": 0.4161,
+          "ARI_ward_vs_kmeans": 1.0
+        },
+        {
+          "k": 5,
+          "silhouette_ward": 0.3611,
+          "silhouette_kmeans": 0.3611,
+          "ARI_ward_vs_kmeans": 1.0
+        },
+        {
+          "k": 6,
+          "silhouette_ward": 0.3854,
+          "silhouette_kmeans": 0.3854,
+          "ARI_ward_vs_kmeans": 1.0
+        }
+      ],
+      "klaster": {
+        "1": {
+          "nama": "Musiman lemah · dua puncak harian kuat · tingkat sedang",
+          "n": 14,
+          "anggota": [
+            "BGL-01",
+            "BGR-01",
+            "BGR-02",
+            "IDP-01",
+            "JKT-01",
+            "JKT-02",
+            "JKT-03",
+            "MDN-01",
+            "MER-01",
+            "MLG-01",
+            "MRS-01",
+            "PLU-01",
+            "SRG-01",
+            "YKY-01"
+          ],
+          "rasio_musiman_median": 1.4173930309864757,
+          "pm25_rata2_median": 28.12706442799414,
+          "pm25_rentang": [
+            9.337233780116767,
+            60.065285349233385
+          ]
+        },
+        "2": {
+          "nama": "Kemarau tegas · variasi harian kecil · tingkat tinggi",
+          "n": 2,
+          "anggota": [
+            "KTG-01",
+            "KTG-02"
+          ],
+          "rasio_musiman_median": 10.725083887086537,
+          "pm25_rata2_median": 61.033238414543085,
+          "pm25_rentang": [
+            60.840869750042515,
+            61.225607079043655
+          ]
+        },
+        "3": {
+          "nama": "Kemarau tegas · dua puncak harian kuat · tingkat tinggi",
+          "n": 10,
+          "anggota": [
+            "BJB-01",
+            "BTM-01",
+            "JMB-01",
+            "KTB-01",
+            "PKN-01",
+            "PKU-01",
+            "PLB-01",
+            "PSW-01",
+            "SM2-01",
+            "STG-01"
+          ],
+          "rasio_musiman_median": 4.144672465326352,
+          "pm25_rata2_median": 47.33806972611828,
+          "pm25_rentang": [
+            18.653960090516353,
+            78.84346029758751
+          ]
+        }
+      },
+      "kruskal_rasio_musiman": {
+        "H": 19.692307692307708,
+        "p": 5.295045747742735e-05,
+        "epsilon2": 0.7876923076923084,
+        "n": 26,
+        "k": 3,
+        "df": 2
+      }
+    },
+    "4_anomali": {
+      "bjb01": {
+        "geser_timestamp_menit": 1.26,
+        "ccf_lag0": 0.22590066233220824,
+        "ccf_terbaik": {
+          "lag_hari": 70,
+          "r": 0.3792662932271673
+        },
+        "geser_bulan_terbaik": {
+          "bulan": 2,
+          "r": 0.7486528885368547
+        },
+        "rasio_pm25_pm10_median": 0.6892528147389969,
+        "rasio_pm25_pm10_gambut_lain": 0.6723340245231997,
+        "baseline_pm25": 35.0,
+        "pettitt": [
+          {
+            "polutan": "pm25",
+            "tanggal_perubahan": "2025-03-29",
+            "p": 0.0,
+            "median_sebelum": 81.0354,
+            "median_sesudah": 36.7125,
+            "rasio_sebelum_sesudah": 2.2073
+          },
+          {
+            "polutan": "pm10",
+            "tanggal_perubahan": "2025-03-29",
+            "p": 0.0,
+            "median_sebelum": 117.2896,
+            "median_sesudah": 53.1875,
+            "rasio_sebelum_sesudah": 2.2052
+          },
+          {
+            "polutan": "co",
+            "tanggal_perubahan": "2025-03-29",
+            "p": 0.0,
+            "median_sebelum": 582.0619,
+            "median_sesudah": 559.5317,
+            "rasio_sebelum_sesudah": 1.0403
+          },
+          {
+            "polutan": "no2",
+            "tanggal_perubahan": "2025-03-29",
+            "p": 0.0,
+            "median_sebelum": 33.053,
+            "median_sesudah": 30.8576,
+            "rasio_sebelum_sesudah": 1.0711
+          },
+          {
+            "polutan": "so2",
+            "tanggal_perubahan": "2025-03-29",
+            "p": 0.0,
+            "median_sebelum": 8.3909,
+            "median_sesudah": 7.7849,
+            "rasio_sebelum_sesudah": 1.0778
+          },
+          {
+            "polutan": "o3",
+            "tanggal_perubahan": "2025-07-09",
+            "p": 0.0,
+            "median_sebelum": 15.7055,
+            "median_sesudah": 27.8364,
+            "rasio_sebelum_sesudah": 0.5642
+          }
+        ],
+        "segmen": [
+          {
+            "segmen": "normal awal (2024-01…07)",
+            "n_jam": 5112,
+            "nilai_unik": 437,
+            "median": 37.0,
+            "sd": 9.365
+          },
+          {
+            "segmen": "normal akhir (2025-11…2026-07)",
+            "n_jam": 6552,
+            "nilai_unik": 456,
+            "median": 37.1,
+            "sd": 9.351
+          },
+          {
+            "segmen": "flatline 1: 2024-09-07…2025-03-29",
+            "n_jam": 4886,
+            "nilai_unik": 1,
+            "median": 336.7,
+            "sd": 0.0
+          },
+          {
+            "segmen": "flatline 2: 2025-03-29…2025-07-09",
+            "n_jam": 2443,
+            "nilai_unik": 1,
+            "median": 3.5,
+            "sd": 0.0
+          }
+        ],
+        "korelasi_peer_sebelum": 0.17031438515586447,
+        "korelasi_peer_sesudah": 0.7260271543861238,
+        "korelasi_peer_tanpa_flatline": 0.7688763822336874,
+        "rasio_dataran_tinggi_vs_normal": 9.075471698113207,
+        "rasio_normal_vs_dataran_rendah": 10.6
+      },
+      "asimetri_kasus_pm": {
+        "spearman_antar_rs_asli": 0.6526495726495727,
+        "spearman_antar_rs_topeng": 0.7278632478632477,
+        "spearman_kasus_kapasitas": 0.17575258508182395,
+        "z_residual": [
+          {
+            "kode": "MDN-01",
+            "z_asli": -1.055,
+            "z_topeng": -1.375
+          },
+          {
+            "kode": "SM2-01",
+            "z_asli": -2.254,
+            "z_topeng": -3.252
+          },
+          {
+            "kode": "BJB-01",
+            "z_asli": -4.466,
+            "z_topeng": -2.788
+          }
+        ],
+        "z_rr_dalam_rs": {
+          "BJB-01": -0.0848725919538607,
+          "SM2-01": -0.14205019520875667
+        },
+        "rr_per_rs": [
+          {
+            "kode_stasiun": "SM2-01",
+            "tipe": "Industri",
+            "n": 646,
+            "rr": 1.0977,
+            "rr_bawah": 0.8446,
+            "rr_atas": 1.4268,
+            "beta": 0.0932,
+            "se": 0.1338,
+            "p": 0.4857
+          },
+          {
+            "kode_stasiun": "BJB-01",
+            "tipe": "Gambut",
+            "n": 699,
+            "rr": 1.1157,
+            "rr_bawah": 1.0747,
+            "rr_atas": 1.1582,
+            "beta": 0.1095,
+            "se": 0.0191,
+            "p": 0.0
+          }
+        ],
+        "sm2_korelasi": {
+          "ketat (≥18 jam)": {
+            "n_hari": 771.0,
+            "spearman": 0.2359,
+            "pm25_rata2": 59.7783
+          },
+          "longgar (≥12 jam)": {
+            "n_hari": 1008.0,
+            "spearman": 0.4477,
+            "pm25_rata2": 88.1952
+          }
+        }
+      }
+    },
+    "5_risiko": {
+      "bobot": {
+        "polusi": 0.35,
+        "kesehatan": 0.25,
+        "kerentanan": 0.25,
+        "tren": 0.15
+      },
+      "peringkat": [
+        {
+          "kode_stasiun": "KTG-02",
+          "peringkat": 1,
+          "skor": 81.0,
+          "tipe": "Gambut",
+          "pulau": "Kalimantan",
+          "status": "Layak"
+        },
+        {
+          "kode_stasiun": "PSW-01",
+          "peringkat": 2,
+          "skor": 76.71,
+          "tipe": "Perkotaan",
+          "pulau": "Sumatera",
+          "status": "Layak"
+        },
+        {
+          "kode_stasiun": "PKN-01",
+          "peringkat": 3,
+          "skor": 73.98,
+          "tipe": "Gambut",
+          "pulau": "Kalimantan",
+          "status": "Layak"
+        },
+        {
+          "kode_stasiun": "PLB-01",
+          "peringkat": 4,
+          "skor": 72.47,
+          "tipe": "Gambut",
+          "pulau": "Sumatera",
+          "status": "Terbatas"
+        },
+        {
+          "kode_stasiun": "PKU-01",
+          "peringkat": 5,
+          "skor": 71.14,
+          "tipe": "Gambut",
+          "pulau": "Sumatera",
+          "status": "Layak"
+        },
+        {
+          "kode_stasiun": "BTM-01",
+          "peringkat": 6,
+          "skor": 70.24,
+          "tipe": "Industri",
+          "pulau": "Sumatera",
+          "status": "Layak"
+        },
+        {
+          "kode_stasiun": "KTG-01",
+          "peringkat": 7,
+          "skor": 65.41,
+          "tipe": "Perkotaan",
+          "pulau": "Kalimantan",
+          "status": "Layak"
+        },
+        {
+          "kode_stasiun": "JMB-01",
+          "peringkat": 8,
+          "skor": 65.25,
+          "tipe": "Gambut",
+          "pulau": "Sumatera",
+          "status": "Layak"
+        },
+        {
+          "kode_stasiun": "STG-01",
+          "peringkat": 9,
+          "skor": 64.0,
+          "tipe": "Gambut",
+          "pulau": "Kalimantan",
+          "status": "Layak"
+        },
+        {
+          "kode_stasiun": "JKT-02",
+          "peringkat": 10,
+          "skor": 59.36,
+          "tipe": "Industri",
+          "pulau": "Jawa",
+          "status": "Layak"
+        },
+        {
+          "kode_stasiun": "JKT-03",
+          "peringkat": 11,
+          "skor": 54.89,
+          "tipe": "Jalan Raya",
+          "pulau": "Jawa",
+          "status": "Layak"
+        },
+        {
+          "kode_stasiun": "SM2-01",
+          "peringkat": 12,
+          "skor": 50.88,
+          "tipe": "Industri",
+          "pulau": "Kalimantan",
+          "status": "Terbatas"
+        },
+        {
+          "kode_stasiun": "MLG-01",
+          "peringkat": 13,
+          "skor": 50.1,
+          "tipe": "Perkotaan",
+          "pulau": "Jawa",
+          "status": "Layak"
+        },
+        {
+          "kode_stasiun": "MRS-01",
+          "peringkat": 14,
+          "skor": 47.94,
+          "tipe": "Industri",
+          "pulau": "Sulawesi",
+          "status": "Layak"
+        },
+        {
+          "kode_stasiun": "JKT-01",
+          "peringkat": 15,
+          "skor": 47.92,
+          "tipe": "Perkotaan",
+          "pulau": "Jawa",
+          "status": "Layak"
+        },
+        {
+          "kode_stasiun": "YKY-01",
+          "peringkat": 16,
+          "skor": 46.9,
+          "tipe": "Perkotaan",
+          "pulau": "Jawa",
+          "status": "Layak"
+        },
+        {
+          "kode_stasiun": "BJB-01",
+          "peringkat": 17,
+          "skor": 46.06,
+          "tipe": "Gambut",
+          "pulau": "Kalimantan",
+          "status": "Layak"
+        },
+        {
+          "kode_stasiun": "KTB-01",
+          "peringkat": 18,
+          "skor": 44.4,
+          "tipe": "Latar Bersih",
+          "pulau": "Sumatera",
+          "status": "Layak"
+        },
+        {
+          "kode_stasiun": "MER-01",
+          "peringkat": 19,
+          "skor": 42.5,
+          "tipe": "Latar Bersih",
+          "pulau": "Papua",
+          "status": "Terbatas"
+        },
+        {
+          "kode_stasiun": "SRG-01",
+          "peringkat": 20,
+          "skor": 39.58,
+          "tipe": "Latar Bersih",
+          "pulau": "Papua",
+          "status": "Layak"
+        },
+        {
+          "kode_stasiun": "IDP-01",
+          "peringkat": 21,
+          "skor": 34.85,
+          "tipe": "Latar Bersih",
+          "pulau": "Sumatera",
+          "status": "Layak"
+        },
+        {
+          "kode_stasiun": "BGL-01",
+          "peringkat": 22,
+          "skor": 32.69,
+          "tipe": "Perkotaan",
+          "pulau": "Sumatera",
+          "status": "Layak"
+        },
+        {
+          "kode_stasiun": "MDN-01",
+          "peringkat": 23,
+          "skor": 30.96,
+          "tipe": "Perkotaan",
+          "pulau": "Sumatera",
+          "status": "Terbatas"
+        },
+        {
+          "kode_stasiun": "BGR-02",
+          "peringkat": 24,
+          "skor": 29.53,
+          "tipe": "Jalan Raya",
+          "pulau": "Jawa",
+          "status": "Layak"
+        },
+        {
+          "kode_stasiun": "BGR-01",
+          "peringkat": 25,
+          "skor": 26.61,
+          "tipe": "Latar Bersih",
+          "pulau": "Jawa",
+          "status": "Layak"
+        },
+        {
+          "kode_stasiun": "PLU-01",
+          "peringkat": 26,
+          "skor": 22.7,
+          "tipe": "Latar Bersih",
+          "pulau": "Sulawesi",
+          "status": "Layak"
+        }
+      ],
+      "n_dinilai": 26,
+      "sensitivitas": {
+        "rho_dirichlet_median": 0.8923076923076922,
+        "rho_dirichlet_p05": 0.5659829059829059,
+        "top5_dasar": [
+          "KTG-02",
+          "PSW-01",
+          "PKN-01",
+          "PLB-01",
+          "PKU-01"
+        ],
+        "peluang_top5": {
+          "KTG-02": 0.977,
+          "PSW-01": 0.801,
+          "PKN-01": 0.933,
+          "PLB-01": 0.418,
+          "PKU-01": 0.668,
+          "BTM-01": 0.321,
+          "KTG-01": 0.345,
+          "JMB-01": 0.0,
+          "STG-01": 0.219,
+          "JKT-02": 0.088,
+          "JKT-03": 0.014,
+          "SM2-01": 0.056,
+          "MLG-01": 0.012,
+          "MRS-01": 0.014,
+          "JKT-01": 0.0,
+          "YKY-01": 0.0,
+          "BJB-01": 0.0,
+          "KTB-01": 0.0,
+          "MER-01": 0.076,
+          "SRG-01": 0.0,
+          "IDP-01": 0.048,
+          "BGL-01": 0.0,
+          "MDN-01": 0.0,
+          "BGR-02": 0.0,
+          "BGR-01": 0.011,
+          "PLU-01": 0.0
+        },
+        "rentang_peringkat_90": {
+          "KTG-02": [
+            1.0,
+            3.0
+          ],
+          "PSW-01": [
+            1.0,
+            9.0
+          ],
+          "PKN-01": [
+            2.0,
+            6.0
+          ],
+          "PLB-01": [
+            1.0,
+            15.0
+          ],
+          "PKU-01": [
+            3.0,
+            8.0
+          ],
+          "BTM-01": [
+            4.0,
+            8.0
+          ],
+          "KTG-01": [
+            2.0,
+            15.0
+          ],
+          "JMB-01": [
+            6.0,
+            11.0
+          ],
+          "STG-01": [
+            4.0,
+            12.0
+          ],
+          "JKT-02": [
+            4.0,
+            23.0
+          ],
+          "JKT-03": [
+            7.0,
+            25.0
+          ],
+          "SM2-01": [
+            5.0,
+            24.0
+          ],
+          "MLG-01": [
+            9.0,
+            17.0
+          ],
+          "MRS-01": [
+            9.0,
+            24.0
+          ],
+          "JKT-01": [
+            12.0,
+            22.0
+          ],
+          "YKY-01": [
+            11.0,
+            18.0
+          ],
+          "BJB-01": [
+            12.0,
+            22.0
+          ],
+          "KTB-01": [
+            12.0,
+            20.0
+          ],
+          "MER-01": [
+            3.0,
+            22.0
+          ],
+          "SRG-01": [
+            13.0,
+            21.0
+          ],
+          "IDP-01": [
+            6.0,
+            25.0
+          ],
+          "BGL-01": [
+            18.0,
+            25.0
+          ],
+          "MDN-01": [
+            15.0,
+            26.0
+          ],
+          "BGR-02": [
+            16.0,
+            25.0
+          ],
+          "BGR-01": [
+            9.0,
+            26.0
+          ],
+          "PLU-01": [
+            21.0,
+            26.0
+          ]
+        }
+      },
+      "per_pulau": {
+        "Sumatera": {
+          "n_stasiun": 9,
+          "skor_rata2": 55.4,
+          "skor_maks": 76.7
+        },
+        "Jawa": {
+          "n_stasiun": 7,
+          "skor_rata2": 45.0,
+          "skor_maks": 59.4
+        },
+        "Kalimantan": {
+          "n_stasiun": 6,
+          "skor_rata2": 63.6,
+          "skor_maks": 81.0
+        },
+        "Sulawesi": {
+          "n_stasiun": 2,
+          "skor_rata2": 35.3,
+          "skor_maks": 47.9
+        },
+        "Papua": {
+          "n_stasiun": 2,
+          "skor_rata2": 41.0,
+          "skor_maks": 42.5
+        }
+      },
+      "per_provinsi": {
+        "Lampung": {
+          "n_stasiun": 1,
+          "skor_rata2": 76.7,
+          "pulau": "Sumatera"
+        },
+        "Kalimantan Tengah": {
+          "n_stasiun": 3,
+          "skor_rata2": 73.5,
+          "pulau": "Kalimantan"
+        },
+        "Sumatera Selatan": {
+          "n_stasiun": 1,
+          "skor_rata2": 72.5,
+          "pulau": "Sumatera"
+        },
+        "Riau": {
+          "n_stasiun": 1,
+          "skor_rata2": 71.1,
+          "pulau": "Sumatera"
+        },
+        "Kepulauan Riau": {
+          "n_stasiun": 1,
+          "skor_rata2": 70.2,
+          "pulau": "Sumatera"
+        },
+        "Jambi": {
+          "n_stasiun": 1,
+          "skor_rata2": 65.2,
+          "pulau": "Sumatera"
+        },
+        "Kalimantan Barat": {
+          "n_stasiun": 1,
+          "skor_rata2": 64.0,
+          "pulau": "Kalimantan"
+        },
+        "DKI Jakarta": {
+          "n_stasiun": 3,
+          "skor_rata2": 54.1,
+          "pulau": "Jawa"
+        },
+        "Kalimantan Timur": {
+          "n_stasiun": 1,
+          "skor_rata2": 50.9,
+          "pulau": "Kalimantan"
+        },
+        "Jawa Timur": {
+          "n_stasiun": 1,
+          "skor_rata2": 50.1,
+          "pulau": "Jawa"
+        },
+        "Sulawesi Selatan": {
+          "n_stasiun": 1,
+          "skor_rata2": 47.9,
+          "pulau": "Sulawesi"
+        },
+        "DI Yogyakarta": {
+          "n_stasiun": 1,
+          "skor_rata2": 46.9,
+          "pulau": "Jawa"
+        },
+        "Kalimantan Selatan": {
+          "n_stasiun": 1,
+          "skor_rata2": 46.1,
+          "pulau": "Kalimantan"
+        },
+        "Sumatera Barat": {
+          "n_stasiun": 1,
+          "skor_rata2": 44.4,
+          "pulau": "Sumatera"
+        },
+        "Papua Selatan": {
+          "n_stasiun": 1,
+          "skor_rata2": 42.5,
+          "pulau": "Papua"
+        },
+        "Papua Barat Daya": {
+          "n_stasiun": 1,
+          "skor_rata2": 39.6,
+          "pulau": "Papua"
+        },
+        "Aceh": {
+          "n_stasiun": 1,
+          "skor_rata2": 34.9,
+          "pulau": "Sumatera"
+        },
+        "Bengkulu": {
+          "n_stasiun": 1,
+          "skor_rata2": 32.7,
+          "pulau": "Sumatera"
+        },
+        "Sumatera Utara": {
+          "n_stasiun": 1,
+          "skor_rata2": 31.0,
+          "pulau": "Sumatera"
+        },
+        "Jawa Barat": {
+          "n_stasiun": 2,
+          "skor_rata2": 28.1,
+          "pulau": "Jawa"
+        },
+        "Sulawesi Tengah": {
+          "n_stasiun": 1,
+          "skor_rata2": 22.7,
+          "pulau": "Sulawesi"
+        }
+      }
+    },
+    "6_jaringan": {
+      "n_provinsi_dengan_stasiun": 21,
+      "n_provinsi_tanpa_stasiun": 17,
+      "provinsi_tanpa_stasiun": [
+        "Kepulauan Bangka Belitung",
+        "Banten",
+        "Jawa Tengah",
+        "Bali",
+        "Nusa Tenggara Barat",
+        "Nusa Tenggara Timur",
+        "Kalimantan Utara",
+        "Sulawesi Utara",
+        "Gorontalo",
+        "Sulawesi Barat",
+        "Sulawesi Tenggara",
+        "Maluku",
+        "Maluku Utara",
+        "Papua Barat",
+        "Papua",
+        "Papua Tengah",
+        "Papua Pegunungan"
+      ],
+      "stasiun_per_pulau": {
+        "Sumatera": {
+          "stasiun": 10,
+          "provinsi": 9,
+          "layak": 7,
+          "terbatas_dikecualikan": 3
+        },
+        "Jawa": {
+          "stasiun": 7,
+          "provinsi": 4,
+          "layak": 7,
+          "terbatas_dikecualikan": 0
+        },
+        "Kalimantan": {
+          "stasiun": 6,
+          "provinsi": 4,
+          "layak": 5,
+          "terbatas_dikecualikan": 1
+        },
+        "Sulawesi": {
+          "stasiun": 2,
+          "provinsi": 2,
+          "layak": 2,
+          "terbatas_dikecualikan": 0
+        },
+        "Papua": {
+          "stasiun": 2,
+          "provinsi": 2,
+          "layak": 1,
+          "terbatas_dikecualikan": 1
+        }
+      },
+      "jarak_terdekat_median_km": 186.46731850259357,
+      "jarak_terdekat_maks": {
+        "kode": "MER-01",
+        "km": 1318.6569422992786
+      },
+      "status": {
+        "Layak": 22,
+        "Terbatas": 4,
+        "Dikecualikan": 1
+      },
+      "spearman_jarak_korelasi_mentah": [
+        -0.03655152943009016,
+        0.5804645816410394
+      ],
+      "spearman_jarak_korelasi_anomali": [
+        -0.09809088962012502,
+        0.13718613402347235
+      ],
+      "n_pasangan": 231,
+      "bobot_A": {
+        "jarak": 0.35,
+        "polusi": 0.2,
+        "asap": 0.25,
+        "tidak_andal": 0.2
+      },
+      "bobot_B": {
+        "kesenjangan_data": 0.3,
+        "isolasi": 0.2,
+        "polusi": 0.2,
+        "asap": 0.15,
+        "kesehatan": 0.15
+      },
+      "prioritas_penambahan": [
+        {
+          "provinsi": "Kepulauan Bangka Belitung",
+          "jarak_layak_terdekat_km": 306.28,
+          "tetangga": "PSW-01, JMB-01, JKT-02",
+          "proksi_pm25": 50.913,
+          "proksi_asap_persen": 44.286,
+          "tidak_andal": 0.667,
+          "skor": 74.573,
+          "peringkat": 1,
+          "median": 1.0,
+          "p05": 1.0,
+          "p95": 4.0,
+          "peluang_top5": 0.973
+        },
+        {
+          "provinsi": "Kalimantan Utara",
+          "jarak_layak_terdekat_km": 646.61,
+          "tetangga": "STG-01, KTG-01, PLU-01",
+          "proksi_pm25": 37.217,
+          "proksi_asap_persen": 15.818,
+          "tidak_andal": 0.333,
+          "skor": 53.647,
+          "peringkat": 2,
+          "median": 2.0,
+          "p05": 2.0,
+          "p95": 4.0,
+          "peluang_top5": 1.0
+        },
+        {
+          "provinsi": "Papua",
+          "jarak_layak_terdekat_km": 956.609,
+          "tetangga": "SRG-01, PLU-01, MRS-01",
+          "proksi_pm25": 19.847,
+          "proksi_asap_persen": 0.0,
+          "tidak_andal": 0.333,
+          "skor": 46.487,
+          "peringkat": 3,
+          "median": 3.0,
+          "p05": 1.0,
+          "p95": 9.0,
+          "peluang_top5": 0.766
+        },
+        {
+          "provinsi": "Papua Pegunungan",
+          "jarak_layak_terdekat_km": 917.038,
+          "tetangga": "SRG-01, PLU-01, MRS-01",
+          "proksi_pm25": 19.838,
+          "proksi_asap_persen": 0.0,
+          "tidak_andal": 0.333,
+          "skor": 44.935,
+          "peringkat": 4,
+          "median": 4.0,
+          "p05": 2.0,
+          "p95": 10.0,
+          "peluang_top5": 0.683
+        },
+        {
+          "provinsi": "Papua Tengah",
+          "jarak_layak_terdekat_km": 617.498,
+          "tetangga": "SRG-01, PLU-01, MRS-01",
+          "proksi_pm25": 19.355,
+          "proksi_asap_persen": 0.0,
+          "tidak_andal": 0.333,
+          "skor": 32.936,
+          "peringkat": 5,
+          "median": 6.0,
+          "p05": 5.0,
+          "p95": 12.0,
+          "peluang_top5": 0.406
+        },
+        {
+          "provinsi": "Sulawesi Utara",
+          "jarak_layak_terdekat_km": 591.895,
+          "tetangga": "PLU-01, SRG-01, MRS-01",
+          "proksi_pm25": 18.931,
+          "proksi_asap_persen": 0.0,
+          "tidak_andal": 0.333,
+          "skor": 31.682,
+          "peringkat": 6,
+          "median": 8.0,
+          "p05": 6.0,
+          "p95": 13.0,
+          "peluang_top5": 0.026
+        },
+        {
+          "provinsi": "Sulawesi Tenggara",
+          "jarak_layak_terdekat_km": 308.11,
+          "tetangga": "MRS-01, PLU-01, KTG-01",
+          "proksi_pm25": 27.783,
+          "proksi_asap_persen": 1.388,
+          "tidak_andal": 0.333,
+          "skor": 26.645,
+          "peringkat": 7,
+          "median": 8.0,
+          "p05": 3.0,
+          "p95": 11.0,
+          "peluang_top5": 0.227
+        },
+        {
+          "provinsi": "Nusa Tenggara Barat",
+          "jarak_layak_terdekat_km": 466.793,
+          "tetangga": "MRS-01, MLG-01, YKY-01",
+          "proksi_pm25": 35.107,
+          "proksi_asap_persen": 0.083,
+          "tidak_andal": 0.0,
+          "skor": 26.476,
+          "peringkat": 8,
+          "median": 8.0,
+          "p05": 4.0,
+          "p95": 13.0,
+          "peluang_top5": 0.256
+        },
+        {
+          "provinsi": "Nusa Tenggara Timur",
+          "jarak_layak_terdekat_km": 535.568,
+          "tetangga": "MRS-01, PLU-01, MLG-01",
+          "proksi_pm25": 30.145,
+          "proksi_asap_persen": 0.0,
+          "tidak_andal": 0.0,
+          "skor": 26.162,
+          "peringkat": 9,
+          "median": 9.0,
+          "p05": 6.0,
+          "p95": 15.0,
+          "peluang_top5": 0.016
+        },
+        {
+          "provinsi": "Gorontalo",
+          "jarak_layak_terdekat_km": 359.223,
+          "tetangga": "PLU-01, MRS-01, KTG-01",
+          "proksi_pm25": 20.681,
+          "proksi_asap_persen": 2.275,
+          "tidak_andal": 0.333,
+          "skor": 24.912,
+          "peringkat": 10,
+          "median": 9.0,
+          "p05": 5.0,
+          "p95": 13.0,
+          "peluang_top5": 0.057
+        },
+        {
+          "provinsi": "Banten",
+          "jarak_layak_terdekat_km": 75.159,
+          "tetangga": "JKT-03, BGR-02, JKT-01",
+          "proksi_pm25": 41.074,
+          "proksi_asap_persen": 13.056,
+          "tidak_andal": 0.0,
+          "skor": 22.044,
+          "peringkat": 11,
+          "median": 9.0,
+          "p05": 3.0,
+          "p95": 16.0,
+          "peluang_top5": 0.397
+        },
+        {
+          "provinsi": "Bali",
+          "jarak_layak_terdekat_km": 291.731,
+          "tetangga": "MLG-01, YKY-01, MRS-01",
+          "proksi_pm25": 33.349,
+          "proksi_asap_persen": 0.095,
+          "tidak_andal": 0.0,
+          "skor": 18.591,
+          "peringkat": 12,
+          "median": 13.0,
+          "p05": 6.0,
+          "p95": 15.0,
+          "peluang_top5": 0.0
+        },
+        {
+          "provinsi": "Maluku Utara",
+          "jarak_layak_terdekat_km": 443.164,
+          "tetangga": "SRG-01, PLU-01, MRS-01",
+          "proksi_pm25": 19.136,
+          "proksi_asap_persen": 0.0,
+          "tidak_andal": 0.0,
+          "skor": 15.988,
+          "peringkat": 13,
+          "median": 14.0,
+          "p05": 10.0,
+          "p95": 16.0,
+          "peluang_top5": 0.0
+        },
+        {
+          "provinsi": "Papua Barat",
+          "jarak_layak_terdekat_km": 194.818,
+          "tetangga": "SRG-01, PLU-01, MRS-01",
+          "proksi_pm25": 18.529,
+          "proksi_asap_persen": 0.0,
+          "tidak_andal": 0.333,
+          "skor": 15.917,
+          "peringkat": 14,
+          "median": 14.0,
+          "p05": 9.0,
+          "p95": 16.0,
+          "peluang_top5": 0.0
+        },
+        {
+          "provinsi": "Sulawesi Barat",
+          "jarak_layak_terdekat_km": 128.466,
+          "tetangga": "PLU-01, MRS-01, KTG-01",
+          "proksi_pm25": 17.351,
+          "proksi_asap_persen": 0.857,
+          "tidak_andal": 0.333,
+          "skor": 13.105,
+          "peringkat": 15,
+          "median": 15.0,
+          "p05": 10.0,
+          "p95": 17.0,
+          "peluang_top5": 0.001
+        },
+        {
+          "provinsi": "Jawa Tengah",
+          "jarak_layak_terdekat_km": 61.437,
+          "tetangga": "YKY-01, MLG-01, BGR-01",
+          "proksi_pm25": 38.619,
+          "proksi_asap_persen": 0.456,
+          "tidak_andal": 0.0,
+          "skor": 12.931,
+          "peringkat": 16,
+          "median": 14.0,
+          "p05": 4.0,
+          "p95": 17.0,
+          "peluang_top5": 0.192
+        },
+        {
+          "provinsi": "Maluku",
+          "jarak_layak_terdekat_km": 332.951,
+          "tetangga": "SRG-01, PLU-01, MRS-01",
+          "proksi_pm25": 19.157,
+          "proksi_asap_persen": 0.0,
+          "tidak_andal": 0.0,
+          "skor": 11.692,
+          "peringkat": 17,
+          "median": 16.0,
+          "p05": 13.0,
+          "p95": 17.0,
+          "peluang_top5": 0.0
+        }
+      ],
+      "prioritas_perbaikan": [
+        {
+          "kode_stasiun": "MER-01",
+          "status": "Terbatas",
+          "flatline": false,
+          "cakupan_terendah_persen": 0.196,
+          "kesenjangan_data": 99.804,
+          "isolasi_km": 1318.657,
+          "pm25": 16.081,
+          "asap_persen": 0.0,
+          "kesehatan_per100tt": 6.582,
+          "sumber_polusi": "stasiun sendiri",
+          "skor": 53.133,
+          "peringkat": 1,
+          "median": 3.0,
+          "p05": 1.0,
+          "p95": 6.0,
+          "peluang_top3": 0.577
+        },
+        {
+          "kode_stasiun": "JMB-02",
+          "status": "Dikecualikan",
+          "flatline": false,
+          "cakupan_terendah_persen": 0.5,
+          "kesenjangan_data": 99.5,
+          "isolasi_km": 0.868,
+          "pm25": 44.452,
+          "asap_persen": 25.245,
+          "kesehatan_per100tt": 5.769,
+          "sumber_polusi": "proksi tetangga",
+          "skor": 53.002,
+          "peringkat": 2,
+          "median": 3.0,
+          "p05": 1.0,
+          "p95": 6.0,
+          "peluang_top3": 0.744
+        },
+        {
+          "kode_stasiun": "PLB-01",
+          "status": "Terbatas",
+          "flatline": false,
+          "cakupan_terendah_persen": 68.369,
+          "kesenjangan_data": 31.631,
+          "isolasi_km": 187.319,
+          "pm25": 69.045,
+          "asap_persen": 32.328,
+          "kesehatan_per100tt": 19.345,
+          "sumber_polusi": "stasiun sendiri",
+          "skor": 50.425,
+          "peringkat": 3,
+          "median": 1.0,
+          "p05": 1.0,
+          "p95": 5.0,
+          "peluang_top3": 0.888
+        },
+        {
+          "kode_stasiun": "SM2-01",
+          "status": "Terbatas",
+          "flatline": false,
+          "cakupan_terendah_persen": 53.83,
+          "kesenjangan_data": 46.17,
+          "isolasi_km": 360.664,
+          "pm25": 78.843,
+          "asap_persen": 13.619,
+          "kesehatan_per100tt": 3.878,
+          "sumber_polusi": "stasiun sendiri",
+          "skor": 39.361,
+          "peringkat": 4,
+          "median": 4.0,
+          "p05": 2.0,
+          "p95": 5.0,
+          "peluang_top3": 0.403
+        },
+        {
+          "kode_stasiun": "MDN-01",
+          "status": "Terbatas",
+          "flatline": false,
+          "cakupan_terendah_persen": 36.44,
+          "kesenjangan_data": 63.56,
+          "isolasi_km": 425.024,
+          "pm25": 45.572,
+          "asap_persen": 6.469,
+          "kesehatan_per100tt": 3.212,
+          "sumber_polusi": "stasiun sendiri",
+          "skor": 33.269,
+          "peringkat": 5,
+          "median": 5.0,
+          "p05": 3.0,
+          "p95": 6.0,
+          "peluang_top3": 0.09
+        },
+        {
+          "kode_stasiun": "BJB-01",
+          "status": "Layak",
+          "flatline": true,
+          "cakupan_terendah_persen": 70.039,
+          "kesenjangan_data": 29.961,
+          "isolasi_km": 175.191,
+          "pm25": 49.213,
+          "asap_persen": 28.612,
+          "kesehatan_per100tt": 5.769,
+          "sumber_polusi": "stasiun sendiri",
+          "skor": 28.857,
+          "peringkat": 6,
+          "median": 4.0,
+          "p05": 2.0,
+          "p95": 6.0,
+          "peluang_top3": 0.297
+        }
+      ],
+      "sensitivitas_A": {
+        "rho_median": 0.8676470588235294,
+        "rho_p05": 0.44852941176470595,
+        "oat_top5_sama_min": 5
+      },
+      "sensitivitas_B": {
+        "rho_median": 0.5428571428571429,
+        "rho_p05": -0.3142857142857143,
+        "oat_top3_sama_min": 3
+      },
+      "catatan": "kandidat A memakai sentroid kasar provinsi (acuan eksternal) dan proksi dari 3 stasiun Layak terdekat; bukan pengukuran"
+    },
+    "7_bukti_tipe": {
+      "Perkotaan": {
+        "n_stasiun": 7,
+        "n_non_layak": 1,
+        "pm25_rata2_harian": 42.805,
+        "persen_hari_gt55": 8.612,
+        "persen_hari_gt150": 0.679,
+        "hari_episode": 44,
+        "rr_balita_7hari_per10": 1.062,
+        "skor_risiko_rata2": 50.1,
+        "skor_risiko_maks": 76.709,
+        "stasiun_risiko_tertinggi": "PSW-01",
+        "klaster_dominan": "Musiman lemah · dua puncak harian kuat · tingkat sedang"
+      },
+      "Jalan Raya": {
+        "n_stasiun": 2,
+        "n_non_layak": 0,
+        "pm25_rata2_harian": 36.649,
+        "persen_hari_gt55": 17.289,
+        "persen_hari_gt150": 0.0,
+        "hari_episode": 0,
+        "rr_balita_7hari_per10": 1.047,
+        "skor_risiko_rata2": 42.21,
+        "skor_risiko_maks": 54.892,
+        "stasiun_risiko_tertinggi": "JKT-03",
+        "klaster_dominan": "Musiman lemah · dua puncak harian kuat · tingkat sedang"
+      },
+      "Industri": {
+        "n_stasiun": 4,
+        "n_non_layak": 1,
+        "pm25_rata2_harian": 50.499,
+        "persen_hari_gt55": 36.157,
+        "persen_hari_gt150": 2.013,
+        "hari_episode": 20,
+        "rr_balita_7hari_per10": 1.206,
+        "skor_risiko_rata2": 57.105,
+        "skor_risiko_maks": 70.236,
+        "stasiun_risiko_tertinggi": "BTM-01",
+        "klaster_dominan": "Kemarau tegas · dua puncak harian kuat · tingkat tinggi"
+      },
+      "Gambut": {
+        "n_stasiun": 8,
+        "n_non_layak": 2,
+        "pm25_rata2_harian": 49.993,
+        "persen_hari_gt55": 26.127,
+        "persen_hari_gt150": 2.262,
+        "hari_episode": 128,
+        "rr_balita_7hari_per10": 1.052,
+        "skor_risiko_rata2": 67.699,
+        "skor_risiko_maks": 81.001,
+        "stasiun_risiko_tertinggi": "KTG-02",
+        "klaster_dominan": "Kemarau tegas · dua puncak harian kuat · tingkat tinggi"
+      },
+      "Latar Bersih": {
+        "n_stasiun": 6,
+        "n_non_layak": 1,
+        "pm25_rata2_harian": 14.173,
+        "persen_hari_gt55": 0.118,
+        "persen_hari_gt150": 0.039,
+        "hari_episode": 0,
+        "rr_balita_7hari_per10": 1.251,
+        "skor_risiko_rata2": 35.107,
+        "skor_risiko_maks": 44.397,
+        "stasiun_risiko_tertinggi": "KTB-01",
+        "klaster_dominan": "Musiman lemah · dua puncak harian kuat · tingkat sedang"
+      }
+    },
+    "7_konsistensi": {
+      "n_pemeriksaan": 12,
+      "semua_sama": true,
+      "pemeriksaan": [
+        {
+          "angka": "rata-rata PM2.5 harian seluruh stasiun-hari (04.A)",
+          "notebook_05": 41.720629,
+          "acuan": 41.720629,
+          "sama": true
+        },
+        {
+          "angka": "% hari > 55 µg/m³ (04.A)",
+          "notebook_05": 17.335149,
+          "acuan": 17.335149,
+          "sama": true
+        },
+        {
+          "angka": "jumlah episode asap (04.B)",
+          "notebook_05": 21.0,
+          "acuan": 21.0,
+          "sama": true
+        },
+        {
+          "angka": "jumlah hari episode (04.B)",
+          "notebook_05": 396.0,
+          "acuan": 396.0,
+          "sama": true
+        },
+        {
+          "angka": "ε² Kruskal-Wallis tipe lokasi (04.A)",
+          "notebook_05": 0.436392,
+          "acuan": 0.436392,
+          "sama": true
+        },
+        {
+          "angka": "Spearman lalu lintas vs median PM2.5 antar-stasiun, n=26 (04.C)",
+          "notebook_05": 0.765361,
+          "acuan": 0.765361,
+          "sama": true
+        },
+        {
+          "angka": "rata-rata ρ Spearman ISPA balita lag 0, varian A (04.D)",
+          "notebook_05": 0.399914,
+          "acuan": 0.399914,
+          "sama": true
+        },
+        {
+          "angka": "stasiun Layak diuji tren (04.A)",
+          "notebook_05": 22.0,
+          "acuan": 22.0,
+          "sama": true
+        },
+        {
+          "angka": "tren signifikan setelah BH (04.A)",
+          "notebook_05": 0.0,
+          "acuan": 0.0,
+          "sama": true
+        },
+        {
+          "angka": "jumlah hari-stasiun PM2.5 sah dengan >= 100 hari/stasiun (04.meta)",
+          "notebook_05": 24234.0,
+          "acuan": 24234.0,
+          "sama": true
+        },
+        {
+          "angka": "jumlah jam PM2.5 (04.meta)",
+          "notebook_05": 591047.0,
+          "acuan": 591047.0,
+          "sama": true
+        },
+        {
+          "angka": "jumlah baris health_aq_daily (03)",
+          "notebook_05": 27486.0,
+          "acuan": 27486.0,
+          "sama": true
+        }
+      ]
+    },
+    "meta": {
+      "gambar": [
+        "05_0_flatline_per_stasiun",
+        "05_1_kinerja_model",
+        "05_1_permutation_importance",
+        "05_1_shap",
+        "05_1_prediksi_vs_teramati",
+        "05_2_rr_lag_dan_kumulatif",
+        "05_2_respons_eksposur_kelas",
+        "05_2_kasus_berlebih_episode",
+        "05_3_klaster_dendrogram_profil",
+        "05_3_klaster_pca",
+        "05_4_bjb01_flatline",
+        "05_4_polusi_tinggi_kasus_rendah",
+        "05_5_skor_risiko",
+        "05_6_redundansi_kelengkapan",
+        "05_6_peta_jaringan",
+        "05_6_skor_prioritas"
+      ],
+      "sumber": "data/processed/*.parquet; notebooks/05_insights.ipynb",
+      "data_kerja": "bertopeng: jam flatline BJB-01 dibuang (bagian 0)",
+      "catatan": "Jalankan 05 setelah 04: notebook 04 menulis ulang berkas ini tanpa bagian 'insight'"
+    }
+  }
+}

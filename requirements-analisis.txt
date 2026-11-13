@@ -1,0 +1,7 @@
+# Dependensi ANALISIS (notebook 02-05, src/, etl/): dashboard + paket tambahan.
+# Pasang dengan:  pip install -r requirements-analisis.txt
+# (Streamlit Community Cloud TIDAK membaca berkas ini; ia hanya memakai requirements.txt.)
+-r requirements.txt
+
+pymannkendall==1.4.3     # uji tren Mann-Kendall (notebook 04)
+kaleido==1.5.0           # simpan grafik Plotly ke PNG (src/style.py simpan_gambar)

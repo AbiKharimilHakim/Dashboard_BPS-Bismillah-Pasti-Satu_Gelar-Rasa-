@@ -1,0 +1,13 @@
+[theme]
+base = "light"
+primaryColor = "#8C1A26"
+backgroundColor = "#FEFAFB"
+secondaryBackgroundColor = "#FFFFFF"
+textColor = "#2E2E3A"
+font = "Inter:https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+
+[browser]
+gatherUsageStats = false
+
+[server]
+headless = true

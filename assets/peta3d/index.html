@@ -1,0 +1,399 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Peta Indonesia 3D</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  /* Warna & ukuran diisi dari Python (app/peta.py) lewat variabel CSS; nilai di bawah hanya cadangan. */
+  :root{--ease:cubic-bezier(.2,.8,.2,1);--t:.25s}   /* warna diisi dari app/theme.py lewat app/peta.py (C.css) */
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%;background:transparent;font-family:'Inter',sans-serif;color:var(--navy);overflow:hidden}
+  #peta{position:relative;width:100%;height:100%;border-radius:20px;overflow:hidden;
+    background:radial-gradient(ellipse 62% 70% at 50% 47%,var(--putih) 0%,var(--latar-tengah) 45%,var(--bg) 100%)}
+  #peta canvas{outline:none}
+  .pil{position:absolute;z-index:5;display:flex;gap:2px;background:var(--putih);border-radius:999px;padding:4px;box-shadow:0 2px 10px rgba(var(--bayang),.10),0 0 0 1px rgba(var(--bayang),.04)}
+  #lapisan{top:12px;left:12px}
+  .pil button,#kembali{font:600 .78rem 'Inter',sans-serif;color:var(--navy);background:transparent;border:0;border-radius:999px;padding:.5rem .95rem;cursor:pointer;
+    position:relative;transition:transform var(--t) var(--ease),box-shadow var(--t) var(--ease),background var(--t) var(--ease),color var(--t) var(--ease)}
+  .pil button:hover,#kembali:hover{transform:translateY(-1px);background:var(--hover)}
+  .pil button:active,#kembali:active{transform:translateY(0)}
+  .pil button[aria-pressed=true]{background:var(--putih);box-shadow:inset 0 -3px 0 var(--aksen);font-weight:700}
+  .pil button:focus-visible,#kembali:focus-visible,#popup .x:focus-visible{outline:2px solid var(--aksen-tua);outline-offset:2px}
+  #kembali{position:absolute;z-index:5;top:12px;right:12px;background:var(--putih);box-shadow:0 2px 10px rgba(var(--bayang),.10),0 0 0 1px rgba(var(--bayang),.04);opacity:0;pointer-events:none;transform:translateY(-4px)}
+  #kembali.on{opacity:1;pointer-events:auto;transform:none}
+  #kembali.on:hover{transform:translateY(-1px)}
+  #legenda{position:absolute;z-index:5;left:12px;bottom:12px;background:var(--putih);border-radius:16px;padding:.6rem .8rem .65rem;box-shadow:0 2px 12px rgba(var(--bayang),.10),0 0 0 1px rgba(var(--bayang),.04);max-width:230px;font-size:.72rem;line-height:1.25}
+  #legenda b{display:block;font-size:.7rem;font-weight:700;color:var(--aksen-teks);margin-bottom:.35rem;letter-spacing:.01em}
+  #legenda .b{display:flex;align-items:center;gap:.45rem;margin:.18rem 0;color:var(--navy)}
+  #legenda i{width:11px;height:11px;border-radius:50%;flex:none;border:2px solid var(--putih);box-shadow:0 0 0 1px rgba(var(--bayang),.18)}
+  #legenda i.arsir{border-radius:3px;border:1px solid var(--tanpa-alat);box-shadow:none;background:repeating-linear-gradient(135deg,var(--tanpa-alat) 0 2px,var(--putih) 2px 5px)}
+  #legenda .grad{height:9px;border-radius:6px;margin:.25rem 0 .2rem}
+  #legenda .gl{display:flex;justify-content:space-between;color:var(--navy);font-weight:600}
+  #tip{position:absolute;z-index:7;pointer-events:none;background:var(--putih);border-radius:12px;padding:.45rem .7rem;font-size:.76rem;line-height:1.3;box-shadow:0 6px 18px rgba(var(--bayang),.16),0 0 0 1px rgba(var(--bayang),.05);opacity:0;transition:opacity .12s;max-width:240px}
+  #tip.on{opacity:1}
+  #tip b{color:var(--aksen-teks);font-weight:700}
+  #tip span{color:var(--muted)}
+  #popup{position:absolute;z-index:8;width:248px;background:var(--putih);border-radius:20px;padding:.95rem 1.05rem 1rem;box-shadow:0 14px 34px -6px rgba(var(--bayang),.26),0 0 0 1px rgba(var(--bayang),.05);
+    opacity:0;transform:scale(.95);pointer-events:none;transition:opacity var(--t) var(--ease),transform var(--t) var(--ease)}
+  #popup.on{opacity:1;transform:scale(1);pointer-events:auto}
+  #popup h3{margin:0 1.4rem 0 0;font-size:.98rem;font-weight:800;color:var(--aksen-teks);line-height:1.2}
+  #popup .s{font-size:.72rem;color:var(--muted);margin:.15rem 0 .55rem}
+  #popup .n{font-size:1.9rem;font-weight:800;color:var(--navy);line-height:1;letter-spacing:-.02em}
+  #popup .n small{font-size:.75rem;font-weight:600;color:var(--muted);margin-left:.25rem;letter-spacing:0}
+  #popup .k{font-size:.7rem;color:var(--muted);margin:.2rem 0 .5rem}
+  #popup .bdg{display:inline-flex;align-items:center;gap:.35rem;border-radius:999px;padding:.22rem .65rem .22rem .5rem;font-size:.74rem;font-weight:700;color:var(--navy)}
+  #popup .bdg i{width:9px;height:9px;border-radius:50%;border:1.5px solid var(--putih);box-shadow:0 0 0 1px rgba(var(--bayang),.2)}
+  #popup .r{display:flex;justify-content:space-between;gap:.6rem;font-size:.74rem;padding:.38rem 0;border-top:1px solid var(--line);margin-top:.55rem}
+  #popup .r+.r{margin-top:0}
+  #popup .r span{color:var(--muted)} #popup .r b{color:var(--navy);text-align:right}
+  #popup .x{position:absolute;top:.55rem;right:.6rem;width:26px;height:26px;border-radius:50%;border:0;background:var(--tombol);color:var(--navy);font-size:.95rem;line-height:1;cursor:pointer}
+  #popup .x:hover{background:var(--tombol-hover)}
+  #petunjuk{position:absolute;z-index:6;left:50%;bottom:14px;transform:translateX(-50%);background:var(--petunjuk);color:var(--putih);border-radius:999px;padding:.4rem .9rem;font-size:.74rem;font-weight:600;opacity:0;pointer-events:none;transition:opacity .25s}
+  #petunjuk.on{opacity:1}
+  #kosong{position:absolute;z-index:6;inset:0;display:none;align-items:center;justify-content:center;pointer-events:none}
+  #kosong div{background:var(--putih);border-radius:16px;padding:.8rem 1.1rem;font-size:.82rem;font-weight:600;box-shadow:0 4px 14px rgba(var(--bayang),.12);color:var(--navy);max-width:300px;text-align:center}
+  #galat{display:none;position:absolute;inset:0;align-items:center;justify-content:center;text-align:center;padding:1.5rem;font-size:.85rem;color:var(--navy);z-index:9}
+  @media (max-width:640px){#lapisan{left:8px;top:8px}#lapisan button{padding:.42rem .65rem;font-size:.7rem}#kembali{right:8px;top:54px;font-size:.7rem}#legenda{left:8px;bottom:8px;max-width:190px;font-size:.68rem}#popup{width:216px}}
+  @media (prefers-reduced-motion:reduce){*{transition-duration:0s !important}}
+</style>
+</head>
+<body>
+<div id="peta" role="application" aria-label="Peta Indonesia 3D: lokasi pengukuran udara">
+  <div class="pil" id="lapisan" role="group" aria-label="Pilih lapisan peta"><button type="button" data-l="titik" aria-pressed="true"></button><button type="button" data-l="panas" aria-pressed="false"></button></div>
+  <button type="button" id="kembali"></button>
+  <div id="legenda"></div>
+  <div id="tip"></div>
+  <div id="popup" role="dialog" aria-live="polite"></div>
+  <div id="petunjuk"></div>
+  <div id="kosong"><div></div></div>
+  <div id="galat"></div>
+</div>
+<script src="deck.min.js"></script>
+<script>
+"use strict";
+const DG = window.deck;
+const REDUCE = matchMedia("(prefers-reduced-motion: reduce)").matches;
+const COARSE = matchMedia("(pointer: coarse)").matches;
+const TINGGI_SLAB = 60000, TINGGI_HOVER = 45000;           // meter: ketebalan lempengan, tambahan saat disorot
+const URUT = ["Baik", "Sedang", "Tidak Sehat", "Sangat Tidak Sehat", "Berbahaya"];
+const PUSAT = [118.2, -2.8];
+const $ = s => document.querySelector(s);
+
+/* ---------- komunikasi dengan Streamlit (protokol komponen) ---------- */
+const kirim = (type, data) => window.parent.postMessage(Object.assign({isStreamlitMessage: true, type}, data || {}), "*");
+window.addEventListener("message", e => { if (e.data && e.data.type === "streamlit:render") terima(e.data.args || {}); });
+kirim("streamlit:componentReady", {apiVersion: 1});
+
+/* ---------- alat bantu ---------- */
+function bezier(x1, y1, x2, y2) {                           // cubic-bezier(.2,.8,.2,1), sama dengan efek timbul kartu
+  const cx = 3 * x1, bx = 3 * (x2 - x1) - cx, ax = 1 - cx - bx, cy = 3 * y1, by = 3 * (y2 - y1) - cy, ay = 1 - cy - by;
+  const X = t => ((ax * t + bx) * t + cx) * t, Y = t => ((ay * t + by) * t + cy) * t, dX = t => (3 * ax * t + 2 * bx) * t + cx;
+  return x => { if (x <= 0) return 0; if (x >= 1) return 1; let t = x; for (let i = 0; i < 8; i++) { const d = dX(t); if (Math.abs(d) < 1e-6) break; t -= (X(t) - x) / d; } return Y(Math.min(1, Math.max(0, t))); };
+}
+const ease = bezier(.2, .8, .2, 1);
+const easeIntro = bezier(.35, .0, .15, 1);
+const rgb = (hex, a = 255) => { const n = parseInt(hex.slice(1), 16); return [n >> 16 & 255, n >> 8 & 255, n & 255, a]; };
+const lerp = (a, b, t) => a + (b - a) * t;
+const esc = s => String(s).replace(/[&<>"]/g, c => ({"&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;"}[c]));
+const simpan = (k, v) => { try { sessionStorage.setItem(k, v); } catch (e) {} };
+const ambil = k => { try { return sessionStorage.getItem(k); } catch (e) { return null; } };
+
+/* ---------- status ---------- */
+let A = null, GEO = null, deck = null, VS = null, HOME = null, C = null;
+let lapisan = "titik", fade = {titik: 1, panas: 0}, fadeAnim = null;
+let angkat = {};                  // nama provinsi -> {e, dari, ke, t0}
+let sel = -1, hoverTitik = -1, intro = null, pernahIntro = false, tampak = true, tPulse0 = performance.now();
+let cache = {}, zs = 1;
+function zSkala() { return VS && HOME ? Math.min(1, Math.max(.12, Math.pow(2, -(VS.zoom - HOME.zoom) * 1))) : 1; }
+
+function terima(args) {
+  A = args.d; C = A.warna;
+  const r = document.documentElement.style;
+  Object.entries(C.css).forEach(([k, v]) => r.setProperty("--" + k, v));     // semua warna antarmuka dari app/theme.py
+  kirim("streamlit:setFrameHeight", {height: A.tinggi});
+  document.getElementById("peta").style.height = A.tinggi + "px";
+  const lp = document.querySelectorAll("#lapisan button");
+  lp[0].textContent = A.teks.lapisan_titik; lp[1].textContent = A.teks.lapisan_panas; $("#kembali").textContent = "← " + A.teks.kembali;
+  if (A.mode_awal && !cache.modeAwal) { cache.modeAwal = true; lapisan = A.mode_awal; fade = {titik: lapisan === "titik" ? 1 : 0, panas: lapisan === "panas" ? 1 : 0}; aturTombol(); }
+  bangunTitik();
+  isiLegenda();
+  $("#kosong").style.display = A.titik.length ? "none" : "flex"; $("#kosong div").textContent = A.teks.kosong;
+  if (sel >= A.titik.length || (sel >= 0 && cache.selNama !== A.titik[sel].n)) tutupPopup();
+  if (!deck) { if (!cache.memuat) { cache.memuat = true; mulai(); } } else gambar();
+}
+
+function bangunTitik() {
+  const T = A.titik; cache.tanpa = new Set(A.tanpa);
+  cache.titik = T.map((t, i) => Object.assign({}, t, {i, ki: URUT.indexOf(t.kat), pos: [t.lon, t.lat, TINGGI_SLAB + 8000]}));
+  // garis "mengalir": tiap lokasi dihubungkan ke tetangga terdekat di pulau yang sama
+  const sisi = new Set(), jalur = [];
+  cache.titik.forEach(a => {
+    let b = null, jb = 1e9;
+    cache.titik.forEach(c => { if (c.i !== a.i && c.pulau === a.pulau) { const d = Math.hypot(a.lon - c.lon, a.lat - c.lat); if (d < jb) { jb = d; b = c; } } });
+    if (!b) return; const k = Math.min(a.i, b.i) + "-" + Math.max(a.i, b.i); if (sisi.has(k)) return; sisi.add(k);
+    const n = 28, path = [], ts = [], jarakM = jb * 111000, lift = Math.min(jarakM * .18, 220000), fase = (jalur.length * .37) % 1;
+    for (let s = 0; s <= n; s++) { const u = s / n; path.push([lerp(a.lon, b.lon, u), lerp(a.lat, b.lat, u), TINGGI_SLAB + 8000 + lift * Math.sin(Math.PI * u)]); ts.push(u + fase); }
+    jalur.push({path, ts});
+  });
+  cache.jalur = jalur;
+  cache.riak = [];
+  cache.titik.forEach(t => { if (t.ki >= 2) { cache.riak.push({t, fase: (t.i * .37) % 1}); if (t.ki >= 3) cache.riak.push({t, fase: ((t.i * .37) + .5) % 1}); } });
+}
+
+function bangunGeo() {
+  const polys = [], batas = [];
+  GEO.provinsi.features.forEach(f => {
+    const mp = f.geometry.type === "Polygon" ? [f.geometry.coordinates] : f.geometry.coordinates;
+    mp.forEach(p => polys.push({nama: f.properties.nama, polygon: p}));
+  });
+  cache.polys = polys; cache.polyByName = {};
+  polys.forEach(p => (cache.polyByName[p.nama] = cache.polyByName[p.nama] || []).push(p));
+  const naik = (poly, z) => ({nama: poly.nama, polygon: poly.polygon.map(r => r.map(c => [c[0], c[1], z]))});
+  cache.naik = naik;
+  cache.cap = polys.map(p => naik(p, TINGGI_SLAB + 2000));
+  cache.bayang1 = polys.map(p => ({polygon: p.polygon.map(r => r.map(c => [c[0] + .28, c[1] - .5, 0]))}));
+  cache.bayang2 = polys.map(p => ({polygon: p.polygon.map(r => r.map(c => [c[0] + .6, c[1] - 1.05, 0]))}));
+  polys.forEach(p => p.polygon.forEach(r => batas.push({nama: p.nama, path: r.map(c => [c[0], c[1], TINGGI_SLAB + 5000])})));
+  cache.batas = batas;
+  cache.garisPulau = GEO.garis_pulau.features.map(f => ({path: f.geometry.coordinates.map(c => [c[0], c[1], TINGGI_SLAB + 6000])}));
+  cache.rings = [700e3, 1400e3, 2100e3, 2800e3, 3500e3].map(r => ({r}));
+  cache.arsir = []; Object.keys(GEO.arsir).forEach(n => GEO.arsir[n].forEach(l => cache.arsir.push({nama: n, path: l.map(c => [c[0], c[1], TINGGI_SLAB + 4000])})));
+}
+
+/* ---------- kamera ---------- */
+function zoomRumah() { const w = $("#peta").clientWidth || 800; return Math.min(4.7, Math.max(2.5, Math.log2(w * .82 * 360 / (512 * 46)))); }
+function viewAwal() { return {longitude: PUSAT[0], latitude: PUSAT[1], zoom: zoomRumah(), pitch: 45, bearing: -10, maxPitch: 62, minZoom: 2, maxZoom: 11}; }
+function terbangKe(lon, lat, zoom, pitch, bearing) {
+  VS = Object.assign({}, VS, {longitude: lon, latitude: lat, zoom, pitch: pitch == null ? VS.pitch : pitch, bearing: bearing == null ? VS.bearing : bearing,
+    transitionDuration: REDUCE ? 0 : 1300, transitionInterpolator: new DG.FlyToInterpolator({speed: 1.5}), transitionEasing: ease});
+  deck.setProps({viewState: VS});
+}
+function mulaiIntro() {
+  const rumah = viewAwal(); HOME = rumah;
+  const kunci = "peta3d_intro_" + A.mode; const pernah = ambil(kunci); simpan(kunci, "1");
+  if (REDUCE) { VS = rumah; deck.setProps({viewState: VS}); return; }
+  intro = pernah ? {t0: performance.now(), d1: 1100, d2: 0, dari: {zoom: rumah.zoom - .7, pitch: 30, bearing: -22}}
+                 : {t0: performance.now(), d1: 2700, d2: 1500, dari: {zoom: rumah.zoom - 2.3, pitch: 8, bearing: -42}};
+  intro.ke = rumah;
+}
+function langkahIntro(now) {
+  const i = intro, t = now - i.t0, ke = i.ke;
+  let v;
+  if (t < i.d1) { const u = easeIntro(t / i.d1); v = {zoom: lerp(i.dari.zoom, ke.zoom, u), pitch: lerp(i.dari.pitch, ke.pitch, u), bearing: lerp(i.dari.bearing, ke.bearing + (i.d2 ? -8 : 0), u),
+                                      longitude: lerp(PUSAT[0] + 7, ke.longitude, u), latitude: lerp(PUSAT[1] + 3, ke.latitude, u)}; }
+  else if (i.d2 && t < i.d1 + i.d2) { const u = (t - i.d1) / i.d2, e = u < .5 ? 2 * u * u : 1 - Math.pow(-2 * u + 2, 2) / 2; v = {zoom: ke.zoom, pitch: ke.pitch, bearing: lerp(ke.bearing - 8, ke.bearing + 4, e), longitude: ke.longitude, latitude: ke.latitude}; }
+  else { intro = null; VS = Object.assign({}, ke, {bearing: i.d2 ? ke.bearing + 4 : ke.bearing}); HOME = VS; return; }
+  VS = Object.assign({}, ke, v);
+}
+function batalIntro() { if (intro) { intro = null; HOME = HOME || viewAwal(); } }
+
+/* ---------- pembuatan lapisan ---------- */
+function lapisanSemua(now) {
+  const L = [], H = TINGGI_SLAB, t = (now - tPulse0) / 1000;
+  zs = zSkala(); const mm = zs > .999 ? null : [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, zs, 0, 0, 0, 0, 1];   // saat diperbesar, lempengan dipipihkan agar dinding tidak menutupi peta
+  const pulsa = REDUCE ? .5 : .5 + .5 * Math.sin(t * 2 * Math.PI / 3.4);           // denyut pelan arsir salmon
+  const lokasi = A.mode === "lokasi";
+  const ISPUc = C.ispu;
+  const dasar = (id, data, extra) => L.push(new DG.SolidPolygonLayer(Object.assign({id, data, modelMatrix: mm, getPolygon: d => d.polygon, filled: true, pickable: false}, extra)));
+  const ring = (REDUCE ? .5 : (t % 7) / 7);
+
+  // 1. lingkaran radar konsentris di belakang peta (+ gelombang yang pelan melebar)
+  L.push(new DG.ScatterplotLayer({modelMatrix: mm, id: "radar", data: cache.rings, getPosition: () => [PUSAT[0], PUSAT[1], 0], radiusUnits: "meters", getRadius: d => d.r, filled: false, stroked: true,
+    getLineColor: rgb(C.aksen, 46), lineWidthUnits: "pixels", getLineWidth: 1, parameters: {depthTest: false}}));
+  if (!REDUCE) L.push(new DG.ScatterplotLayer({modelMatrix: mm, id: "radar-gelombang", data: [0], getPosition: () => [PUSAT[0], PUSAT[1], 0], radiusUnits: "meters", getRadius: () => 300e3 + ring * 3300e3, filled: false, stroked: true,
+    getLineColor: () => rgb(C.aksen, Math.round(52 * (1 - ring))), lineWidthUnits: "pixels", getLineWidth: 1.2, parameters: {depthTest: false}, updateTriggers: {getRadius: ring, getLineColor: ring}}));
+  // 2. bayangan lembut ke bawah (bukan glow)
+  dasar("bayang2", cache.bayang2, {extruded: false, getFillColor: [30, 52, 47, 16], parameters: {depthTest: false}});
+  dasar("bayang1", cache.bayang1, {extruded: false, getFillColor: [30, 52, 47, 30], parameters: {depthTest: false}});
+  // 3. dinding lempengan (hijau tua) + permukaan krem
+  dasar("dinding", cache.polys, {extruded: true, getElevation: H, getFillColor: rgb(C.dinding), material: {ambient: .62, diffuse: .5, shininess: 14, specularColor: C.kilap}});
+  dasar("permukaan", cache.cap, {extruded: false, getFillColor: rgb(C.permukaan), pickable: true});
+  // 4. wilayah tanpa pengukuran: isian salmon transparan + arsir, berdenyut pelan
+  const tanpa = cache.tanpa;
+  const kuat = lokasi ? 1 : .55;
+  const cT = cache.cap.filter(p => tanpa.has(p.nama)).map(p => cache.naik(p, H + 3000));
+  cache.capTanpa = cache.capTanpa || cT;
+  dasar("tanpa-isi", cache.capTanpa, {extruded: false, getFillColor: rgb(C.tanpa_alat, Math.round((26 + 40 * pulsa) * kuat)), updateTriggers: {getFillColor: [pulsa, kuat]}});
+  L.push(new DG.PathLayer({modelMatrix: mm, id: "tanpa-arsir", data: cache.arsirTanpa = cache.arsirTanpa || cache.arsir.filter(a => tanpa.has(a.nama)), getPath: d => d.path, getColor: rgb(C.tanpa_alat, 255), opacity: (.28 + .5 * pulsa) * kuat,
+    widthUnits: "pixels", getWidth: 1.3, parameters: {depthTest: false}, updateTriggers: {opacity: pulsa}}));
+  // 5. garis batas provinsi (tipis) dan pulau (lebih tebal)
+  L.push(new DG.PathLayer({modelMatrix: mm, id: "batas", data: cache.batas, getPath: d => d.path, getColor: rgb(C.garis_prov), widthUnits: "pixels", getWidth: 1, jointRounded: true}));
+  L.push(new DG.PathLayer({modelMatrix: mm, id: "batas-pulau", data: cache.garisPulau, getPath: d => d.path, getColor: rgb(C.garis_pulau), widthUnits: "pixels", getWidth: 1.6, jointRounded: true, capRounded: true}));
+  // 6. provinsi yang disorot naik sedikit, berubah mustard muda
+  const naikList = Object.keys(angkat).filter(n => angkat[n].e > 1);
+  if (naikList.length) {
+    const dinding = [], tutup = [], garis = [];
+    naikList.forEach(n => cache.polyByName[n].forEach(p => { const e = angkat[n].e; dinding.push({polygon: p.polygon, e}); tutup.push(cache.naik(p, H + e + 4000)); p.polygon.forEach(r => garis.push({path: r.map(c => [c[0], c[1], H + e + 6000])})); }));
+    dasar("sorot-dinding", dinding, {extruded: true, getElevation: d => H + d.e, getFillColor: rgb(C.dinding), material: {ambient: .62, diffuse: .5, shininess: 14, specularColor: C.kilap}, updateTriggers: {getElevation: naikList.map(n => angkat[n].e).join()}});
+    dasar("sorot-tutup", tutup, {extruded: false, getFillColor: rgb(C.sorot), pickable: true});
+    L.push(new DG.PathLayer({modelMatrix: mm, id: "sorot-garis", data: garis, getPath: d => d.path, getColor: rgb(C.garis_pulau), widthUnits: "pixels", getWidth: 1.5}));
+  }
+  // 7. garis mengalir antar lokasi dalam satu pulau (jejak memudar)
+  if (fade.titik > .01 && cache.jalur.length) {
+    L.push(new DG.PathLayer({modelMatrix: mm, id: "jalur-dasar", data: cache.jalur, getPath: d => d.path, getColor: rgb(C.aksen, 70), opacity: fade.titik, widthUnits: "pixels", getWidth: 1, parameters: {depthTest: false}}));
+    if (!REDUCE) L.push(new DG.TripsLayer({modelMatrix: mm, id: "jalur-aliran", data: cache.jalur, getPath: d => d.path, getTimestamps: d => d.ts, getColor: rgb(C.aksen, 255), opacity: fade.titik, widthUnits: "pixels", widthMinPixels: 2.4,
+      fadeTrail: true, trailLength: .5, currentTime: ((t / 3.4) % 2.4), capRounded: true, jointRounded: true, parameters: {depthTest: false}}));
+  }
+  // 8. peta panas
+  if (fade.panas > .01 && cache.titik.length) {
+    L.push(new DG.HeatmapLayer({modelMatrix: mm, id: "panas", data: cache.titik.filter(d => d.pm != null), getPosition: d => { const k = (H + 3000) * zs * Math.tan(VS.pitch * Math.PI / 180), b = VS.bearing * Math.PI / 180; return [d.lon + k * Math.sin(b) / (111000 * Math.cos(d.lat * Math.PI / 180)), d.lat + k * Math.cos(b) / 111000]; }, getWeight: d => Math.max(d.pm, 0), radiusPixels: 95, intensity: 2.6, threshold: .02,
+      updateTriggers: {getPosition: [VS.pitch, VS.bearing, zs]}, aggregation: "SUM", colorRange: C.panas.map(h => rgb(h).slice(0, 3)), opacity: .6 * fade.panas, debounceTimeout: 0}));
+  }
+  // 9. denyut titik peringatan (Tidak Sehat ke atas): makin parah makin cepat & besar
+  if (fade.titik > .01) {
+    if (!REDUCE) L.push(new DG.ScatterplotLayer({modelMatrix: mm, id: "denyut", data: cache.riak, getPosition: d => d.t.pos, radiusUnits: "pixels", filled: false, stroked: true, lineWidthUnits: "pixels", getLineWidth: 2,
+      getRadius: d => { const k = d.t.ki, per = [0, 0, 2.6, 1.8, 1.15][k], mx = [0, 0, 24, 36, 50][k], u = ((t / per) + d.fase) % 1; return 9 + mx * u; },
+      getLineColor: d => { const k = d.t.ki, per = [0, 0, 2.6, 1.8, 1.15][k], u = ((t / per) + d.fase) % 1; return rgb(ISPUc[URUT[k]], Math.round(210 * Math.pow(1 - u, 1.4) * fade.titik)); },
+      parameters: {depthTest: false}, updateTriggers: {getRadius: t, getLineColor: [t, fade.titik]}}));
+    const lagiTerpilih = i => i === sel;
+    L.push(new DG.ScatterplotLayer({modelMatrix: mm, id: "titik", data: cache.titik, getPosition: d => d.pos, radiusUnits: "pixels", pickable: fade.titik > .5, stroked: true, filled: true, lineWidthUnits: "pixels", getLineWidth: 2, opacity: fade.titik,
+      getRadius: d => (lagiTerpilih(d.i) ? 12 : (d.i === hoverTitik ? 10.5 : 8)) + (d.ki >= 3 ? 1 : 0),
+      getFillColor: d => rgb(d.pm == null ? C.tanpa_data : ISPUc[d.kat], d.redup ? 70 : 255), getLineColor: d => d.redup ? rgb(C.putih, 120) : (lagiTerpilih(d.i) ? rgb(C.aksen) : rgb(C.putih, 255)),
+      parameters: {depthTest: false}, updateTriggers: {getRadius: [sel, hoverTitik], getFillColor: A.versi, getLineColor: [sel, A.versi]}}));
+  }
+  return L;
+}
+
+/* ---------- gambar, animasi ---------- */
+function gambar() {
+  if (!deck || !GEO) return;
+  deck.setProps({layers: lapisanSemua(performance.now())});
+}
+function aturTombol() { document.querySelectorAll("#lapisan button").forEach(b => b.setAttribute("aria-pressed", b.dataset.l === lapisan ? "true" : "false")); }
+
+function bingkai(now) {
+  requestAnimationFrame(bingkai);
+  if (!deck || !GEO || !A || !tampak || document.hidden) return;
+  let berubah = !REDUCE;                                                // denyut/aliran berjalan terus kecuali gerak dikurangi
+  if (intro) { langkahIntro(now); deck.setProps({viewState: VS}); berubah = true; }
+  for (const n of Object.keys(angkat)) {                                // transisi angkat provinsi 0,3 dtk
+    const a = angkat[n], u = REDUCE ? 1 : Math.min(1, (now - a.t0) / 300), e = lerp(a.dari, a.ke, ease(u)); if (e !== a.e) { a.e = e; berubah = true; }
+    if (u >= 1 && a.ke === 0) delete angkat[n];
+  }
+  if (fadeAnim) { const u = Math.min(1, (now - fadeAnim.t0) / (REDUCE ? 1 : 500)), e = ease(u);
+    fade.titik = lerp(fadeAnim.dari.titik, fadeAnim.ke.titik, e); fade.panas = lerp(fadeAnim.dari.panas, fadeAnim.ke.panas, e); if (u >= 1) fadeAnim = null; berubah = true; }
+  if (berubah) gambar();
+  posisiPopup();
+  tombolKembali();
+}
+
+function ubahLapisan(l) {
+  if (l === lapisan) return; lapisan = l; aturTombol();
+  fadeAnim = {t0: performance.now(), dari: {titik: fade.titik, panas: fade.panas}, ke: {titik: l === "titik" ? 1 : 0, panas: l === "panas" ? 1 : 0}};
+  if (l === "panas") tutupPopup();
+  isiLegenda(); if (REDUCE) gambar();
+}
+
+/* ---------- legenda, tooltip, popup ---------- */
+function isiLegenda() {
+  const T = A.teks, C2 = C.ispu; let h;
+  if (lapisan === "panas") {
+    h = `<b>${esc(T.legenda_panas)}</b><div class="grad" style="background:linear-gradient(90deg,${C.panas.join(",")})"></div><div class="gl"><span>${esc(T.rendah)}</span><span>${esc(T.tinggi)}</span></div>`;
+  } else {
+    h = `<b>${esc(T.legenda_judul)}</b>` + URUT.map(k => `<div class="b"><i style="background:${C2[k]}"></i>${esc(k)}</div>`).join("");
+  }
+  if (A.mode === "lokasi" || lapisan === "titik") h += `<div class="b" style="margin-top:.35rem"><i class="arsir"></i>${esc(T.belum_alat)}</div>`;
+  $("#legenda").innerHTML = h;
+}
+function tampilTip(x, y, html) {
+  const tip = $("#tip"); tip.innerHTML = html; tip.classList.add("on");
+  const w = $("#peta").clientWidth, hh = $("#peta").clientHeight, tw = tip.offsetWidth, th = tip.offsetHeight;
+  tip.style.left = Math.min(Math.max(8, x + 14), w - tw - 8) + "px"; tip.style.top = Math.min(Math.max(8, y - th - 10), hh - th - 8) + "px";
+}
+const sembunyiTip = () => $("#tip").classList.remove("on");
+function bukaPopup(i) {
+  const t = cache.titik[i]; sel = i; cache.selNama = t.n;
+  const w = ISPU_TINT(t);
+  $("#popup").innerHTML = `<button class="x" type="button" aria-label="${esc(A.teks.tutup)}">×</button><h3>${esc(t.n)}</h3><div class="s">${esc(t.prov)} · ${esc(t.jenis)}</div>`
+    + (t.pm == null ? `<div class="k">${esc(A.teks.tanpa_data)}</div>`
+       : `<div class="n">${esc(t.pm_txt)}<small>µg/m³</small></div><div class="k">${esc(A.teks.rata_pm)}</div><span class="bdg" style="background:${w.bg}"><i style="background:${w.c}"></i>${esc(t.kat)}</span>`
+         + `<div class="r"><span>${esc(t.hari_label)}</span><b>${esc(t.hari_txt)}</b></div>`)
+    + (A.mode === "lokasi" ? `<div class="r" style="${t.pm == null ? "margin-top:.55rem" : ""}"><span>${esc(A.teks.kelengkapan)}</span><b>${esc(t.status)}</b></div>` : "");
+  $("#popup .x").addEventListener("click", ev => { ev.stopPropagation(); tutupPopup(); });
+  $("#popup").classList.remove("on"); void $("#popup").offsetWidth; $("#popup").classList.add("on");
+  sembunyiTip(); gambar();
+}
+function ISPU_TINT(t) { const c = t.pm == null ? C.tanpa_data : C.ispu[t.kat]; const n = parseInt(c.slice(1), 16); return {c, bg: `rgba(${n >> 16 & 255},${n >> 8 & 255},${n & 255},.16)`}; }
+function tutupPopup() { sel = -1; $("#popup").classList.remove("on"); gambar(); }
+function posisiPopup() {
+  if (sel < 0 || !cache.titik[sel] || !VS) return;
+  const el = $("#popup"), t = cache.titik[sel], w = $("#peta").clientWidth, h = $("#peta").clientHeight;
+  const vp = new DG.WebMercatorViewport(Object.assign({}, VS, {width: w, height: h})), [x, y] = vp.project([t.pos[0], t.pos[1], t.pos[2] * zs]);
+  const pw = el.offsetWidth, ph = el.offsetHeight, kanan = x + 20 + pw < w - 8;
+  el.style.left = Math.min(Math.max(8, kanan ? x + 20 : x - 20 - pw), w - pw - 8) + "px"; el.style.top = Math.min(Math.max(8, y - ph / 2), h - ph - 8) + "px";
+  el.style.transformOrigin = kanan ? "left center" : "right center";
+}
+let kembaliOn = false;
+function tombolKembali() {
+  if (!VS || !HOME || intro) return;
+  const jauh = sel >= 0 || Math.abs(VS.zoom - HOME.zoom) > .25 || Math.abs(VS.longitude - HOME.longitude) > 2 || Math.abs(VS.latitude - HOME.latitude) > 1.5;
+  if (jauh !== kembaliOn) { kembaliOn = jauh; $("#kembali").classList.toggle("on", jauh); }
+}
+
+/* ---------- inisialisasi ---------- */
+function mulai() {
+  if (!DG || !DG.Deck) { galat("Peta 3D tidak dapat dimuat."); return; }
+  fetch("provinsi.json").then(r => r.json()).then(g => {
+    GEO = g; bangunGeo(); HOME = viewAwal(); VS = Object.assign({}, HOME, {zoom: HOME.zoom - 2.3, pitch: 8, bearing: -42});
+    try {
+      deck = new DG.Deck({parent: $("#peta"), width: "100%", height: "100%", views: new DG.MapView({id: "peta", repeat: false}), viewState: VS,
+        controller: COARSE ? {dragPan: false, dragRotate: false, touchZoom: false, touchRotate: false, doubleClickZoom: false, scrollZoom: false} : {scrollZoom: false, dragPan: true, dragRotate: true, doubleClickZoom: true, touchRotate: true, inertia: 250},
+        onViewStateChange: ({viewState}) => { batalIntro(); VS = viewState; deck.setProps({viewState: VS}); if (REDUCE) gambar(); },
+        layers: [], useDevicePixels: Math.min(window.devicePixelRatio || 1, 2), pickingRadius: 5, parameters: {clearColor: [0, 0, 0, 0]},
+        getCursor: ({isDragging}) => hoverTitik >= 0 ? "pointer" : (isDragging ? "grabbing" : "grab"),
+        onHover: aksiHover, onClick: aksiKlik, onError: e => console.warn("deck:", e && e.message)});
+    } catch (e) { galat("Peta 3D membutuhkan WebGL, yang tidak tersedia di peramban ini."); return; }
+    $("#peta").querySelector("canvas").setAttribute("aria-hidden", "true");
+    gambar();
+    new IntersectionObserver(es => { const t = es[0].isIntersecting; tampak = t; if (t && !pernahIntro) { pernahIntro = true; mulaiIntro(); } }, {threshold: .3}).observe($("#peta"));
+    requestAnimationFrame(bingkai);
+  }).catch(e => galat("Batas wilayah tidak dapat dimuat."));
+}
+function galat(m) { const g = $("#galat"); g.textContent = m; g.style.display = "flex"; }
+
+function aksiHover(info) {
+  const o = info && info.object, id = info && info.layer && info.layer.id;
+  let titik = -1;
+  if (id === "titik" && o) { titik = o.i; const t = o;
+    tampilTip(info.x, info.y, `<b>${esc(t.n)}</b><br><span>${esc(t.prov)}</span><br>${t.pm == null ? esc(A.teks.tanpa_data) : `${esc(t.pm_txt)} µg/m³ · ${esc(t.kat)}`}<br><span>${esc(A.teks.klik_rincian)}</span>`);
+  } else if ((id === "permukaan" || id === "sorot-tutup") && o) {
+    const info2 = A.prov[o.nama] || {n: 0, pilih: 0};
+    tampilTip(info.x, info.y, `<b>${esc(o.nama)}</b><br>` + (cache.tanpa.has(o.nama) ? `<span style="color:${C.merah_teks};font-weight:700">${esc(A.teks.belum_alat)}</span>` : `<span>${esc(info2.txt)}</span>`));
+  } else sembunyiTip();
+  if (titik !== hoverTitik) { hoverTitik = titik; if (REDUCE) gambar(); }
+  const nama = (id === "permukaan" || id === "sorot-tutup") && o ? o.nama : null, now = performance.now();
+  Object.keys(angkat).forEach(n => { if (n !== nama && angkat[n].ke !== 0) angkat[n] = {e: angkat[n].e, dari: angkat[n].e, ke: 0, t0: now}; });
+  if (nama && (!angkat[nama] || angkat[nama].ke === 0)) angkat[nama] = {e: angkat[nama] ? angkat[nama].e : 0, dari: angkat[nama] ? angkat[nama].e : 0, ke: TINGGI_HOVER, t0: now};
+}
+function pilihTitik(i) {
+  if (sel === i) return; const t = cache.titik[i];
+  bukaPopup(i); terbangKe(t.lon, t.lat, Math.max(VS.zoom, 6.3), 52);
+}
+function aksiKlik(info) {
+  batalIntro();
+  const o = info && info.object, id = info && info.layer && info.layer.id;
+  if (id === "titik" && o) pilihTitik(o.i);
+  else if (sel >= 0) tutupPopup();
+}
+
+document.querySelectorAll("#lapisan button").forEach(b => b.addEventListener("click", () => ubahLapisan(b.dataset.l)));
+$("#kembali").addEventListener("click", () => { batalIntro(); tutupPopup(); terbangKe(HOME.longitude, HOME.latitude, HOME.zoom, HOME.pitch, HOME.bearing); });
+// klik cadangan: bila peramban sedang sibuk menggambar dan pengenalan "tap" milik deck.gl terlambat, titik yang sedang disorot tetap terpilih
+let ptr = null;
+$("#peta").addEventListener("pointerdown", e => { batalIntro(); ptr = {x: e.clientX, y: e.clientY}; });
+$("#peta").addEventListener("pointerup", e => { const p = ptr; ptr = null; if (p && Math.hypot(e.clientX - p.x, e.clientY - p.y) < 6 && hoverTitik >= 0 && e.target.tagName === "CANVAS") pilihTitik(hoverTitik); });
+// gulir biasa menggulir halaman; Ctrl/⌘ + gulir memperbesar peta
+let tipPetunjuk = null;
+$("#peta").addEventListener("wheel", e => {
+  if (!deck) return;
+  if (e.ctrlKey || e.metaKey) { e.preventDefault(); batalIntro(); const f = Math.pow(2, -e.deltaY * .0025); VS = Object.assign({}, VS, {zoom: Math.min(11, Math.max(2, VS.zoom + Math.log2(f))), transitionDuration: 0, transitionInterpolator: undefined}); deck.setProps({viewState: VS}); }
+  else { const p = $("#petunjuk"); p.textContent = A.teks.petunjuk_zoom; p.classList.add("on"); clearTimeout(tipPetunjuk); tipPetunjuk = setTimeout(() => p.classList.remove("on"), 1400); }
+}, {passive: false});
+$("#peta").addEventListener("pointerleave", sembunyiTip);
+window.addEventListener("resize", () => { if (deck && !intro) { const z = zoomRumah(); if (HOME) HOME.zoom = z; } });
+</script>
+</body>
+</html>

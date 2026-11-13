@@ -1,0 +1,19 @@
+# --- lingkungan Python
+.venv/
+venv/
+env/
+__pycache__/
+*.py[cod]
+.ipynb_checkpoints/
+
+# --- data mentah (besar; tidak dibaca dashboard). data/processed/ SENGAJA ikut terunggah.
+data/raw/
+
+# --- profil Chrome sisa audit Playwright (±500 MB, bukan hasil analisis)
+reports/.chrome_audit/
+
+# --- rahasia & sampah sistem/editor
+.env
+*.log
+.DS_Store
+Thumbs.db
