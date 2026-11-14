@@ -78,6 +78,7 @@ div[class*="st-key-kartu"]{{background:{T.PUTIH};border:1px solid var(--line);bo
 div[class*="st-key-kartu"] > div{{gap:.6rem;}}
 .ct{{display:block;color:var(--navy);margin:0 0 .25rem;}}
 .ct .tt{{font-weight:700;font-size:.95rem;line-height:1.32;}}
+.ct .nw{{white-space:nowrap;}}
 .ct .sub{{display:block;font-weight:500;font-size:.74rem;color:var(--muted);margin-top:.2rem;line-height:1.35;}}
 .cap{{font-size:.8rem;color:{T.TEKS2};line-height:1.45;margin:.35rem 0 0;}}
 .cap b{{color:var(--navy);}}
@@ -86,6 +87,9 @@ div[class*="st-key-kartu"] > div{{gap:.6rem;}}
 .ct .tip{{color:{T.ICON_PINK};opacity:1;}}
 .tip::after{{content:attr(data-tip);position:absolute;bottom:135%;left:50%;transform:translateX(-50%);width:max-content;max-width:250px;background:{T.rgba(T.TOOLTIP, .97)};color:{T.PUTIH};font-size:.72rem;font-weight:500;line-height:1.4;padding:.5rem .7rem;border-radius:10px;box-shadow:0 12px 28px {T.rgba(T.TOOLTIP, .30)};opacity:0;pointer-events:none;transition:opacity .15s ease;z-index:60;white-space:normal;text-align:left;}}
 .tip:hover::after,.tip:focus::after{{opacity:1;}}
+/* sisi muncul tooltip menyesuaikan posisi ikon (diatur skrip di bawah): tidak tertutup sidebar dan tidak keluar layar */
+.tip[data-sisi="kiri"]::after{{left:-8px;transform:none;}}
+.tip[data-sisi="kanan"]::after{{left:auto;right:-8px;transform:none;}}
 [data-testid="stExpander"]{{border:1px solid var(--line);border-radius:16px;background:{T.PUTIH};}}
 [data-testid="stExpander"] summary{{font-weight:700;color:var(--navy);}}
 .card-teal{{background:{T.BLUSH};border:1px solid {T.GARIS};border-radius:24px;padding:1.2rem 1.3rem;color:{T.MAROON};position:relative;}}
@@ -126,7 +130,7 @@ div[class*="st-key-kartu"] > div{{gap:.6rem;}}
 .dh b{{display:block;font-size:1.05rem;}} .dh span:not(.lg){{font-size:.72rem;color:var(--muted);}}
 .kv{{display:flex;justify-content:space-between;gap:.8rem;padding:.5rem 0;border-top:1px solid var(--line);font-size:.78rem;}}
 .kv span{{color:var(--muted);}} .kv b{{text-align:right;}}
-.note{{background:{T.PINK_TINT};border-left:4px solid var(--mustard);border-radius:12px;padding:.7rem 1rem;font-size:.8rem;color:{T.JUDUL};margin:.4rem 0;}}
+.kosong{{font-size:.85rem;line-height:1.45;color:{T.TEKS2};margin:.5rem .1rem;}}
 .insight{{background:{MINT};border-radius:20px;padding:1rem 1.2rem;margin-bottom:.7rem;}}
 .insight .n{{display:inline-flex;width:28px;height:28px;border-radius:50%;background:var(--mustard);color:{T.PUTIH};align-items:center;justify-content:center;font-weight:800;font-size:.8rem;margin-right:.6rem;}}
 .insight b{{font-size:.92rem;}} .insight p{{font-size:.78rem;color:{T.TEKS2};margin:.35rem 0 0;}} .insight em{{font-size:.7rem;color:var(--muted);font-style:normal;}}
@@ -315,6 +319,21 @@ _JS_TAB = """
   }
   setInterval(function(){ if (G !== P.__fontGen) return; P.document.querySelectorAll('iframe[title*="echarts"]').forEach(pasang); }, 150);
 })();
+/* Tooltip ⓘ: bila tidak muat di sisi kiri (tertutup sidebar) atau kanan layar, ratakan ke ikon (atribut data-sisi dibaca CSS). */
+(function(){
+  var P = window.parent; if (!P) return; var G = P.__tipGen = (P.__tipGen || 0) + 1;
+  function atur(e){
+    if (G !== P.__tipGen) return;
+    var t = e.target && e.target.closest ? e.target.closest('.tip') : null; if (!t) return;
+    var r = t.getBoundingClientRect(), c = r.left + r.width / 2, W = P.innerWidth, kiri = 8;
+    var sb = P.document.querySelector('[data-testid="stSidebar"]');
+    if (sb && sb.getAttribute('aria-expanded') !== 'false') kiri = sb.getBoundingClientRect().right + 8;
+    var lebar = Math.min(250, Math.max(120, (t.getAttribute('data-tip') || '').length * 6.3)), s = '';
+    if (c - lebar / 2 < kiri) s = 'kiri'; else if (c + lebar / 2 > W - 8) s = 'kanan';
+    if (s) t.setAttribute('data-sisi', s); else t.removeAttribute('data-sisi');
+  }
+  P.document.addEventListener('mouseover', atur, true); P.document.addEventListener('focusin', atur, true);
+})();
 </script>"""
 
 
@@ -404,8 +423,10 @@ def kartu(kunci: str):
 
 def judul_kartu(teks: str, sub: str = "", panah: bool = False, tip: str = "") -> None:
     """Judul kartu = kalimat kesimpulan; `sub` = apa yang diukur + satuan; `tip` = teks tooltip (ⓘ). (`panah` dipertahankan agar kompatibel; tidak dipakai.)"""
-    ikon_tip = f' <span class="tip" tabindex="0" data-tip="{html.escape(tip, quote=True)}">ⓘ</span>' if tip else ""
-    st.markdown(f'<div class="ct"><div class="tt">{html.escape(teks)}{ikon_tip}</div>{f"<div class=sub>{html.escape(sub)}</div>" if sub else ""}</div>', unsafe_allow_html=True)
+    ikon_tip = f'<span class="tip" tabindex="0" data-tip="{html.escape(tip, quote=True)}">ⓘ</span>' if tip else ""
+    kepala, _, ekor = html.escape(teks).rpartition(" ")
+    judul = (f'{kepala} <span class="nw">{ekor} {ikon_tip}</span>' if kepala else f'<span class="nw">{ekor} {ikon_tip}</span>') if tip else html.escape(teks)   # kata terakhir + ikon ⓘ tidak terpisah baris
+    st.markdown(f'<div class="ct"><div class="tt">{judul}</div>{f"<div class=sub>{html.escape(sub)}</div>" if sub else ""}</div>', unsafe_allow_html=True)
 
 
 def subjudul(teks: str) -> None:
@@ -414,7 +435,7 @@ def subjudul(teks: str) -> None:
 
 
 def keterangan(teks: str) -> None:
-    """Keterangan di bawah grafik (maksimal 2 kalimat): apa yang terlihat → artinya bagi warga. Teks sudah aman (boleh memuat <b>)."""
+    """Keterangan di bawah grafik (maksimal 2 kalimat): apa yang terlihat → artinya bagi masyarakat. Teks sudah aman (boleh memuat <b>)."""
     st.markdown(f'<div class="cap">{teks}</div>', unsafe_allow_html=True)
 
 
@@ -428,8 +449,9 @@ def chips(pasangan: list[tuple]) -> None:
     st.markdown('<div class="chips">' + "".join(satu(p) for p in pasangan) + "</div>", unsafe_allow_html=True)
 
 
-def catatan(teks: str) -> None:
-    st.markdown(f'<div class="note">{html.escape(teks)}</div>', unsafe_allow_html=True)
+def kosong(teks: str) -> None:
+    """Pesan saat data untuk pilihan filter kosong: teks biasa berwarna abu-abu (tanpa kotak)."""
+    st.markdown(f'<div class="kosong">{html.escape(teks)}</div>', unsafe_allow_html=True)
 
 
 def tema_grafik(fig: go.Figure, tinggi: int = 320, judul: str | None = None) -> go.Figure:

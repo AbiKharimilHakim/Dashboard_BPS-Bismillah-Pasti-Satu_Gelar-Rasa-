@@ -90,7 +90,7 @@ def render_peta(df: pd.DataFrame, mode: str, kunci: str, sites: pd.DataFrame, ti
         prov[p] = dict(n=n, pilih=m, txt=("Tidak ada lokasi yang dipilih" if n and not m else f"{n} lokasi pengukuran" if m == n else f"{m} dari {n} lokasi pengukuran dipilih") if n else "")
     teks = dict(lapisan_titik="Titik lokasi", lapisan_panas="Peta panas polusi", kembali="Lihat seluruh Indonesia", kosong=G.PESAN_KOSONG, legenda_judul="Kategori udara (rata-rata debu halus)",
                 legenda_panas="Rata-rata debu halus (PM2.5)", rendah="Rendah", tinggi="Tinggi", belum_alat="Belum ada alat pengukur", tutup="Tutup rincian", tanpa_data="Tidak ada catatan pada periode ini",
-                rata_pm="Rata-rata debu halus (PM2.5)", kelengkapan="Kelengkapan data", klik_rincian="Klik titik untuk rincian", petunjuk_zoom="Tahan Ctrl lalu gulir untuk memperbesar peta")
+                rata_pm="Rata-rata debu halus (PM2.5)", kelengkapan="Kelengkapan data", petunjuk_zoom="Tahan Ctrl lalu gulir untuk memperbesar peta")
     titik = json.loads(df.to_json(orient="records")) if len(df) else []
     payload = dict(mode=mode, titik=titik, tanpa=tanpa, prov=prov, warna=warna_tema(), teks=teks, tinggi=tinggi, mode_awal="titik", versi=str(hash(json.dumps(titik, sort_keys=True))))
     _komponen(d=payload, key=kunci, default=None)

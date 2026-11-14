@@ -75,12 +75,12 @@ with st.sidebar, st.container(key="sb_filter"):
     if jenis_dipilih:
         base = base[base.jenis.isin(jenis_dipilih)]
     kota = st.multiselect("Pilih kota/kabupaten", sorted(base.nama), key="f_kota", placeholder="Semua kota/kabupaten",
-                          help="Setiap pilihan = satu lokasi pengukuran udara. Tempat alat pengukur udara dipasang.")
+                          help="Setiap pilihan mewakili satu lokasi pengukuran, yaitu tempat alat pengukur udara dipasang.")
     jenis = st.multiselect("Pilih jenis wilayah", G.JENIS_URUT, key="f_jenis", placeholder="Semua jenis wilayah", help=G.TIPS["jenis"])
     pol = st.selectbox("Pilih zat pencemar", list(DT.POLUTAN), format_func=lambda k: G.POL_NAMA[k], key="f_pol",
-                       help="Debu halus (PM2.5) adalah partikel debu sangat kecil yang bisa masuk ke paru-paru. Gas pencemar: NO₂ (asap kendaraan), SO₂ (pembakaran batu bara), CO, dan O₃ (ozon).")
+                       help="Debu halus (PM2.5) adalah partikel debu sangat kecil yang dapat masuk ke paru-paru. Gas pencemar meliputi NO₂ dari asap kendaraan, SO₂ dari pembakaran batu bara, CO dari pembakaran tidak sempurna, dan O₃ (ozon).")
     standar = st.radio("Pilih batas aman", list(DT.STANDAR), format_func=lambda k: G.BATAS_NAMA[k], key="f_std",
-                       help="Batas aman nasional (PP 22/2021): debu halus 55 µg/m³ per hari. Batas aman WHO: 15 µg/m³ per hari, lebih ketat.")
+                       help="Batas aman nasional (PP 22/2021) untuk debu halus adalah 55 µg/m³ per hari. Batas aman WHO lebih ketat, yaitu 15 µg/m³ per hari.")
 
     f = dict(tgl=tgl, pulau=pulau, provinsi=provinsi, tipe=[G.INTERNAL_DARI_JENIS[j] for j in jenis], stasiun=[G.KODE_DARI_PENDEK[n] for n in kota],
              standar=standar, versi="bertopeng")     # catatan alat yang macet selalu dibuang (sakelar di sidebar dihapus; angka tidak berubah)
@@ -90,7 +90,7 @@ with st.sidebar, st.container(key="sb_filter"):
     st.markdown(ui.avatars_svg([G.pendek(k) for k in stas[:4]], max(len(stas) - 4, 0), theme.AVATAR), unsafe_allow_html=True)
     sub = D.sites[D.sites.kode_stasiun.isin(stas)]
     st.markdown(ui.peta_mini(sub.latitude_dd.to_numpy(), sub.longitude_dd.to_numpy()), unsafe_allow_html=True)
-    st.caption(f"{len(stas)} dari {len(D.sites)} lokasi pengukuran · {G.tgl(tgl[0])} – {G.tgl(tgl[1])}")
+    st.caption(f"{len(stas)} dari {len(D.sites)} lokasi pengukuran, {G.tgl(tgl[0])} – {G.tgl(tgl[1])}")
 
 with st.sidebar:
     sidebar.render_footer()

@@ -35,7 +35,7 @@ def _kat(x: float) -> str:
 
 
 def _kosong() -> None:
-    ui.catatan(G.PESAN_KOSONG)
+    ui.kosong(G.PESAN_KOSONG)
 
 
 def _kosong_pm(d: pd.DataFrame) -> bool:
@@ -68,7 +68,7 @@ def _header(i: int, nilai: str, rasio: float, keterangan: str, kpi_label: str, k
 
 
 def _header_kosong(i: int, kpi_label: str, kpi_ikon: str) -> None:
-    _header(i, "–", 0.0, "belum ada data untuk pilihan ini", kpi_label, "–", "coba pilih daerah atau periode lain", kpi_ikon)
+    _header(i, "–", 0.0, "Belum ada data untuk pilihan ini", kpi_label, "–", "Pilih daerah atau periode lain", kpi_ikon)
 
 
 def _posisi_kategori(x: float) -> float:
@@ -89,26 +89,26 @@ def _header_kondisi(C) -> None:
         return _header_kosong(1, "Daerah paling tercemar", "pin")
     stdv = STANDAR[C.f["standar"]].get(C.pol); bn = G.BATAS_NAMA[C.f["standar"]]
     g = dv.groupby("kode_stasiun")[kol].mean(); top = g.idxmax()
-    kpi = dict(kpi_label="Daerah paling tercemar", kpi_nilai=f"{fl(g.max())} µg/m³", kpi_catatan=f"{NM[top]} · rata-rata {nm}", kpi_ikon="pin", kpi_tip=G.TIPS["pm25"] if C.pol == "pm25" else G.TIPS["gas"])
+    kpi = dict(kpi_label="Daerah paling tercemar", kpi_nilai=f"{fl(g.max())} µg/m³", kpi_catatan=f"{NM[top]}, rata-rata {nm}", kpi_ikon="pin", kpi_tip=G.TIPS["pm25"] if C.pol == "pm25" else G.TIPS["gas"])
     if stdv:
         n_atas = int((g > stdv).sum())
         _header(1, f"{n_atas} dari {len(g)}\nlokasi", n_atas / len(g), f"rata-rata polusinya di atas {G.kecil(bn)}", **kpi)
     else:
-        _header(1, "Belum ada\nbatas harian", 0.0, f"{nm} tidak punya batas aman harian", **kpi)
+        _header(1, "Belum ada\nbatas harian", 0.0, f"{nm} tidak memiliki batas aman harian", **kpi)
 
 
 def _header_waktu(C, prof, hm) -> None:
     kol = C.kol; nm = G.POL_PENDEK[C.pol]
     ep = episode_tabel(C.dat.daily)
     kpi = dict(kpi_label="Kejadian kabut asap", kpi_nilai=str(len(ep)),
-               kpi_catatan=f"total {int(ep.hari.sum()) if len(ep) else 0} hari" + (f" · tertinggi {fl(ep.puncak_harian.max(), 0)} µg/m³" if len(ep) else ""), kpi_ikon="api", kpi_tip=G.TIPS["kabut_asap"])
+               kpi_catatan=f"Total {int(ep.hari.sum()) if len(ep) else 0} hari" + (f", puncak tertinggi {fl(ep.puncak_harian.max(), 0)} µg/m³" if len(ep) else ""), kpi_ikon="api", kpi_tip=G.TIPS["kabut_asap"])
     if prof.empty or hm.empty or hm[kol].notna().sum() == 0:
-        return _header(2, "–", 0.0, "belum ada data untuk pilihan ini", **kpi)
+        return _header(2, "–", 0.0, "Belum ada data untuk pilihan ini", **kpi)
     mb = hm.groupby("bulan")[kol].mean(); jam = int(prof.groupby("jam_lokal")[kol].median().idxmax())
     stdv = STANDAR[C.f["standar"]].get(C.pol)
     # panjang busur: rata-rata bulan terburuk ÷ batas aman harian (penuh = sudah melewati batas); zat tanpa batas harian: 1 − bulan terbersih ÷ terburuk
     rasio = min(1.0, mb.max() / stdv) if stdv else (1 - mb.min() / mb.max() if mb.max() > 0 else 0.0)
-    _header(2, f"{G.BULAN_PANJANG[int(mb.idxmax()) - 1]} · {jam:02d}:00", rasio, f"rata-rata {nm} {fl(mb.max())} µg/m³ di bulan terburuk", **kpi)
+    _header(2, f"{G.BULAN_PANJANG[int(mb.idxmax()) - 1]} · {jam:02d}:00", rasio, f"Rata-rata {nm} pada bulan terburuk sebesar {fl(mb.max())} µg/m³", **kpi)
 
 
 def _header_penyebab(C) -> None:
@@ -126,13 +126,13 @@ def _header_penyebab(C) -> None:
         kand["Lalu lintas"] = float(eda.spearman(m.traffic_intensity_per_h, m[kol])["rho"])
         kand["Jarak ke jalan"] = float(eda.spearman(m.distance_to_road_m, m[kol])["rho"])
     tm = d[d[kol].notna()].groupby("tipe")[kol].mean()
-    kpi = (dict(kpi_label="Jenis wilayah paling tercemar", kpi_nilai=f"{fl(tm.max())} µg/m³", kpi_catatan=f"{JN[tm.idxmax()]} · rata-rata {nm}", kpi_ikon="lapisan", kpi_tip=G.TIPS["jenis"])
-           if len(tm) else dict(kpi_label="Jenis wilayah paling tercemar", kpi_nilai="–", kpi_catatan="belum ada data untuk pilihan ini", kpi_ikon="lapisan", kpi_tip=G.TIPS["jenis"]))
+    kpi = (dict(kpi_label="Jenis wilayah paling tercemar", kpi_nilai=f"{fl(tm.max())} µg/m³", kpi_catatan=f"{JN[tm.idxmax()]}, rata-rata {nm}", kpi_ikon="lapisan", kpi_tip=G.TIPS["jenis"])
+           if len(tm) else dict(kpi_label="Jenis wilayah paling tercemar", kpi_nilai="–", kpi_catatan="Belum ada data untuk pilihan ini", kpi_ikon="lapisan", kpi_tip=G.TIPS["jenis"]))
     kand = {k: v for k, v in kand.items() if pd.notna(v)}
     if not kand:
-        return _header(3, "–", 0.0, "belum ada data untuk pilihan ini", **kpi)
+        return _header(3, "–", 0.0, "Belum ada data untuk pilihan ini", **kpi)
     faktor = max(kand, key=lambda k: abs(kand[k]))
-    _header(3, faktor, abs(kand[faktor]), f"hubungan {G.kekuatan(kand[faktor])} dengan {nm} · bukan sebab-akibat", **kpi)
+    _header(3, faktor, abs(kand[faktor]), f"Hubungan {G.kekuatan(kand[faktor])} dengan {nm}, bukan sebab-akibat", **kpi)
 
 
 def _header_kesehatan(C, K2) -> None:
@@ -140,9 +140,9 @@ def _header_kesehatan(C, K2) -> None:
     n_naik = sum(1 for v in cum.values() if v["bawah"] > 1)         # penyakit yang pasiennya naik nyata (batas bawah rentang kepastian > 1)
     h = C.dat.health
     bal, lan = (int(h[c].sum()) for c in ("resp_admissions_under5", "resp_admissions_over60")) if len(h) else (0, 0)
-    kpi = dict(kpi_label="Pasien ISPA balita + lansia", kpi_nilai=rp(bal + lan) if len(h) else "–", kpi_catatan=f"balita {rp(bal)} · lansia {rp(lan)}" if len(h) else "belum ada data untuk pilihan ini",
+    kpi = dict(kpi_label="Pasien ISPA balita + lansia", kpi_nilai=rp(bal + lan) if len(h) else "–", kpi_catatan=f"Balita {rp(bal)}, lansia {rp(lan)}" if len(h) else "Belum ada data untuk pilihan ini",
                kpi_ikon="stetoskop", kpi_tip=G.TIPS["ispa"])
-    _header(4, f"{n_naik} dari {len(cum)}\npenyakit", n_naik / len(cum), f"+{fl(100 * (ub['rr'] - 1), 1)}% pasien ISPA balita tiap debu halus naik 10 µg/m³", **kpi)
+    _header(4, f"{n_naik} dari {len(cum)}\npenyakit", n_naik / len(cum), f"Pasien ISPA balita bertambah {fl(100 * (ub['rr'] - 1), 1)}% setiap debu halus naik 10 µg/m³", **kpi)
 
 
 def _header_lokasi(C, stat) -> None:
@@ -189,13 +189,13 @@ def _detail_lokasi(C, g: pd.DataFrame, dv: pd.DataFrame, kode: str, kol: str, nm
     s = C.D.sites.set_index("kode_stasiun").loc[kode]; r = g.loc[kode]
     qc = C.D.qc.set_index("kode_stasiun").status_analisis.get(kode, "–")
     rk = {x["kode_stasiun"]: x for x in C.D.kn["insight"]["5_risiko"]["peringkat"]}.get(kode)
-    ui.judul_kartu("Rincian lokasi", "Dipilih dari grafik" if eksplisit else "Peringkat 1 · klik batang pada grafik untuk mengganti")
-    kv = [(f"Rata-rata {nm}", f"{fl(r.rata2)} µg/m³"), ("Nilai tengah", f"{fl(r['median'])} µg/m³"), ("95% hari di bawah", f"{fl(r.p95)} µg/m³"), ("Hari terburuk", f"{fl(r.maks)} µg/m³"),
-          ("Catatan harian yang bisa dipakai", f"{rp(int(r.n_hari))} hari")]
+    ui.judul_kartu("Rincian lokasi", "Dipilih dari grafik" if eksplisit else "Peringkat 1")
+    kv = [(f"Rata-rata {nm}", f"{fl(r.rata2)} µg/m³"), ("Nilai tengah", f"{fl(r['median'])} µg/m³"), ("95% hari berada di bawah", f"{fl(r.p95)} µg/m³"), ("Hari terburuk", f"{fl(r.maks)} µg/m³"),
+          ("Catatan harian yang dapat dipakai", f"{rp(int(r.n_hari))} hari")]
     if stdv:
         kv.append((f"Hari di atas {fl(stdv, 0)} µg/m³", f"{fl(100 * (dv[dv.kode_stasiun == kode][kol] > stdv).mean())}%"))
     if C.pol == "pm25":
-        kv.append(("Kategori udara (rata-rata)", _kat(r.rata2)))
+        kv.append(("Kategori udara rata-rata", _kat(r.rata2)))
     kv += [("Kelengkapan data", G.STATUS_DATA.get(str(qc), str(qc))), ("Skor risiko", f"{fl(rk['skor'], 0)} (peringkat {rk['peringkat']})" if rk else "tidak dinilai")]
     st.markdown(f'<div class="dh"><span class="lg" style="{_lencana(WARNA[r.tipe])}">{html.escape(NM[kode][:2])}</span><div><b>{html.escape(NM[kode])}</b><span>{html.escape(str(s.provinsi))} · {JN[r.tipe]}</span></div></div>'
                 + "".join(f'<div class="kv"><span>{html.escape(a)}</span><b>{html.escape(b)}</b></div>' for a, b in kv), unsafe_allow_html=True)
@@ -244,7 +244,7 @@ def _p0_ubin(C, d: pd.DataFrame, std: float, bn: str) -> None:
                 st.markdown(f'<div class="ubin-in{" sel" if pilih == t else ""}">{ui.ikon(t.lower(), 28)}<div class="t">{JN[t]}</div><div class="v">{n} lokasi</div><div class="v">{v} µg/m³</div><div class="chev">⌄</div></div>', unsafe_allow_html=True)
                 st.button(f"{'Tutup' if pilih == t else 'Lihat'} daftar lokasi {JN[t]}", key=f"ubin_btn_{i}", on_click=_toggle_jenis, args=(t,))
     if not pilih:
-        ui.keterangan("Klik salah satu jenis wilayah untuk melihat lokasinya.")
+        ui.keterangan("Pilih salah satu jenis wilayah untuk melihat daftar lokasinya.")
         return
     i = TIPE.index(pilih)
     sites = C.D.sites.set_index("kode_stasiun")
@@ -255,7 +255,7 @@ def _p0_ubin(C, d: pd.DataFrame, std: float, bn: str) -> None:
     with st.container(key=f"ubin_panel_{i}"):
         st.markdown(f'<div class="pnl-h"><b>{JN[pilih]} · {len(urut)} lokasi</b><span>{html.escape(G.JENIS_ARTI[pilih])}</span></div>', unsafe_allow_html=True)
         if len(urut) == 0:
-            ui.catatan(G.PESAN_KOSONG)
+            ui.kosong(G.PESAN_KOSONG)
         else:
             skala = max(float(np.nanmax(rata.values)) if rata.notna().any() else 0.0, std) * 1.12
             baris = []
@@ -271,10 +271,10 @@ def _p0_ubin(C, d: pd.DataFrame, std: float, bn: str) -> None:
                              f'<div class="lok-v"><b>{fl(m)}</b> µg/m³ <span class="bdg" style="{_lencana(wrn)}">{kat}</span></div></div>'
                              f'<div class="lok-bar"><i style="width:{min(100.0, 100 * m / skala):.1f}%;background:{wrn}"></i>{batas}</div></div>')
             st.markdown("".join(baris), unsafe_allow_html=True)
-            ui.keterangan(f"Rata-rata debu halus (PM2.5) per lokasi pada periode terpilih. Garis tipis = {G.kecil(bn)} ({fl(std, 0)} µg/m³).")
+            ui.keterangan(f"Rata-rata debu halus (PM2.5) per lokasi pada periode terpilih. Garis tipis menandai {G.kecil(bn)} ({fl(std, 0)} µg/m³).")
         with st.container(key="lnk_baris"):                                      # satu baris: kiri & kanan; bertumpuk rata kiri bila sempit (ui.py)
             st.button("Lihat di peta", key="p0_lnk_peta", type="tertiary", icon=":material/map:", on_click=_buka_halaman, args=(pilih, "lokasi-pengukuran"))
-            st.button("Bandingkan di Kondisi Udara →", key="p0_lnk_kondisi", type="tertiary", on_click=_buka_halaman, args=(pilih, "kondisi-udara"))
+            st.button("Bandingkan di Kondisi udara →", key="p0_lnk_kondisi", type="tertiary", on_click=_buka_halaman, args=(pilih, "kondisi-udara"))
 
 
 
@@ -290,8 +290,8 @@ def _p0_ringkasan(C) -> None:
     std = STANDAR[C.f["standar"]]["pm25"]; bn = G.BATAS_NAMA[C.f["standar"]]
     pct = 100 * (pm > std).mean()
     D = C.D
-    _header(0, _kat(pm.mean()), _posisi_kategori(pm.mean()), f"{fl(pct)}% hari di atas {G.kecil(bn)}", "Rata-rata debu halus (PM2.5)", f"{fl(pm.mean())} µg/m³",
-            f"{len(C.dat.stas)} lokasi · {rp(len(pm))} catatan harian", "debu", kpi_tip=G.TIPS["pm25"])
+    _header(0, _kat(pm.mean()), _posisi_kategori(pm.mean()), f"{fl(pct)}% hari berada di atas {G.kecil(bn)}", "Rata-rata debu halus (PM2.5)", f"{fl(pm.mean())} µg/m³",
+            f"{len(C.dat.stas)} lokasi dengan {rp(len(pm))} catatan harian", "debu", kpi_tip=G.TIPS["pm25"])
     kiri, tengah, kanan = st.columns([1, 1.25, 1.05], gap="medium")
 
     with kiri:
@@ -313,14 +313,14 @@ def _p0_ringkasan(C) -> None:
         with ui.kartu("p0_tren"):
             b = _bulanan(d, "pm25_ug_m3")
             pk = b.loc[b.pm25_ug_m3.idxmax()]
-            ui.judul_kartu(f"Debu halus paling tinggi pada {G.bln(pk.ym)}: {fl(pk.pm25_ug_m3)} µg/m³", f"Rata-rata bulanan di lokasi terpilih (µg/m³). Garis putus-putus = {G.kecil(bn)} ({fl(std, 0)})", tip=G.TIPS["pm25"])
+            ui.judul_kartu(f"Debu halus paling tinggi pada {G.bln(pk.ym)}: {fl(pk.pm25_ug_m3)} µg/m³", f"Rata-rata bulanan di lokasi terpilih. Garis putus-putus menandai {G.kecil(bn)} ({fl(std, 0)} µg/m³).", tip=G.TIPS["pm25"])
             ec.tampil(ec.garis([G.bln(t) for t in b.ym], [dict(name="Debu halus (PM2.5)", data=b.pm25_ug_m3.round(2), color=T.SERI, area=True)], satuan="µg/m³", judul_y="µg/m³",
                                ambang=(std, f"{bn} ({fl(std, 0)})", T.BATAS[C.f["standar"]]), tinggi=250), "p0_tren", 250, klik=False)
             bk = b.assign(k=b.ym.dt.month.isin(cfg.MUSIM_KEMARAU_BULAN))
             if bk[bk.k].pm25_ug_m3.mean() > bk[~bk.k].pm25_ug_m3.mean():
-                ui.keterangan("Polusi cenderung naik pada musim kemarau (Mei–Oktober), saat lahan kering mudah terbakar. <b>Warga perlu lebih waspada pada bulan-bulan itu.</b>")
+                ui.keterangan("Polusi cenderung naik pada musim kemarau (Mei–Oktober) karena lahan kering mudah terbakar. <b>Masyarakat perlu lebih waspada pada bulan-bulan tersebut.</b>")
         with ui.kartu("p0_epi"):
-            ui.judul_kartu("Kabut asap terbaru", "Polusi di atas 150 µg/m³ selama minimal 3 hari berturut-turut", tip=G.TIPS["kabut_asap"])
+            ui.judul_kartu("Kabut asap terbaru", "Kabut asap berarti polusi di atas 150 µg/m³ selama minimal 3 hari berturut-turut.", tip=G.TIPS["kabut_asap"])
             if ep.empty:
                 ui.keterangan("Tidak ada kejadian kabut asap pada pilihan ini.")
             for r in ep.head(3).itertuples():
@@ -337,10 +337,10 @@ def _p0_ringkasan(C) -> None:
             puncak = [sem.groupby("kode_stasiun")[k].mean().max() for k in kk]
             rel = [d[k].mean() / pk_ if pd.notna(pk_) and pk_ > 0 and d[k].notna().any() else 0.0 for k, pk_ in zip(kk, puncak)]
             nm_ = [G.POL_PENDEK[p] for p in POLUTAN]
-            ui.judul_kartu(f"{nm_[int(np.argmax(rel))]} paling menonjol di lokasi terpilih", "Makin ke tepi, makin dekat ke lokasi terburuk (tepi = 100%)", tip=G.TIPS["gas"])
+            ui.judul_kartu(f"{nm_[int(np.argmax(rel))]} paling menonjol di lokasi terpilih", "Semakin mendekati tepi, semakin mendekati kondisi lokasi terburuk (tepi = 100%).", tip=G.TIPS["pm10"] + " " + G.TIPS["gas"])
             ec.tampil(ec.radar(nm_, rel, warna_isi=T.RADAR_ISI, warna_garis=T.RADAR_GARIS, tinggi=250), "p0_radar", 250, klik=False)
         with ui.kartu("p0_top"):
-            ui.judul_kartu("Daerah paling berisiko", "Skor 0–100: gabungan polusi, beban kesehatan, kerentanan, dan tren", tip=G.TIPS["skor_risiko"])
+            ui.judul_kartu("Daerah paling berisiko", "Skor 0–100 gabungan polusi, beban kesehatan, kerentanan, dan tren.", tip=G.TIPS["skor_risiko"])
             rk = pd.DataFrame(C.D.kn["insight"]["5_risiko"]["peringkat"]); rk = rk[rk.kode_stasiun.isin(C.dat.stas)].head(3)
             if rk.empty:
                 ui.keterangan("Tidak ada daerah yang dinilai pada pilihan ini.")
@@ -351,10 +351,10 @@ def _p0_ringkasan(C) -> None:
                             f'<div class="pr" data-countup="{fl(r.skor, 0)}">{fl(r.skor, 0)}<span>peringkat {r.peringkat}</span></div><div>{ui.sparkline(ser, T.SPARKLINE)}</div></div>', unsafe_allow_html=True)
 
     with ui.kartu("p0_peta"):
-        ui.judul_kartu("Peta Indonesia: di mana udara paling kotor?", f"Satu titik = satu lokasi pengukuran; warna = kategori udara rata-rata (debu halus PM2.5) · arsir merah muda = provinsi tanpa alat", tip=G.TIPS["lokasi"])
+        ui.judul_kartu("Peta Indonesia: di mana udara paling kotor?", "Setiap titik mewakili satu lokasi pengukuran dan warnanya menunjukkan kategori udara rata-rata. Arsir merah muda menandai provinsi tanpa alat pengukur.", tip=G.TIPS["lokasi"])
         status = C.D.qc.set_index("kode_stasiun").status_analisis
         peta.render_peta(peta.siapkan_titik(C, d, std, bn, status), "beranda", "peta_beranda", C.D.sites)
-        ui.keterangan("Klik sebuah titik untuk melihat rincian dan memperbesar peta; ganti ke <b>Peta panas polusi</b> untuk melihat sebaran umum. Warna titik mengikuti rata-rata pada periode dan pilihan filter yang aktif.")
+        ui.keterangan("Pilih titik untuk melihat rincian dan memperbesar peta, atau beralih ke <b>Peta panas polusi</b> untuk melihat sebaran umum. Warna titik mengikuti periode dan filter yang dipilih.")
 
 
 # =========================================================================== #
@@ -362,7 +362,7 @@ def _p0_ringkasan(C) -> None:
 # =========================================================================== #
 def p1(C) -> None:
     _header_kondisi(C)
-    t1, t2, t3 = st.tabs(["Peringkat daerah", "Batas aman & kategori udara", "Perubahan dari waktu ke waktu"])
+    t1, t2, t3 = st.tabs(["Peringkat daerah", "Batas aman dan kategori udara", "Perubahan dari waktu ke waktu"])
     with t1:
         _p1_peringkat(C)
     with t2:
@@ -389,13 +389,13 @@ def _p1_peringkat(C) -> None:
             judul = f"Udara {names[0]} paling tercemar ({fl(g.rata2.iloc[0])} µg/m³), {names[-1]} paling bersih ({fl(g.rata2.iloc[-1])} µg/m³)"
         else:
             judul = f"Rata-rata {nm} di {names[0]}: {fl(g.rata2.iloc[0])} µg/m³ per hari"
-        ui.judul_kartu(judul, f"Rata-rata harian {nm} per lokasi (µg/m³) · klik batang untuk melihat rincian", tip=G.TIPS["pm25"] if C.pol == "pm25" else G.TIPS["gas"])
+        ui.judul_kartu(judul, f"Rata-rata harian {nm} per lokasi dalam µg/m³. Pilih batang untuk melihat rincian.", tip=G.TIPS["pm25"] if C.pol == "pm25" else G.TIPS["gas"])
         _legenda_jenis()
         pilih = ec.terpilih("p1_bar"); pilih = pilih if pilih in names else None
         ec.tampil(ec.batang(names, [dict(name=nm, data=g.rata2.round(2), warna=[T.rgba(WARNA[t], T.OPASITAS_BATANG) for t in g.tipe])], horizontal=True, satuan="µg/m³", desimal=1, label=True, pilih=pilih,
                             judul_nilai=f"{nm} (µg/m³)", garis=(stdv, f"{bn} ({fl(stdv, 0)})", T.BATAS[C.f["standar"]]) if stdv else None), "p1_bar", max(320, 22 * len(g) + 90))
         if stdv:
-            ui.keterangan(f"Batang yang melewati garis putus-putus berarti rata-rata polusinya di atas {G.kecil(bn)}. <b>Di daerah itu udara lebih sering tidak aman.</b>")
+            ui.keterangan(f"Batang yang melewati garis putus-putus menunjukkan rata-rata polusi di atas {G.kecil(bn)}. <b>Di daerah tersebut, udara lebih sering tidak aman.</b>")
     with cd, ui.kartu("p1_detail"):
         sel = ec.terpilih("p1_bar")
         sel_kode = G.KODE_DARI_PENDEK[sel] if sel in names else g.index[0]
@@ -415,7 +415,7 @@ def _p1_batas(C) -> None:
     with c1, ui.kartu("p1_don"):
         jml = x.k.value_counts().reindex(cfg.ISPU_KATEGORI, fill_value=0)
         pb = 100 * jml["Baik"] / max(jml.sum(), 1)
-        ui.judul_kartu(f"Hanya {fl(pb)}% hari udara berkategori Baik" if pb < 50 else f"{fl(pb)}% hari udara berkategori Baik", "Seluruh catatan harian (jumlah hari) · klik irisan untuk menyorot", tip=G.TIPS["kategori"])
+        ui.judul_kartu(f"Hanya {fl(pb)}% hari udara berkategori Baik" if pb < 50 else f"{fl(pb)}% hari udara berkategori Baik", "Jumlah hari menurut kategori udara. Pilih irisan untuk menyorot.", tip=G.TIPS["kategori"])
         sel_k = ec.terpilih("p1_don")
         ec.tampil(ec.donat([(k, jml[k], T.ISPU[k]) for k in cfg.ISPU_KATEGORI if jml[k] > 0], judul=rp(int(jml.sum())), sub="hari tercatat", satuan="hari", pilih=sel_k), "p1_don", 400)
         for k, rg in BATAS_ISPU:
@@ -424,12 +424,12 @@ def _p1_batas(C) -> None:
         ct = pd.crosstab(x.kode_stasiun, x.k, normalize="index").mul(100).reindex(columns=cfg.ISPU_KATEGORI, fill_value=0)
         buruk = ct[["Tidak Sehat", "Sangat Tidak Sehat", "Berbahaya"]].sum(axis=1)
         if buruk.max() > 0:
-            ui.judul_kartu(f"{NM[buruk.idxmax()]} paling sering Tidak Sehat atau lebih buruk ({fl(buruk.max())}% hari)", "Kategori udara di tiap lokasi (% hari)" + (f" · disorot: {sel_k}" if sel_k else ""), tip=G.TIPS["kategori"])
+            ui.judul_kartu(f"{NM[buruk.idxmax()]} paling sering Tidak Sehat atau lebih buruk ({fl(buruk.max())}% hari)", "Persentase hari menurut kategori udara di setiap lokasi." + (f" Disorot: {sel_k}." if sel_k else ""), tip=G.TIPS["kategori"])
         else:
-            ui.judul_kartu("Tidak ada lokasi yang berkategori Tidak Sehat", "Kategori udara di tiap lokasi (% hari)", tip=G.TIPS["kategori"])
+            ui.judul_kartu("Tidak ada lokasi yang berkategori Tidak Sehat", "Persentase hari menurut kategori udara di setiap lokasi.", tip=G.TIPS["kategori"])
         ec.tampil(ec.batang([NM[k] for k in ct.index], [dict(name=k, data=ct[k].round(2), color=T.ISPU[k]) for k in cfg.ISPU_KATEGORI], horizontal=True, tumpuk=True, satuan="% hari", desimal=1,
                             rentang=(0, 100), judul_nilai="% hari", redup_seri=[k for k in cfg.ISPU_KATEGORI if sel_k and k != sel_k]), "p1_ispu", max(340, 24 * len(ct) + 110), klik=False)
-        ui.keterangan("Hijau = Baik, biru kehijauan = Sedang, jingga = Tidak Sehat, merah muda = Sangat Tidak Sehat, merah tua = Berbahaya. <b>Makin banyak warna jingga, merah muda, dan merah tua, makin sering udara berbahaya bagi warga.</b>")
+        ui.keterangan("Hijau: Baik; biru kehijauan: Sedang; jingga: Tidak Sehat; merah muda: Sangat Tidak Sehat; merah tua: Berbahaya. <b>Semakin banyak warna jingga hingga merah tua, semakin sering udara berbahaya bagi masyarakat.</b>")
 
 
 def _p1_tren(C) -> None:
@@ -450,7 +450,7 @@ def _p1_tren(C) -> None:
             if x.notna().any():
                 seri.append(dict(name=JN[t], data=[None if pd.isna(v) else round(float(v), 2) for v in x], color=WARNA[t]))
         ec.tampil(ec.garis([G.bln(m) for m in bulan], seri, satuan="µg/m³", judul_y="µg/m³", tinggi=320), "p1_tren", 320, klik=False)
-        ui.keterangan("Polusi naik tajam menjelang akhir periode, terutama di lahan gambut. <b>Perbedaan antar jenis wilayah jauh lebih besar daripada perubahan antar tahun.</b>")
+        ui.keterangan("Polusi naik tajam menjelang akhir periode, terutama di lahan gambut. <b>Perbedaan antarjenis wilayah jauh lebih besar daripada perubahan antartahun.</b>")
     _kartu_kotak(C, "p1_box")
 
 
@@ -494,7 +494,7 @@ def _p2_peta_panas(C, hm, nm, jam, mb, asap_bln, sel_b, sel_j) -> None:
     top3 = mb.sort_values(ascending=False).index[:3]
     with ui.kartu("p2_hm"):
         ui.judul_kartu(f"Udara paling kotor pada {G.bagian_hari(jam)} hari di bulan {_rentang_bulan(top3)}",
-                       f"Rata-rata {nm} (µg/m³) menurut jam (waktu setempat) dan bulan · 🔥 = bulan dengan kejadian kabut asap · jam berlabel merah muda = jam sibuk (07–09 & 17–19) · klik sel untuk menyorot grafik di bawah",
+                       f"Rata-rata {nm} (µg/m³) menurut jam setempat dan bulan; ikon api menandai bulan dengan kabut asap dan label merah muda menandai jam sibuk (07–09 dan 17–19). Pilih sel untuk menyorot grafik di bawahnya.",
                        tip=G.TIPS["kabut_asap"])
         sel = []
         for b in range(1, 13):
@@ -503,15 +503,15 @@ def _p2_peta_panas(C, hm, nm, jam, mb, asap_bln, sel_b, sel_j) -> None:
                 ada = pd.notna(v)
                 kat = f" · {_kat(v)}" if (ada and C.pol == "pm25") else ""
                 n_asap = int(asap_bln.get(b, 0))
-                tip = (f"<b>Pukul {j:02d}.00 · {G.BULAN_PANJANG[b - 1]}</b><br>{fl(v) if ada else '–'} µg/m³{kat}"
-                       + (f"<br>{n_asap} kejadian kabut asap di bulan ini" if n_asap else ""))
+                tip = (f"<b>Pukul {j:02d}.00, {G.BULAN_PANJANG[b - 1]}</b><br>{fl(v) if ada else '–'} µg/m³{kat}"
+                       + (f"<br>{n_asap} kejadian kabut asap pada bulan ini" if n_asap else ""))
                 op = 1.0 if (sel_b is None or b == sel_b or j == sel_j) else 0.35        # sel yang diklik: baris & kolomnya tetap terang
                 sel.append(dict(x=b - 1, y=j, v=round(float(v), 2) if ada else None, nama=f"{b}|{j}", tip=tip, op=op))
         nil = [s["v"] for s in sel if s["v"] is not None]
         ec.tampil(ec.peta_panas(G.BULAN, [f"{j:02d}:00" for j in range(24)], sel, warna=T.PANAS, teks_skala=(f"{fl(max(nil), 0)} µg/m³", f"{fl(min(nil), 0)}"),
                                 label_atas=[f"🔥 {int(asap_bln.get(b, 0))}" if asap_bln.get(b, 0) else None for b in range(1, 13)],
                                 pita=[(7, 9, "jam sibuk"), (17, 19, "jam sibuk")], tinggi=500, judul_y="Jam (waktu setempat)"), "p2_hm", 500)
-        ui.keterangan(f"Makin merah warnanya, makin tinggi polusi pada jam dan bulan itu. <b>Pada {_rentang_bulan(top3)}, kurangi kegiatan di luar ruangan terutama pada {G.bagian_hari(jam)} hari.</b>")
+        ui.keterangan(f"Semakin merah warnanya, semakin tinggi polusi pada jam dan bulan tersebut. <b>Pada {_rentang_bulan(top3)}, kurangi kegiatan di luar ruangan terutama pada {G.bagian_hari(jam)} hari.</b>")
 
 
 def _p2_pendukung(C, prof, nm, asap_bln, sel_b, sel_j) -> None:
@@ -520,7 +520,7 @@ def _p2_pendukung(C, prof, nm, asap_bln, sel_b, sel_j) -> None:
     c1, c2 = st.columns(2, gap="medium")
     with c1, ui.kartu("p2_jam"):
         h = int(prof.groupby("jam_lokal")[kol].median().idxmax())
-        ui.judul_kartu(f"Polusi {nm} paling tinggi sekitar pukul {h:02d}:00 ({G.bagian_hari(h)} hari)", f"Nilai tengah {nm} tiap jam menurut jenis wilayah (µg/m³); jam dalam waktu setempat (WIB/WITA/WIT)", tip=G.TIPS["nilai_tengah"])
+        ui.judul_kartu(f"Polusi {nm} paling tinggi sekitar pukul {h:02d}:00 ({G.bagian_hari(h)} hari)", f"Nilai tengah {nm} per jam menurut jenis wilayah dalam µg/m³, dengan waktu setempat (WIB, WITA, dan WIT).", tip=G.TIPS["nilai_tengah"])
         seri = []
         for t in TIPE:
             x = prof[prof.tipe == t].set_index("jam_lokal")[kol].reindex(range(24))
@@ -529,17 +529,17 @@ def _p2_pendukung(C, prof, nm, asap_bln, sel_b, sel_j) -> None:
         ec.tampil(ec.garis([f"{j:02d}:00" for j in range(24)], seri, satuan="µg/m³", judul_y="µg/m³ (nilai tengah)", tinggi=340, legenda_lipat=True,
                            garis_x=(f"{sel_j:02d}:00", f"pukul {sel_j:02d}.00") if sel_j is not None else None), "p2_jam", 340, klik=False)
         KT = C.D.kn["B"]["diurnal"]["jam_puncak_no2_median_per_tipe"]
-        ui.keterangan(f"Di Pinggir Jalan Raya, gas NO₂ (asap kendaraan) memuncak pukul {fl(KT['Jalan Raya'], 0)}, saat jam pulang kerja. <b>Hindari berolahraga di tepi jalan pada jam sibuk.</b>")
+        ui.keterangan(f"Di Pinggir Jalan Raya, gas NO₂ dari asap kendaraan memuncak pukul {fl(KT['Jalan Raya'], 0)}, saat jam pulang kerja. <b>Hindari berolahraga di tepi jalan pada jam sibuk.</b>")
     with c2, ui.kartu("p2_mus"):
         bb = d[d[kol].notna()].groupby("bulan")[kol].mean()
         kem = bb[[m for m in bb.index if m in cfg.MUSIM_KEMARAU_BULAN]].mean(); huj = bb[[m for m in bb.index if m not in cfg.MUSIM_KEMARAU_BULAN]].mean()
-        ui.judul_kartu("Musim kemarau (Mei–Oktober) lebih tercemar daripada musim hujan" if kem > huj else "Polusi di musim kemarau tidak lebih tinggi daripada musim hujan", f"Rata-rata {nm} tiap bulan (µg/m³) · 🔥 = jumlah kejadian kabut asap")
+        ui.judul_kartu("Musim kemarau (Mei–Oktober) lebih tercemar daripada musim hujan" if kem > huj else "Polusi di musim kemarau tidak lebih tinggi daripada musim hujan", f"Rata-rata {nm} per bulan dalam µg/m³. Ikon api menunjukkan jumlah kejadian kabut asap.")
         ec.tampil(ec.batang(G.BULAN, [dict(name=nm, data=[bb.get(i, np.nan) for i in range(1, 13)], warna=[T.KEMARAU if i in cfg.MUSIM_KEMARAU_BULAN else T.HUJAN for i in range(1, 13)])],
                             satuan="µg/m³", desimal=1, judul_nilai="µg/m³", tinggi=340, pilih=G.BULAN[sel_b - 1] if sel_b else None,
                             label_item=[f"🔥 {int(asap_bln.get(i, 0))}" if asap_bln.get(i, 0) else None for i in range(1, 13)]), "p2_mus", 340, klik=False)
-        ui.keterangan("Batang merah muda = musim kemarau (Mei–Oktober), saat lahan kering mudah terbakar. <b>Kabut asap hampir selalu muncul di bulan-bulan kemarau.</b>"
+        ui.keterangan("Batang merah muda menandai musim kemarau (Mei–Oktober), saat lahan kering mudah terbakar. <b>Kabut asap hampir selalu muncul pada bulan-bulan kemarau.</b>"
                       if asap_bln[[m for m in range(1, 13) if m in cfg.MUSIM_KEMARAU_BULAN]].sum() >= asap_bln.sum() * 0.5 and asap_bln.sum()
-                      else "Batang merah muda = musim kemarau (Mei–Oktober), saat lahan kering mudah terbakar.")
+                      else "Batang merah muda menandai musim kemarau (Mei–Oktober), saat lahan kering mudah terbakar.")
 
 
 def _p2_asap(C, ep) -> None:
@@ -553,9 +553,9 @@ def _p2_asap(C, ep) -> None:
         tahun = sorted(int(y) for y in ep.thn.unique())
         bulan = sorted(set([8, 9, 10]) | set(int(m) for m in ep.bln.unique()))
         akhir = C.dat.tgl[1]
-        sub = "Jumlah kejadian menurut bulan dimulainya, satu batang per tahun · makin gelap = makin baru"
+        sub = "Jumlah kejadian menurut bulan mulainya, dengan satu batang per tahun; warna semakin gelap menandai tahun semakin baru."
         if akhir < pd.Timestamp(tahun[-1], 12, 31):
-            sub += f" · data {tahun[-1]} sampai {G.tgl(akhir)}"
+            sub += f" Data {tahun[-1]} hanya sampai {G.tgl(akhir)}."
         ui.judul_kartu(f"{n_ao} dari {len(ep)} kejadian kabut asap berlangsung pada Agustus–Oktober", sub, tip=G.TIPS["kabut_asap"])
         warna = ui.warna_bertingkat(len(tahun))
         seri = []
@@ -570,17 +570,18 @@ def _p2_asap(C, ep) -> None:
                 data.append(dict(v=len(x), tip=tip))
             seri.append(dict(name=str(y), color=w, data=data))
         ec.tampil(ec.batang_tahun([G.BULAN_PANJANG[m - 1] for m in bulan], seri, judul_y="Jumlah kejadian", tinggi=340), "p2_asap", 340, klik=False)
-        # keterangan 2 kalimat: kapan paling sering & bagaimana jumlahnya per tahun, lalu artinya bagi warga
+        # keterangan 2 kalimat: kapan paling sering & bagaimana jumlahnya per tahun, lalu artinya bagi masyarakat
         bln = ep.bln.value_counts()
         b_top, n_top = int(bln.idxmax()), int(bln.max())
         th = ep.thn.value_counts().sort_index()
-        per_tahun = ", ".join(f"{int(n)} pada {int(y)}" for y, n in th.items())
+        per_item = [f"{int(n)} pada {int(y)}" for y, n in th.items()]
+        per_tahun = ", ".join(per_item[:-1]) + ", dan " + per_item[-1] if len(per_item) > 1 else per_item[0]
         naik = len(th) >= 2 and bool((th.diff().dropna() > 0).all())
-        k1 = (f"Kejadian kabut asap paling sering dimulai pada {G.BULAN_PANJANG[b_top - 1]} ({n_top} dari {len(ep)} kejadian), "
-              + (f"dan jumlahnya bertambah setiap tahun: {per_tahun}." if naik else f"dengan jumlah per tahun {per_tahun}."))
+        k1 = (f"Kabut asap paling sering dimulai pada {G.BULAN_PANJANG[b_top - 1]} ({n_top} dari {len(ep)} kejadian) "
+              + (f"dan jumlahnya bertambah setiap tahun, yaitu {per_tahun}." if naik else f"dengan jumlah per tahun {per_tahun}."))
         tipe_top = JN[ep.tipe.value_counts().idxmax()].lower()
-        k2 = (f"<b>Siapkan masker dan rencana kesehatan sebelum Agustus</b>, terutama bagi warga di sekitar {tipe_top}." if b_top in (8, 9, 10) and n_ao * 2 >= len(ep)
-              else f"<b>Siapkan masker dan rencana kesehatan sebelum {G.BULAN_PANJANG[b_top - 1]}</b>, terutama bagi warga di sekitar {tipe_top}.")
+        k2 = (f"<b>Siapkan masker dan rencana kesehatan sebelum Agustus</b>, terutama bagi masyarakat di sekitar {tipe_top}." if b_top in (8, 9, 10) and n_ao * 2 >= len(ep)
+              else f"<b>Siapkan masker dan rencana kesehatan sebelum {G.BULAN_PANJANG[b_top - 1]}</b>, terutama bagi masyarakat di sekitar {tipe_top}.")
         ui.keterangan(f"{k1} {k2}")
 
 
@@ -588,13 +589,13 @@ def _p2_asap(C, ep) -> None:
 # 3 — PENYEBAB POLUSI
 # =========================================================================== #
 def p3(C) -> None:
-    """Penyebab polusi dalam SATU alur (tanpa tab): pengaruh cuaca → pengaruh lalu lintas & jalan → perbedaan antar jenis wilayah."""
+    """Penyebab polusi dalam SATU alur (tanpa tab): pengaruh cuaca → pengaruh lalu lintas & jalan → perbedaan antarjenis wilayah."""
     _header_penyebab(C)
     ui.subjudul("Pengaruh cuaca")
     _p3_cuaca(C)
-    ui.subjudul("Pengaruh lalu lintas & jalan")
+    ui.subjudul("Pengaruh lalu lintas dan jalan")
     _p3_lalu_lintas(C)
-    ui.subjudul("Perbedaan antar jenis wilayah")
+    ui.subjudul("Perbedaan antarjenis wilayah")
     _kartu_kotak(C, "p3_box")
 
 
@@ -605,9 +606,9 @@ def _kartu_kotak(C, kunci: str) -> None:
     if not stat:
         return _kosong()
     with ui.kartu(kunci):
-        ui.judul_kartu("Rentang polusi harian sangat berbeda antar jenis wilayah", f"Sebaran harian {nm} (µg/m³); skala bertingkat, tiap garis ±3× lipat", tip=G.TIPS["nilai_tengah"])
+        ui.judul_kartu("Rentang polusi harian sangat berbeda antarjenis wilayah", f"Sebaran harian {nm} dalam µg/m³. Skala sumbu bertingkat, setiap garis kisi sekitar tiga kali lipat garis di bawahnya.", tip=G.TIPS["nilai_tengah"])
         ec.tampil(ec.kotak([(JN[t], WARNA[t], stat[t]) for t in TIPE if t in stat], judul_y="µg/m³", tinggi=340), kunci, 340, klik=False)
-        ui.keterangan("Kotak = rentang hari-hari yang umum; garis tengah = nilai tengah; garis ke atas = hari terburuk. <b>Lahan gambut punya hari-hari terburuk paling ekstrem.</b>")
+        ui.keterangan("Kotak menunjukkan rentang hari yang umum, garis di tengah kotak adalah nilai tengah, dan garis ke atas menunjukkan hari terburuk. <b>Lahan gambut memiliki hari terburuk yang paling ekstrem.</b>")
 
 
 def _p3_cuaca(C) -> None:
@@ -625,10 +626,10 @@ def _p3_cuaca(C) -> None:
         else:
             r_, c_ = np.unravel_index(np.nanargmax(np.abs(cm.values)), cm.shape)
             judul = f"Hubungan {G.kekuatan(mx)} antara {G.CUACA_NAMA[cu[c_]].lower()} dan {G.POL_PENDEK[list(POLUTAN)[r_]]}"
-        ui.judul_kartu(judul, "Kekuatan hubungan tiap zat pencemar dengan cuaca (hover untuk angka); suhu, kelembapan, dan angin dibandingkan dengan rata-rata lokasinya sendiri", tip=G.TIPS["kekuatan"])
+        ui.judul_kartu(judul, "Kekuatan hubungan tiap zat pencemar dengan cuaca, dibandingkan dengan rata-rata lokasinya sendiri. Arahkan kursor ke kotak untuk melihat angkanya.", tip="PM2.5 dan PM10 adalah partikel debu (PM10 lebih besar), sedangkan NO₂, SO₂, CO, dan O₃ adalah gas pencemar. " + G.TIPS["kekuatan"])
         txt = np.vectorize(lambda v: G.kekuatan(v).capitalize())(cm.values)
         ec.tampil(ec.matriks(list(G.CUACA_NAMA.values()), [G.POL_PENDEK[p] for p in POLUTAN], cm.values.tolist(), txt.tolist(), tinggi=340), "p3_cu", 340, klik=False)
-        ui.keterangan("Kotak hampir putih = hampir tidak ada hubungan. <b>Yang jauh lebih menentukan polusi adalah lokasi dan musim, bukan cuaca harian.</b>")
+        ui.keterangan("Kotak yang hampir putih menunjukkan hampir tidak ada hubungan. <b>Polusi jauh lebih ditentukan oleh lokasi dan musim daripada cuaca harian.</b>")
 
 
 def _p3_lalu_lintas(C) -> None:
@@ -637,20 +638,19 @@ def _p3_lalu_lintas(C) -> None:
     s = C.D.sites.set_index("kode_stasiun")
     m = med.join(s[["traffic_intensity_per_h", "distance_to_road_m", "kelompok_lokasi"]]).dropna(subset=[C.kol])
     if len(m) < 5:
-        return ui.catatan("Perbandingan butuh minimal 5 lokasi. Coba pilih lebih banyak daerah.")
+        return ui.kosong("Perbandingan memerlukan minimal 5 lokasi. Pilih lebih banyak daerah.")
     r1, r2 = eda.spearman(m.traffic_intensity_per_h, m[C.kol]), eda.spearman(m.distance_to_road_m, m[C.kol])
-    judul1 = ("Lalu lintas tidak menunjukkan hubungan jelas dengan polusi" if abs(r1["rho"]) < 0.3 else f"Makin padat lalu lintas, polusi cenderung makin {'tinggi' if r1['rho'] > 0 else 'rendah'}")
-    judul2 = ("Jarak ke jalan tidak menunjukkan hubungan jelas dengan polusi" if abs(r2["rho"]) < 0.3 else f"Makin jauh dari jalan, polusi cenderung makin {'tinggi' if r2['rho'] > 0 else 'rendah'}")
+    judul1 = ("Lalu lintas tidak menunjukkan hubungan jelas dengan polusi" if abs(r1["rho"]) < 0.3 else f"Semakin padat lalu lintas, polusi cenderung semakin {'tinggi' if r1['rho'] > 0 else 'rendah'}")
+    judul2 = ("Jarak ke jalan tidak menunjukkan hubungan jelas dengan polusi" if abs(r2["rho"]) < 0.3 else f"Semakin jauh dari jalan, polusi cenderung semakin {'tinggi' if r2['rho'] > 0 else 'rendah'}")
     c1, c2 = st.columns(2, gap="medium")
     for col, (xk, lab, satuan, r, jd) in zip((c1, c2), (("traffic_intensity_per_h", "Lalu lintas (kendaraan per jam)", "kendaraan/jam", r1, judul1), ("distance_to_road_m", "Jarak ke jalan (meter)", "m", r2, judul2))):
         with col, ui.kartu(f"p3_{xk[:4]}"):
-            ui.judul_kartu(jd, f"Tiap titik = satu lokasi · hubungan {G.kekuatan(r['rho'])} ({r['n']} lokasi)", tip=f"{G.TIPS['kekuatan']} Angka: {fl(r['rho'], 2)}; hubungan {G.arah(r['rho'])}. Ini bukan bukti sebab-akibat.")
+            ui.judul_kartu(jd, f"Setiap titik mewakili satu lokasi. Hubungannya {G.kekuatan(r['rho'])} ({r['n']} lokasi).", tip=f"{G.TIPS['kekuatan']} Angka: {fl(r['rho'], 2)}; hubungan {G.arah(r['rho'])}. Hubungan ini bukan sebab-akibat karena lalu lintas dan jarak ke jalan tetap pada setiap lokasi, sehingga ikut mewakili ciri lokasinya.")
             kelompok = [(JN[t], WARNA[t], [dict(x=float(v), y=float(y), nama=NM[k]) for k, v, y in zip(q.index, q[xk], q[C.kol])])
                         for t in TIPE for q in [m[m.kelompok_lokasi == t]] if len(q)]
             ec.tampil(ec.sebar(kelompok, judul_x=lab, judul_y=f"Nilai tengah {nm} (µg/m³)", label_x=lab, label_y=f"Polusi {nm}", log_x=xk.startswith("traffic"), tinggi=340),
                       f"p3_{xk[:4]}", 340, klik=False)
             ui.keterangan("Arahkan kursor ke sebuah titik untuk melihat nama daerahnya.")
-    ui.catatan("Ini hubungan, bukan sebab-akibat: lalu lintas dan jarak ke jalan bersifat tetap untuk tiap lokasi, sehingga juga mewakili ciri lokasi itu sendiri.")
 
 
 # =========================================================================== #
@@ -683,12 +683,12 @@ def _p4_pasien(C, K2) -> None:
     nk = _kasus(NAMA_KASUS[kas]); nkp = G.KASUS_PENDEK[NAMA_KASUS[kas]]; rsn = G.RS_DARI_KODE.get(hid, hid)
     c1, c2 = st.columns([1.5, 1], gap="medium")
     with c1, ui.kartu("p4_ts"):
-        ui.judul_kartu(f"Di {rsn.replace('rumah sakit di ', '')}, hubungan polusi dan pasien {nkp} tergolong {G.kekuatan(rho['rho'])}", "Rata-rata 7 hari: pasien per hari dan debu halus PM2.5 (µg/m³)", tip=G.TIPS["kekuatan"] + f" Angka: {fl(rho['rho'], 2)}.")
+        ui.judul_kartu(f"Di {rsn.replace('rumah sakit di ', '')}, hubungan polusi dan pasien {nkp} tergolong {G.kekuatan(rho['rho'])}", "Rata-rata 7 hari untuk jumlah pasien per hari dan debu halus PM2.5 (µg/m³).", tip="PM2.5 adalah partikel debu sangat kecil yang dapat masuk ke paru-paru. " + G.TIPS["kekuatan"] + f" Angka: {fl(rho['rho'], 2)}.")
         tg = [G.tgl(t) for t in x.date]
         ec.tampil(ec.garis(tg, [dict(name="Pasien per hari", data=x[kas].astype(float).rolling(7, min_periods=3).mean().round(2), color=T.PASIEN, y=0, width=2),
                                 dict(name="Debu halus PM2.5 (µg/m³)", data=x.pm25_lag0.rolling(7, min_periods=3).mean().round(2), color=T.SERI, y=1, width=2)],
                            satuan="", desimal=1, judul_y=["Pasien per hari", "PM2.5 (µg/m³)"], tinggi=340), "p4_ts", 340, klik=False)
-        ui.keterangan("Garis biru kehijauan = pasien, garis merah = polusi. <b>Bila naik-turunnya mirip, polusi dan pasien bergerak bersama; ini belum tentu sebab-akibat.</b>")
+        ui.keterangan("Garis biru kehijauan menunjukkan pasien dan garis merah menunjukkan polusi. <b>Bila naik turunnya mirip, polusi dan pasien bergerak bersama, tetapi hal ini belum tentu sebab-akibat.</b>")
     with c2, ui.kartu("p4_kelas"):
         y = h.dropna(subset=["pm25_lag0"]).copy(); y["rasio"] = y[kas].astype(float) / y.groupby("hospital_id")[kas].transform(lambda s: s.astype(float).mean())
         kelas = ["≤15,5", "15,5–35", "35–55,4", "55,4–150,4", "150,4–250,4", ">250,4"]
@@ -697,10 +697,10 @@ def _p4_pasien(C, K2) -> None:
         if g.notna().sum() == 0:
             return _kosong()
         im = int(np.nanargmax(g.values))
-        ui.judul_kartu(f"Pasien {nkp} paling banyak saat polusi {kelas[im]} µg/m³ ({fl(g.values[im], 1)}× rata-rata)", "Jumlah pasien dibanding rata-rata (1,0 = biasa), menurut tingkat polusi hari itu (µg/m³)")
-        ec.tampil(ec.batang(kelas, [dict(name="Pasien dibanding rata-rata", data=g.values.round(3), warna=[T.ISPU[k] for k in ["Baik", "Sedang", "Sedang", "Tidak Sehat", "Sangat Tidak Sehat", "Berbahaya"]])],
-                            satuan="× rata-rata", desimal=2, judul_nilai="Pasien dibanding rata-rata", garis=(1, ""), label=True), "p4_kelas", 340, klik=False)
-        ui.keterangan("Warna batang = kategori udara. Garis putus-putus = jumlah pasien biasa. <b>Makin tinggi polusi, makin banyak pasien yang datang.</b>")
+        ui.judul_kartu(f"Pasien {nkp} paling banyak saat polusi {kelas[im]} µg/m³ ({fl(g.values[im], 1)} kali rata-rata)", "Jumlah pasien dibandingkan rata-rata menurut tingkat polusi pada hari itu (µg/m³). Angka 1,0 berarti jumlah biasa.")
+        ec.tampil(ec.batang(kelas, [dict(name="Pasien dibandingkan rata-rata", data=g.values.round(3), warna=[T.ISPU[k] for k in ["Baik", "Sedang", "Sedang", "Tidak Sehat", "Sangat Tidak Sehat", "Berbahaya"]])],
+                            satuan="kali rata-rata", desimal=2, judul_nilai="Pasien dibandingkan rata-rata", garis=(1, ""), label=True), "p4_kelas", 340, klik=False)
+        ui.keterangan("Warna batang menunjukkan kategori udara dan garis putus-putus menunjukkan jumlah pasien biasa. <b>Semakin tinggi polusi, semakin banyak pasien yang datang.</b>")
 
 
 def _p4_risiko(C, K2) -> None:
@@ -710,24 +710,24 @@ def _p4_risiko(C, K2) -> None:
     with c1, ui.kartu("p4_forest"):
         f = pd.DataFrame(cum).T.iloc[::-1]
         semua = bool((f.bawah > 1).all())
-        ui.judul_kartu("Semua jenis penyakit bertambah saat polusi naik" if semua else "Pasien bertambah untuk sebagian besar jenis penyakit", "Kenaikan pasien (kali lipat) tiap debu halus naik 10 µg/m³; garis = rentang kepastian", tip=G.TIPS["risiko"])
+        ui.judul_kartu("Semua jenis penyakit bertambah saat polusi naik" if semua else "Pasien bertambah untuk sebagian besar jenis penyakit", "Kenaikan jumlah pasien (kali lipat) setiap debu halus naik 10 µg/m³. Garis menunjukkan rentang kepastian.", tip=G.TIPS["risiko"])
         fig = go.Figure(go.Scatter(x=f.rr, y=[_kasus(k) for k in f.index], mode="markers", marker=dict(size=11, color=T.SERI), customdata=np.c_[f.bawah, f.atas],
                                    error_x=dict(type="data", symmetric=False, array=(f.atas - f.rr).values, arrayminus=(f.rr - f.bawah).values, color=ui.NAVY),
                                    hovertemplate="%{y}<br>naik %{x:.3f} kali (rentang %{customdata[0]:.3f}–%{customdata[1]:.3f})<extra></extra>"))
-        fig.add_vline(x=1, line=dict(dash="dash", color=ui.MUTED)); fig.update_xaxes(title_text="Kali lipat (1 = tidak ada kenaikan)", gridcolor=ui.LINE)
+        fig.add_vline(x=1, line=dict(dash="dash", color=ui.MUTED)); fig.update_xaxes(title_text="Kali lipat (angka 1 berarti tidak ada kenaikan)", gridcolor=ui.LINE)
         ui.plot(ui.tema_grafik(fig, 340), "p4_forest")
-        ui.keterangan("Titik di kanan garis putus-putus = pasien bertambah. <b>Semua penyakit yang diteliti, termasuk jantung dan kematian, ikut naik.</b>")
+        ui.keterangan("Titik di sebelah kanan garis putus-putus menunjukkan pasien bertambah. <b>Semua penyakit yang diteliti, termasuk penyakit jantung dan kematian, ikut meningkat.</b>")
     with c2, ui.kartu("p4_ek"):
-        ui.judul_kartu("Pasien makin banyak saat polusi makin pekat, lalu kenaikannya melandai", "Berapa kali lipat pasien dibanding saat udara Baik (≤15,5 µg/m³), menurut tingkat polusi")
+        ui.judul_kartu("Pasien semakin banyak saat polusi semakin pekat, lalu kenaikannya melandai", "Kelipatan jumlah pasien dibandingkan saat udara Baik (≤15,5 µg/m³), menurut tingkat polusi.")
         er = pd.DataFrame(K2["respons_eksposur_kelas"])
         q0 = er[er.kasus == "ISPA balita (<5 th)"]; kelas_x = list(q0.kelas)
         seri = []
         for kas_, wrn in (("ISPA balita (<5 th)", T.BALITA), ("ISPA lansia (>60 th)", T.LANSIA)):
             q = er[er.kasus == kas_].set_index("kelas").reindex(kelas_x)
             seri.append(dict(name=_kasus(kas_), data=q.rr.round(4).tolist(), color=wrn, bawah=q.rr_bawah.round(4).tolist(), atas=q.rr_atas.round(4).tolist()))
-        seri.append(dict(name="perkiraan bila kenaikan lurus", data=q0.rr_linier_model_utama.round(4).tolist(), color=ui.MUTED, putus=True))
-        ec.tampil(ec.garis_galat(kelas_x, seri, satuan="kali lipat", desimal=2, tinggi=340, judul_x="Tingkat polusi (µg/m³)", judul_y="Kali lipat vs udara Baik", log=True), "p4_ek", 340, klik=False)
-        ui.keterangan("Kenaikan pasien paling tajam pada polusi menengah. <b>Imbauan kesehatan perlu keluar sebelum polusi mencapai tingkat Tidak Sehat.</b>")
+        seri.append(dict(name="Perkiraan jika kenaikan berbentuk garis lurus", data=q0.rr_linier_model_utama.round(4).tolist(), color=ui.MUTED, putus=True))
+        ec.tampil(ec.garis_galat(kelas_x, seri, satuan="kali lipat", desimal=2, tinggi=340, judul_x="Tingkat polusi (µg/m³)", judul_y="Kali lipat dibandingkan udara Baik", log=True), "p4_ek", 340, klik=False)
+        ui.keterangan("Kenaikan pasien paling tajam terjadi pada polusi tingkat menengah. <b>Imbauan kesehatan perlu disampaikan sebelum polusi mencapai kategori Tidak Sehat.</b>")
 
 
 def _p4_tambahan(C, K2) -> None:
@@ -736,7 +736,7 @@ def _p4_tambahan(C, K2) -> None:
     per = per.assign(nama=per.kode_stasiun.map(NM))
     with ui.kartu("p4_ex"):
         bal = per[per.kasus == "ISPA balita (<5 th)"].sort_values("berlebih_model", ascending=False)
-        ui.judul_kartu(f"Kabut asap menambah pasien terutama di {bal.nama.iloc[0]} dan {bal.nama.iloc[1]}", "Perkiraan tambahan pasien per rumah sakit (batang = perkiraan komputer, ◆ = selisih dibanding hari biasa) · klik batang untuk menyorot", tip=G.TIPS["tambahan_pasien"])
+        ui.judul_kartu(f"Kabut asap menambah pasien terutama di {bal.nama.iloc[0]} dan {bal.nama.iloc[1]}", "Perkiraan tambahan pasien per rumah sakit; batang adalah perkiraan model dan ◆ adalah selisih dibandingkan hari biasa. Pilih batang untuk menyorot.", tip=G.TIPS["tambahan_pasien"])
         nama_rs = sorted(per.nama.unique())
         seri, penanda = [], []
         for kas_, wrn in (("ISPA balita (<5 th)", T.BALITA), ("ISPA lansia (>60 th)", T.LANSIA)):
@@ -744,10 +744,9 @@ def _p4_tambahan(C, K2) -> None:
             seri.append(dict(name=_kasus(kas_), data=q.berlebih_model.round(1).tolist(), color=wrn, bawah=q.bawah.round(1).tolist(), atas=q.atas.round(1).tolist()))
             penanda.append(dict(data=q.berlebih_empiris.round(1).tolist()))
         sel_rs = ec.terpilih("p4_ex")
-        ec.tampil(ec.batang_galat(nama_rs, seri, penanda=penanda, satuan="pasien tambahan", tinggi=340, judul_x="Rumah sakit di kota/kabupaten", judul_y="Pasien tambahan",
-                                  pilih=sel_rs if sel_rs in nama_rs else None, ket_penanda="(selisih dibanding hari biasa)"), "p4_ex", 340)
-        ui.keterangan("Garis hitam kecil = rentang perkiraan. <b>Rumah sakit di kota dengan kabut asap terparah perlu menyiapkan tempat tidur dan tenaga tambahan.</b>")
-    ui.catatan("Tambahan pasien disajikan sebagai kisaran (dari yang paling hati-hati sampai perkiraan komputer), karena hasilnya bergantung pada asumsi.")
+        ec.tampil(ec.batang_galat(nama_rs, seri, penanda=penanda, satuan="pasien tambahan", tinggi=340, judul_x="Rumah sakit di kota atau kabupaten", judul_y="Pasien tambahan",
+                                  pilih=sel_rs if sel_rs in nama_rs else None, ket_penanda="(selisih dibandingkan hari biasa)"), "p4_ex", 340)
+        ui.keterangan("Garis hitam kecil menunjukkan rentang perkiraan. <b>Rumah sakit di kota dengan kabut asap terparah perlu menyiapkan tempat tidur dan tenaga tambahan.</b>")
 
 
 # =========================================================================== #
@@ -765,7 +764,7 @@ def _p5_peta(C, s, stat, K6) -> None:
     cm, cs = st.columns([3, 1.1], gap="medium")
     n_stt = s[s.kode_stasiun.isin(C.dat.stas)].kode_stasiun.map(stat).value_counts()
     with cs, ui.kartu("p5_stat"):
-        ui.judul_kartu(f"{int(n_stt.get('Layak', 0))} dari {int(n_stt.sum())} lokasi punya data lengkap", "Kelengkapan catatan alat · klik irisan untuk menyorot")
+        ui.judul_kartu(f"{int(n_stt.get('Layak', 0))} dari {int(n_stt.sum())} lokasi memiliki data lengkap", "Kelengkapan catatan alat pengukur.")
         sel_s = ec.terpilih("p5_stat")
         sel_i = {v: k for k, v in G.STATUS_DATA.items()}.get(sel_s)
         ec.tampil(ec.donat([(G.STATUS_DATA[k], n_stt.get(k, 0), w) for k, w in warna.items() if n_stt.get(k, 0) > 0], judul=str(int(n_stt.sum())), sub="lokasi", satuan="lokasi", pilih=sel_s), "p5_stat", 290)
@@ -773,12 +772,12 @@ def _p5_peta(C, s, stat, K6) -> None:
             for r in s[(s.kode_stasiun.map(stat) == sel_i) & s.kode_stasiun.isin(C.dat.stas)].itertuples():
                 st.markdown(f'<div class="row-mint"><div class="ico" style="background:{warna[sel_i]}"></div><div class="tt"><b>{html.escape(NM[r.kode_stasiun])}</b><br>{html.escape(str(r.provinsi))} · {JN[r.kelompok_lokasi]}</div></div>', unsafe_allow_html=True)
         else:
-            ui.keterangan("Klik irisan untuk melihat daftar lokasi dan menyorotnya di peta.")
+            ui.keterangan("Pilih irisan untuk melihat daftar lokasi dan menyorotnya di peta.")
     with cm, ui.kartu("p5_peta"):
-        ui.judul_kartu(f"{K6['n_provinsi_tanpa_stasiun']} provinsi belum punya alat pengukur udara", "Titik = lokasi pengukuran (warna = kategori udara) · arsir merah muda berdenyut = provinsi tanpa alat (38 provinsi menurut acuan di luar proyek)", tip=G.TIPS["lokasi"])
+        ui.judul_kartu(f"{K6['n_provinsi_tanpa_stasiun']} provinsi belum memiliki alat pengukur udara", "Setiap titik mewakili satu lokasi pengukuran dan warnanya menunjukkan kategori udara. Arsir merah muda berdenyut menandai provinsi tanpa alat, dari 38 provinsi menurut acuan di luar proyek ini.", tip=G.TIPS["lokasi"])
         std = STANDAR[C.f["standar"]]["pm25"]
         titik = peta.siapkan_titik(C, C.dat.daily, std, G.BATAS_NAMA[C.f["standar"]], stat, sorot_status=sel_i)
         peta.render_peta(titik, "lokasi", "peta_lokasi", s)
-        ui.keterangan("Sebagian besar alat ada di Sumatera dan Jawa, sedangkan Papua, Maluku, dan Nusa Tenggara hampir kosong. <b>Kondisi udara di daerah yang belum diukur tidak diketahui.</b>")
+        ui.keterangan("Sebagian besar alat berada di Sumatera dan Jawa, sedangkan Papua, Maluku, dan Nusa Tenggara hampir tidak memiliki alat. <b>Kondisi udara di daerah yang belum diukur tidak diketahui.</b>")
     mx = K6["jarak_terdekat_maks"]
     ui.chips([("Jarak ke lokasi pengukuran terdekat (nilai tengah)", f"{fl(K6['jarak_terdekat_median_km'], 0)} km", G.TIPS["nilai_tengah"]), ("Terjauh", f"{NM[mx['kode']]} {fl(mx['km'], 0)} km")])

@@ -358,7 +358,7 @@ function aksiHover(info) {
   const o = info && info.object, id = info && info.layer && info.layer.id;
   let titik = -1;
   if (id === "titik" && o) { titik = o.i; const t = o;
-    tampilTip(info.x, info.y, `<b>${esc(t.n)}</b><br><span>${esc(t.prov)}</span><br>${t.pm == null ? esc(A.teks.tanpa_data) : `${esc(t.pm_txt)} µg/m³ · ${esc(t.kat)}`}<br><span>${esc(A.teks.klik_rincian)}</span>`);
+    tampilTip(info.x, info.y, `<b>${esc(t.n)}</b><br><span>${esc(t.prov)}</span><br>${t.pm == null ? esc(A.teks.tanpa_data) : `${esc(t.pm_txt)} µg/m³ · ${esc(t.kat)}`}`);
   } else if ((id === "permukaan" || id === "sorot-tutup") && o) {
     const info2 = A.prov[o.nama] || {n: 0, pilih: 0};
     tampilTip(info.x, info.y, `<b>${esc(o.nama)}</b><br>` + (cache.tanpa.has(o.nama) ? `<span style="color:${C.merah_teks};font-weight:700">${esc(A.teks.belum_alat)}</span>` : `<span>${esc(info2.txt)}</span>`));

@@ -277,3 +277,20 @@ Hanya kata warna yang diganti agar keterangan tetap sesuai dengan warna baru; is
 - Penyebab polusi (panduan membaca): "biru atau merah pekat = hubungan kuat" → "biru kehijauan atau merah pekat = hubungan kuat".
 - Dampak kesehatan: "Garis merah = pasien, garis kuning = polusi." → "Garis biru kehijauan = pasien, garis merah = polusi."
 - Beranda & Lokasi pengukuran (subjudul peta): "arsir salmon" → "arsir merah muda".
+
+
+## Revisi: kotak catatan pink dihapus dan tata bahasa semua keterangan dibakukan
+Daftar lengkap teks lama dan baru telah ditinjau dan disetujui sebelum diterapkan. Ringkasannya:
+- **Kotak catatan pink dihapus** (fungsi `ui.catatan()` dan gaya `.note`).
+  - "Ini hubungan, bukan sebab-akibat: lalu lintas dan jarak ke jalan bersifat tetap…" dipindahkan ke ⓘ kedua grafik sebar di Penyebab polusi: "Hubungan ini bukan sebab-akibat karena lalu lintas dan jarak ke jalan tetap pada setiap lokasi, sehingga ikut mewakili ciri lokasinya."
+  - "Tambahan pasien disajikan sebagai kisaran…" dipindahkan ke ⓘ grafik tambahan pasien di Dampak kesehatan: "Hasilnya berupa kisaran, dari yang paling hati-hati hingga perkiraan model, karena bergantung pada asumsi."
+  - Pesan data kosong ("Belum ada data untuk pilihan ini. Pilih daerah atau periode lain.") dan "Perbandingan memerlukan minimal 5 lokasi. Pilih lebih banyak daerah." kini berupa teks abu-abu biasa tanpa kotak (`ui.kosong()`).
+- **Kata baku:** makin → semakin; warga → masyarakat; perkiraan komputer → perkiraan model; punya → memiliki; bisa → dapat; dibanding → dibandingkan; "antar jenis wilayah/tahun/daerah/lokasi" → "antarjenis wilayah", "antartahun", "antardaerah", "antarlokasi"; "&" → "dan"; "hover" → "arahkan kursor"; "×" pada satuan → "kali"; ejaan "dasbor" (bukan "dashboard").
+- **Instruksi tidak lagi berulang:** ajakan "klik/pilih" hanya muncul sekali per grafik (donat Lokasi pengukuran, grafik peringkat dan kartu rincian di Kondisi udara, peta). Petunjuk "Klik titik untuk rincian" pada tooltip peta dihapus karena sudah ada di keterangan peta.
+- **Judul:** "22 dari 27 lokasi punya data lengkap" → "22 dari 27 lokasi memiliki data lengkap"; "17 provinsi belum punya alat pengukur udara" → "17 provinsi belum memiliki alat pengukur udara".
+- **Penjelasan istilah pada kemunculan pertama di setiap halaman** (lewat ⓘ): PM2.5, PM10, ISPU (Indeks Standar Pencemar Udara), ISPA, dan kabut asap.
+- **Penjelasan warna kategori udara:** "Hijau: Baik; biru kehijauan: Sedang; jingga: Tidak Sehat; merah muda: Sangat Tidak Sehat; merah tua: Berbahaya. Semakin banyak warna jingga hingga merah tua, semakin sering udara berbahaya bagi masyarakat."
+- **Subjudul dan keterangan** ditulis ulang menjadi kalimat utuh (paling banyak dua kalimat), tanpa tanda "=" dan "·" sebagai pengganti kata.
+- **Posisi tooltip ⓘ:** bila tidak muat di sisi kiri (tertutup sidebar) atau kanan layar, tooltip dirapatkan ke ikon. Isi dan tata letak kartu tidak berubah.
+- Sumber teks yang diubah: `app/pages.py`, `app/glossary.py` (TIPS, JENIS_ARTI, KATEGORI_ARTI, PESAN_KOSONG, KASUS_NAMA), `app/streamlit_app.py` (bantuan filter), `app/peta.py` dan `assets/peta3d/index.html` (peta), `app/ui.py`. Teks halaman arsip (`app/teks.py` dan GLOSARIUM) diselaraskan istilahnya saja.
+- Tidak diubah: format tooltip grafik kabut asap yang ditentukan sebelumnya, nama kategori ISPU, nama lokasi dan jenis wilayah, label KPI, nama menu, satuan µg/m³, dan singkatan bulan.
